@@ -19,7 +19,14 @@ export default defineConfig({
     assetsDir: "static",
     rollupOptions: {
       //配置多页应用程序入口文件
-      input: ["./src/pages/index.html", "./src/pages/about.html"],
+      input: ["./src/pages/index.html",
+              "./src/enterpriseRegistra.html",
+              "./src/login.html",
+              "./src/MemberDetails.html",
+              "./src/positionDetails.html",
+              "./src/positionInfo.html",
+              "./src/setEnterpriseInfo.html",
+            ],
 
       //打包到目标目录
       output: { dir: "./dist" },

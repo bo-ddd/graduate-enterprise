@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRoute, useRouter } from 'vue-router';
-import type { TabsPaneContext } from 'element-plus'
+
 let route = useRoute();
 let router = useRouter();
 const activeName = ref(route.path);
@@ -40,6 +40,12 @@ let list = reactive([
 
 const activeIndex = ref(route.path);
 
+if(route.path == '/'){
+  router.push({
+      path: "/home.html"
+    })
+}
+
 const handleSelect = (key: any) => {
   activeName.value = key.url;
   activeIndex.value = key.url;
@@ -51,7 +57,8 @@ const handleSelect = (key: any) => {
 }
 
 const outLogin = () => {
-  router.push({ path: '/' })
+  activeIndex.value = "0";
+  router.push({ path: '/login' })
 }
 
 
