@@ -53,7 +53,7 @@
             <p class="mt-30 fs-12 flex-ja-center c-8d9ea7"> 付费即表示同意《 <span class="agreement cursor-p">毕业申增值服务协议</span>》
             </p>
         </div>
-        <div class="div" v-html="params"></div>
+        <!-- <div class="div" v-html="params"></div> -->
         <FooterBar class="mt-60"></FooterBar>
     </div>
 </template>
@@ -88,26 +88,32 @@ let order = {
     orderPrice: selectPayment.value * data.vipPrice,
     vipName: data.vipName,
     vipCount: selectPayment.value,
-    vipLevel:Number(data.vipLevel)
+    vipLevel: Number(data.vipLevel)
 }
-let params =ref('');
+// let params =ref('');
+function toPay(params:any) {
+    let div = document.createElement("div");
+    div.innerHTML = params;
+    let form = div.querySelector("form")
+    document.body.appendChild(div)
+    form!.submit();
+    div.remove();
+}
 let toPayment = function () {
-    let usePayment = async(options:any)=>{
-        let res = await payment.payment(options);
+    let usePayment = async (options: any) => {
+        const res:any = await payment.payment(options);
         console.log(res);
-        if(res.code==200){
-            router.push({ path: '/payment', query: { ...order } })
-            params = res.data
+        if (res.code == 200) {
+            console.log(res.data)
+            toPay(res.data);
         }
     }
-    console.log('--------params----------------')
-    console.log(params)
     usePayment({
-        userId:10000,
-        companyId:10000,
-        month:selectPayment.value,
-        vipId:Number(data.vipLevel) 
-})
+        userId: 10000,
+        companyId: 10000,
+        month: selectPayment.value,
+        vipId: Number(data.vipLevel)
+    })
 }
 
 </script>
