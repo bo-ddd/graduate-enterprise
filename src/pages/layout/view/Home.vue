@@ -6,7 +6,7 @@
                     <div class="left major just-between-2">
                         <div class="flex">
                             <div class="img mr-16">
-                                <img class="icon-head-portrait" src="@/assets/images/icon-head_portrait.png"
+                                <img class="icon-head-portrait" :src="EnterpriseInfo.companyLogoUrl"
                                     :alt="EnterpriseInfo.companyLogoUrl">
                             </div>
                             <div class="test">
@@ -209,15 +209,12 @@ import { useHomeStore } from '@/stores/home';
 import { ref } from 'vue'
 import type { Ref } from "vue";
 import footerBar from '@/components/footer/footerBar.vue';
-import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
-// 路由
-let router = useRouter();
 // ajax
 const use = useHomeStore();
 // 跳转页面的方法
-let nav = (name: string) => {
-    router.push(name);
+const nav = (name: string) => {
+    window.location.href = name + '.html';
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
