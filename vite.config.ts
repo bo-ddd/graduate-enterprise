@@ -20,12 +20,12 @@ export default defineConfig({
     rollupOptions: {
       //配置多页应用程序入口文件
       input: ["./src/pages/index.html",
-              "./src/enterpriseRegistra.html",
-              "./src/login.html",
-              "./src/MemberDetails.html",
-              "./src/positionDetails.html",
-              "./src/positionInfo.html",
-              "./src/setEnterpriseInfo.html",
+              "./src/pages/enterpriseRegistra.html",
+              "./src/pages/login.html",
+              "./src/pages/MemberDetails.html",
+              "./src/pages/positionDetails.html",
+              "./src/pages/positionInfo.html",
+              "./src/pages/setEnterpriseInfo.html",
             ],
 
       //打包到目标目录

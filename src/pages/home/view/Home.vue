@@ -1,5 +1,8 @@
 <template>
     <div class="bgdf6f7f9">
+        <div>
+            <layout></layout>
+        </div>
         <div class="home wrap">
             <div class="brief-introduction ">
                 <div class="top border-btm flex">
@@ -206,6 +209,7 @@
 </template>
 
 <script setup lang="ts">
+import Layout from '@/pages/layout/view/Layout.vue'
 import { useHomeStore } from '@/stores/home';
 import { ref, reactive, computed } from 'vue'
 import type { Ref } from "vue";

@@ -2,14 +2,14 @@
     <div class="enterprise-registra">
         <div class="wrap container">
             <div class="title-wrap">
-                <h2>企业信息编辑</h2>
+                <h2>企业信息编辑11111</h2>
             </div>
             <el-form :model="form" label-width="120px">
                 <div class="form">
                     <h3>基本信息</h3>
                     <!-- 企业全称 -->
                     <el-form-item label="企业全称">
-                        <el-input class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
+                        <el-input class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyName" />
                     </el-form-item>
 
                     <!-- 品牌全称 -->
@@ -58,7 +58,6 @@
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
                         <el-cascader placeholder="请输入" class="el-input_240" :options="RegisteredArea" clearable>
-
                         </el-cascader>
                     </el-form-item>
 
@@ -69,8 +68,8 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" class="el-input_240" v-model="forbidden" :options="forbiddenData"
-                            @change="handleChange">
+                        <el-cascader placeholder="请选择" class="el-input_240" v-model="form.companyIndustryLeft"
+                            :options="forbiddenData" @change="handleChange">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
                             </template>
@@ -80,7 +79,7 @@
 
                     <!-- 正常状态的选择器 -->
                     <el-form-item label="企业性质">
-                        <el-select v-model="enterpriseNatureVal" placeholder="请选择" size="large">
+                        <el-select v-model="form.companyNature" placeholder="请选择" size="large">
                             <el-option v-for="item in enterpriseNature" :key="item.value" :label="item.label"
                                 :value="item.value" />
                         </el-select>
@@ -224,17 +223,42 @@
 </template>
 
 <script setup lang="ts">
-// 底部
 import footerBar from '@/components/footer/footerBar.vue';
-// 这个是企业注册地区的数据
-import RegisteredArea from './registeredArea';
-// 这个是form表单要用的
 import { reactive } from 'vue';
-// 这个是企业LOGO上传头像需要用到的
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
+const RegisteredArea = [
+    {
+        value: 'value',
+        label: 'label',
+        children: [
+            {
+                value: 'childrenvalue',
+                label: 'childrenlabel',
+                children: [
+                    {
+                        value: 'consistency',
+                        label: 'Consistency',
+                    },
+                    {
+                        value: 'feedback',
+                        label: 'Feedback',
+                    },
+                    {
+                        value: 'efficiency',
+                        label: 'Efficiency',
+                    },
+                    {
+                        value: 'controllability',
+                        label: 'Controllability',
+                    },
+                ],
+            }
+        ]
+    }
+]
 // ajax
 const use = useHomeStore();
 
@@ -272,10 +296,11 @@ function abc(value: any) {
 // 点击提交按钮走的方法
 const onSubmit = () => {
     console.log(form)
+    // setModifyEnterpriseInfo();
 };
 // companyWebUrl
 let getEnterpriseData = reactive<any[]>([]);
-// 调用 获取企业详细信息接口 报错
+// 调用 获取企业详细信息接口 
 let getEnterprise = async function () {
     let res = await use.getEnterprise({ userId: 10000 });
     Object.assign(getEnterpriseData, res.data);
@@ -284,19 +309,41 @@ let getEnterprise = async function () {
 }
 getEnterprise();
 
-// 调用 修改企业详细信息接口 报错
-// let setModifyEnterpriseInfo = async function () {
-//     let res = await use.setModifyEnterpriseInfo({
-//         companyAddr: '山西',
-//         userId: 10000
-//     });
-//     console.log(res);
-// }
-// setModifyEnterpriseInfo();
+// 修改企业详细信息接口
+interface EnterpriseInfoType {
+    companyAddr?: string,
+    companyContactEmail?: string,
+    companyContactName?: string,
+    companyContactPhone?: string,
+    companyFullName?: string,
+    companyIndustryLeft?: string,
+    companyIndustryRight?: string,
+    companyIntroducation?: string,
+    companyLicense?: string,
+    companyLogo?: any,
+    companyName?: string,
+    companyNature?: number,
+    companyRegisterAddr?: string,
+    companySize?: number,
+    companySocialCreditCode?: string,
+    companyStatus?: number,
+    companyTag?: number,
+    companyWebUrl?: string,
+    companyWishSchool?: string,
+    userId: number
+}
+let setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
+    let res = await use.setModifyEnterpriseInfo(payload);
+    if (res.code == 200) {
+        console.log('修改成功  可以重新获取数据了')
+        getEnterprise();
+    }
+    console.log('修改企业详细信息接口', res);
+}
+
 
 
 // 所属行业
-const forbidden = ref('');
 const forbiddenData = ref(<any>[]);
 const handleChange = (value: any) => {
     console.log(value)
@@ -540,9 +587,5 @@ getSchoolList();
             }
         }
     }
-}
-
-.mb-24 {
-    margin-bottom: 24px;
 }
 </style>
