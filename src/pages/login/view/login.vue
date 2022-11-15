@@ -223,7 +223,7 @@ const router = useRouter();
 
 interface Res {
     code: number,
-    data: number,
+    data: string|[],
     msg: string,
 }
 
@@ -322,11 +322,9 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
-                let res = await user.login(options);
-                console.log("-----------res---------------")
-                console.log(res);
+                const res:any|Res = await user.login(options);
                 if (res.code == 200) {
-                    window.location.href = `${window.location.origin}/`;
+                    window.location.href = `/`;
                 }
             }
             login({
@@ -335,7 +333,6 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 loginType: 0,
             })
         } else {
-            console.log('error submit!', fields)
         }
     })
 }
@@ -364,12 +361,9 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            console.log()
             // 登录
             let login = async (options: any) => {
-                let res = await user.login(options);
-                console.log("-----------注册---------------")
-                console.log(res);
+                const res:any|Res = await user.login(options);
                 if (res.code == 200) {
                     localStorage.setItem('smsCode',ruleFormValidate.validate)
                     router.push({ path: '/layout.html' })
@@ -381,8 +375,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 loginType: 1,
             })
         } else {
-            console.log('error submit!', fields)
-        }
+}
     })
 }
 
@@ -418,8 +411,7 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 注册接口
             let register = async (options: any) => {
-                let res = await user.login(options);
-                console.log(res);
+                const res:any|Res = await user.login(options);
                 if (res.code == 200) {
                     ElMessage({
                         message: '注册成功，请登录',
@@ -441,7 +433,6 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
                 inviteCode: 0,
             })
         } else {
-            console.log('error submit!', fields)
         }
     })
 }
@@ -474,7 +465,6 @@ const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
             localStorage.setItem('smsCode',ruleFormForgotPw.validate)
             next();
         } else {
-            console.log('error submit!', fields)
         }
     })
 }
@@ -516,8 +506,7 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
         if (valid) {
             //重置密码
             let register = async (options: any) => {
-                let res = await user.login(options);
-                console.log(res);
+                const res:any|Res = await user.login(options);
                 if (res.code == 200) {
                     ElMessage({
                         message: '重置成功，请登录',
@@ -535,7 +524,6 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
             })
            
         } else {
-            console.log('error submit!', fields)
         }
     })
 }
