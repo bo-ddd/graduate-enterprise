@@ -73,7 +73,8 @@
               border
               disabled
             >全职</el-radio>
-            <el-radio v-else class="select-btn" label="1" size="large" border disabled>实习</el-radio>
+            <el-radio v-else
+             class="select-btn" label="1" size="large" border disabled>实习</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -256,9 +257,8 @@
             class="w-340"
             placeholder="请选择工作地点"
           >
-            <template #default="{ node,data }">
+            <template #default="{ data }">
               <span>{{ data.label }}</span>
-              <span v-if="!node.isLeaf">({{ data.children.length }})</span>
             </template>
           </el-cascader>
         </el-form-item>
@@ -288,7 +288,6 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
-
 import Layout from "@/pages/layout/view/Layout.vue";
 import { ElMessage } from "element-plus";
 import FooterBar from "@/components/footer/footerBar.vue";
@@ -628,19 +627,15 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     console.log(valid);
 
     console.log(ruleForm.data);
-    if (valid) {
-      console.log("submit!");
-      // console.log(positionTypeArr);
-
+    if(valid){
       setPositon(ruleForm.data);
-    } else {
-      console.log("error submit!", fields);
-      ElMessage.error((<any>Object).values(fields)[0][0].message);
+    }else{
+      ElMessage.error((Object as any).values(fields)[0][0].message);
     }
   });
 };
 const setPositon = async function (params: any) {
-  const {
+  const{
     positionEducation,
     positionNature,
     positionName,
@@ -657,18 +652,18 @@ const setPositon = async function (params: any) {
     salaryEnd2,
     salaryStart1,
     salaryEnd1,
-  } = params;
+  }=params;
   let internshipMoney = [salaryStart2, salaryEnd2];
   let positionMoney = [salaryStart1, salaryEnd1];
   let form = {
     positionEducation:Number(positionEducation), //学历id
-    positionNature:Number(positionNature), //工作性质
+    positionNature: Number(positionNature), //工作性质
     positionName, //职位名称
     positionPositive: false, //是否转正
     positionDetailedAddr, //详细地址
     positionDes, //职位描述
-    positionSize:Number(positionSize), //招聘人数
-    internshipDay:Number(internshipDay), //每周天数
+    positionSize: Number(positionSize), //招聘人数
+    internshipDay: Number(internshipDay), //每周天数
     internshipMonth: Number(internshipMonth), //实习月数
     positionProfessional: "1", //专业
     internshipMoney: positionNature == 1 ? salaryStart2 + "," + salaryEnd2 : "", //实习日薪范围id
@@ -696,7 +691,7 @@ const setPositon = async function (params: any) {
   }
 };
 const to = function (path: string) {
-  window.location.href=path+'.html，'
+  window.location.href = path + ".html，";
 };
 </script>
 
