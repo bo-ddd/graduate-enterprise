@@ -85,7 +85,7 @@ let invitationList = reactive<any[]>([]);//这个是邀请人才的列表
 let statusList = reactive<any[]>([]);//邀请人才状态
 //这个是学历的列表
 const getEducationList = async () => {
-    const res = await PersonStore.getEducation();
+    const res:any = await PersonStore.getEducation();
     if (res.code !== 200) return;
     let resData = (res.data).reverse();//获取学历数据
     educationArr.push(...resData);
@@ -94,7 +94,7 @@ getEducationList();//调用获取学历列表
 
 //这个是获取邀请次数的方法
 const getInvationsNumber = async () => {
-    const res = await HomeStore.getEnterprise({
+    const res:any = await HomeStore.getEnterprise({
         userId: 10000,
     })
     if (res.code != 200) return;
@@ -104,7 +104,7 @@ getInvationsNumber();
 
 //这个是获取专业列表的方法
 const getProfessionalList = async () => {
-    const res = await PersonStore.getMajorList();
+    const res:any = await PersonStore.getMajorList();
     if (res.code !== 200) return;
     majorArr.length = 0;
     majorArr.push(...(res.data));
@@ -113,7 +113,7 @@ getProfessionalList();//调用获取专业列表
 
 //这个是获取性别列表的方法
 const getSexList = async () => {
-    const res = await PersonStore.getSexList();
+    const res:any = await PersonStore.getSexList();
     if (res.code !== 200) return;
     sexArr.push(...(res.data));
 }
@@ -121,7 +121,7 @@ getSexList();
 
 //这个是获取职位列表的方法
 const getPositionList = async () => {
-    const res = await PersonStore.getPositionList({
+    const res:any = await PersonStore.getPositionList({
         userId: 10000,
     });
     positionArr.push(...(res.data))
