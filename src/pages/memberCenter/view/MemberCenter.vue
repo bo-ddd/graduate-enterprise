@@ -1,5 +1,6 @@
 <template>
     <div class="member ">
+        <Layout></Layout>
         <header class="wrap flex-ja-center">
             <img class="icon" src="@/assets/images/left.png" alt="">
             <h3 class="fs-24 c-ebab85">升级成为毕业申会员</h3>
@@ -151,6 +152,7 @@
 </template>
 
 <script setup lang="ts">
+import Layout from "@/pages/layout/view/Layout.vue"
 import { useVipStore } from "@/stores/vip";
 import { reactive, } from "vue";
 import { useRouter } from 'vue-router';
