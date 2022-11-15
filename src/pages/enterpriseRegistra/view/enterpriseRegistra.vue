@@ -68,8 +68,7 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" class="el-input_240" :options="forbiddenData"
-                            @change="handleChange">
+                        <el-cascader placeholder="请选择" class="el-input_240" :options="forbiddenData">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
                             </template>
@@ -332,46 +331,26 @@ const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
     };
 };
 // 所属行业
-const forbiddenData = ref(<any>[]);
-const handleChange = (value: any) => {
-};
+const forbiddenData: any = ref([]);
+
 // 调用 获取所属行业下拉框接口 报错
 const getIndustryList = async function () {
     const res = await use.getIndustryList();
     Object.assign(forbiddenData.value, res.data);
 };
 getIndustryList();
-// 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = (file: UploadFile) => { };
-const handlePictureCardPreview = (file: UploadFile) => {
-    dialogVisible.value = true;
-};
-const handleDownload = (file: UploadFile) => { };
-// 企业性质
-interface EnterpriseNatureType {
-    createTime: null | Date,
-    label: string,
-    modifyTime: null | Date,
-    value: number,
-};
-let enterpriseNature = reactive<EnterpriseNatureType[]>([]);
-// 调用 获取企业性质下拉框
+const handleRemove = () => { };
+const handlePictureCardPreview = () => dialogVisible.value = true;
+const handleDownload = () => { };
+let enterpriseNature: any = ref([]);
 const getEnterpriseNatureList = async function () {
     const res = await use.getEnterpriseNatureList();
     Object.assign(enterpriseNature, res.data);
 };
 getEnterpriseNatureList();
-
-// 企业规模
-interface EnterpriseScale {
-    createTime: null | Date,
-    label: string,
-    modifyTime: null | Date,
-    value: number,
-};
-let enterpriseScale = reactive<EnterpriseScale[]>([]);
+let enterpriseScale: any = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
     const res = await use.getEnterpriseSizeList();
@@ -386,7 +365,7 @@ interface EnterpriseLabel {
     modifyTime: null | Date,
     value: number,
 };
-let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
+let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
     const res = await use.getEnterpriseTagList();
@@ -401,7 +380,7 @@ interface SchoolList {
     schoolName: string,
     sortId: number,
 };
-const schoolList = reactive<SchoolList[]>([]);
+const schoolList: any | SchoolList = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
