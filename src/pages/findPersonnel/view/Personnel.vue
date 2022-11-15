@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { ref, reactive, type Ref, watch } from "vue";
-import LayOut from "@/pages/layout/view/Layout.vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
@@ -12,16 +11,20 @@ interface Check {
 }
 let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
+let industry = ref();
 let form = reactive({
     sex: null,//性别
     education: null,//学历
     professional: null,//专业
-    industry: null,//行业
     city: null,//城市
     wishMoneyLeft: null,//最低薪资
     wishMoneyRight: null,//最高薪资
-});//这个是模糊查询
+});//这个是人才列表模糊查询
 
+let invitationForm = reactive({
+    status:null,
+    professional:null,
+});
 let inviationNumber = ref(0);//这个是当日邀请次数
 
 let invitationUserId = ref();//邀请的人才id；
@@ -54,17 +57,17 @@ let circleUrl = ref('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1
 let checkItem = ref(0);//默认展示哪个页面
 
 //切换页面
-let handleItemChange = (index: number) => {
+const handleItemChange = (index: number) => {
     checkItem.value = index;
 }
 
 //是否展开导航
-let handleGuideChange = (bool: boolean) => {
+const handleGuideChange = (bool: boolean) => {
     showGuid.value = bool;
 }
 
 //清空选择的方法
-let cancelCheck = () => {
+const cancelCheck = () => {
     for (const key in form as any) {
         form[key] = null;
     }
@@ -79,20 +82,19 @@ let wishMoneyRightList = reactive<any[]>([]);//这个是期望薪资右边的列
 let talentList = reactive<any[]>([]);//这个是人才列表
 let positionCategoryList = reactive<any[]>([]);//这个是获取职位类别的数组
 let invitationList = reactive<any[]>([]);//这个是邀请人才的列表
+let statusList = reactive<any[]>([]);//邀请人才状态
 //这个是学历的列表
-let getEducationList = async () => {
-    let res = await PersonStore.getEducation();
+const getEducationList = async () => {
+    const res:any = await PersonStore.getEducation();
     if (res.code !== 200) return;
     let resData = (res.data).reverse();//获取学历数据
-    console.log('学历列表');
-    console.log(resData);
     educationArr.push(...resData);
 }
 getEducationList();//调用获取学历列表
 
 //这个是获取邀请次数的方法
-let getInvationsNumber = async () => {
-    let res = await HomeStore.getEnterprise({
+const getInvationsNumber = async () => {
+    const res:any = await HomeStore.getEnterprise({
         userId: 10000,
     })
     if (res.code != 200) return;
@@ -101,8 +103,8 @@ let getInvationsNumber = async () => {
 getInvationsNumber();
 
 //这个是获取专业列表的方法
-let getProfessionalList = async () => {
-    let res = await PersonStore.getMajorList();
+const getProfessionalList = async () => {
+    const res:any = await PersonStore.getMajorList();
     if (res.code !== 200) return;
     majorArr.length = 0;
     majorArr.push(...(res.data));
@@ -110,16 +112,16 @@ let getProfessionalList = async () => {
 getProfessionalList();//调用获取专业列表
 
 //这个是获取性别列表的方法
-let getSexList = async () => {
-    let res = await PersonStore.getSexList();
+const getSexList = async () => {
+    const res:any = await PersonStore.getSexList();
     if (res.code !== 200) return;
     sexArr.push(...(res.data));
 }
 getSexList();
 
 //这个是获取职位列表的方法
-let getPositionList = async () => {
-    let res = await PersonStore.getPositionList({
+const getPositionList = async () => {
+    const res:any = await PersonStore.getPositionList({
         userId: 10000,
     });
     positionArr.push(...(res.data))
@@ -127,7 +129,7 @@ let getPositionList = async () => {
 getPositionList();
 
 //获取期望薪资的接口
-let getWishMoneyList = async () => {
+const getWishMoneyList = async () => {
     let res = await PersonStore.getWishMoney();
     wishMoneyLeftList.push(...(res.data).wishMoenyLeftList);
     wishMoneyRightList.push(...(res.data).wishMoenyRightList);
@@ -135,19 +137,22 @@ let getWishMoneyList = async () => {
 getWishMoneyList();
 
 //获取到人才的列表
-let getTalentList = async () => {
-    let obj = {};
+const getTalentList = async () => {
+    let obj:any = {};
+    console.log(form);
     for (const key in form) {
         if(form[key]){
             obj[key] = form[key];
         }
     }
+    if(industry.value){
+        obj['industryLeft'] = industry.value[0];
+        obj['industryRight'] = industry.value[1];
+    }
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
     console.log('-------这个是获取人才------');
-    console.log(obj);
-    console.log(form);
-    let res = await PersonStore.getTalentList(obj);
+    const res = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
@@ -158,38 +163,37 @@ let getTalentList = async () => {
 getTalentList();
 
 //邀请人才的方法;
-let inviteTalent = async () => {
-    console.log(invitationUserId);
-    let res = await PersonStore.inviteTalent({
+const inviteTalent = async () => {
+    const res = await PersonStore.inviteTalent({
         inviteUserId: invitationUserId.value,
         userId: 10000,
+        positionId:checkPosition.value,
     });
     dialogFormVisible.value = false;
     if(res.code !==200){
         console.log('邀请人才接口报错');
     }else{
         console.log('邀请人才成功!!');
+        getInvationsNumber();
     }
 }
 
 //获取邀请人才列表
-let inviteTalentList = async ()=>{
-    let res = await PersonStore.getInviteList({
+const inviteTalentList = async ()=>{
+    const res = await PersonStore.getInviteList({
         userId:10000,
     })
     if(res.code !== 200) return;
     invitationList.length = 0;
     invitationList.push(...(res.data.talentList));
     pagingInvite.total = res.data.totalCount;
-    console.log('邀请人才的列表');
-    console.log(res);
 }
 inviteTalentList();
 
 //这个是邀请投递的弹层
 
 //邀请的哪个人才
-let invitationPost =async (userId:number)=>{
+const invitationPost =async (userId:number)=>{
     dialogFormVisible.value = true;
     invitationUserId.value = userId;
     // 这个里面需要调用回显人才信息的接口
@@ -197,10 +201,8 @@ let invitationPost =async (userId:number)=>{
 }
 
 //获取职位类别
-let getPositionCategory = async ()=>{
-    let res = await PersonStore.getPosition();
-    console.log('获取职位类别');
-    console.log(res);
+const getPositionCategory = async ()=>{
+    const res:any = await PersonStore.getPosition();
     if(res.code !== 200) return;
     // positionDownList: (2) [{…}, {…}]
     // positionTypeId: "1"
@@ -215,14 +217,19 @@ let getPositionCategory = async ()=>{
     positionCategoryList.push(...(data));
 }
 getPositionCategory();
-let getMoney = (data:string)=>{
+const getMoney = (data:string)=>{
     if(!data) return '';
-    let res = data.split(",").sort((a,b)=>{ return a - b});
+    const res = data.split(",").sort((a:any,b:any)=>{ return a - b});
     return `${res[0]}-${res[1]}k`
 }
+//邀请人才下拉框
+const getInviteDrop = async ()=>{
+    const res = await PersonStore.getInviteDrop();
+    statusList.push(...(res.data));
+}
+getInviteDrop();
 </script>
 <template>
-    <LayOut></LayOut>
     <div class="personnel">
         <div class="operation-wrap box-shadow">
             <div class="wrap operation-container fs-18">
@@ -236,20 +243,6 @@ let getMoney = (data:string)=>{
                 </div>
             </div>
         </div>
-
-        <!-- 这个是疑问咨询的图片 -->
-        <!-- <div :class="['consulting-service', 'absolute-wrap', showGuid ? 'close-animate' : 'show-animate']">
-            <div class="top">
-                <img src="@/assets/images/company_fanjia_3.png" class="or-code">
-                <p class="tip fs-12">如有任何疑问请咨询</p>
-            </div>
-            <img src="@/assets/images/icon-close.png" @click="handleGuideChange(true)">
-        </div> -->
-
-        <!-- 这个是点击弹出咨询的容器 -->
-        <!-- <div class="seek-advice absolute-wrap box-shadow" v-show="showGuid" @click="handleGuideChange(false)">
-            <img src="@/assets/images/icon-kefu.png">
-        </div> -->
 
         <!-- 人才数据的页面 -->
         <div class="talent-pool-wrap" v-show="checkItem == 0">
@@ -270,7 +263,7 @@ let getMoney = (data:string)=>{
                         <el-option v-for="item in majorArr" :key="item.sortId" :label="item.professionalName"
                             :value="item.sortId" />
                     </el-select>
-                    <el-cascader v-model="form.industry" placeholder="意向职位" :props="{'children':'positionDownList','label':'positionTypeName','value':'positionTypeId'}"	 class="check-education mr-30" :options="positionCategoryList" clearable />
+                    <el-cascader v-model="industry" placeholder="意向职位" :props="{'children':'positionDownList','label':'positionTypeName','value':'positionTypeId'}"	 class="check-education mr-30" :options="positionCategoryList" clearable />
                 </div>
                 <div class="filter-wrap-btm">
                     <div class="check">
@@ -388,10 +381,10 @@ let getMoney = (data:string)=>{
 
                 <!-- 邀请的选择容器 -->
                 <div class="filter-wrap">
-                    <el-select v-model="form.sex" class="m-2 check-sex mr-30" placeholder="状态选择" size="large">
-                        <el-option v-for="item in sexArr" :key="item.value" :label="item.label" :value="item.value" />
+                    <el-select v-model="invitationForm.status"  clearable class="m-2 check-sex mr-30" placeholder="状态选择" size="large">
+                        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
-                    <el-select v-model="form.professional" class="m-2 check-position mr-30" placeholder="意向职位选择"
+                    <el-select v-model="invitationForm.professional" clearable class="m-2 check-position mr-30" placeholder="意向职位选择"
                         size="large">
                         <el-option v-for="item in positionArr" :key="item.value" :label="item.label"
                             :value="item.value" />

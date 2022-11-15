@@ -100,11 +100,9 @@ function toPay(params:any) {
     div.remove();
 }
 let toPayment = function () {
-    let usePayment = async (options: any) => {
+    let usePayment = async(options:any)=>{
         const res:any = await payment.payment(options);
-        console.log(res);
         if (res.code == 200) {
-            console.log(res.data)
             toPay(res.data);
         }
     }

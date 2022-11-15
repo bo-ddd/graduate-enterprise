@@ -106,8 +106,6 @@
               v-model:page-size="pageSize"
               layout="prev, pager, next"
               :total="recruitNum"
-              @next-click="next"
-              @prev-click="prev"
               @current-change="handleCurrentChange"
             />
           </div>
@@ -116,7 +114,7 @@
       <div class="tab2" v-show="currentIndex==1">
         <div class="void-box void-title flex-ja-center" v-show="downNum==0">
           <div class>
-            <img src="@/assets/images/img-no_position.png" alt />
+            <img src="@/assets/images/img-no_position.png"   />
             <div class="mt-15">暂无已下线职位</div>
           </div>
         </div>
@@ -179,8 +177,6 @@
                 v-model:page-size="pageSize2"
                 layout="prev, pager, next"
                 :total="downNum"
-                @next-click="next2"
-                @prev-click="prev2"
                 @current-change="handleCurrentChange2"
               />
             </div>
@@ -192,7 +188,7 @@
   <FooterBar></FooterBar>
   <div class="dialog-box">
     <el-dialog v-model="centerDialogVisible" title center>
-      <img class="back-img" src="@/assets/images/default_v.png" alt />
+      <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">您当前账户中暂无 &nbsp; "自动刷新卡"</div>
         <div class="mt-25 text-gray">
@@ -202,15 +198,15 @@
         <div class="mt-25 text-black">更多权益也可一起解锁</div>
         <div class="list mt-15">
           <div class="align-center">
-            <img src="@/assets/images/icon-home_vipbanner1.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner1.png" />
             <span class="ml-10">在招职位数量解锁</span>
           </div>
           <div class="align-center ml-25">
-            <img src="@/assets/images/icon-home_vipbanner2.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner2.png" />
             <span class="ml-10">更多职位刷新点数</span>
           </div>
           <div class="align-center mt-15">
-            <img src="@/assets/images/icon-home_vipbanner4.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner4.png" />
             <span class="ml-10">更多主动下载简历点数</span>
           </div>
         </div>
@@ -222,7 +218,7 @@
   </div>
   <div class="dialog-box">
     <el-dialog v-model="centerDialogVisible2" title center>
-      <img class="back-img" src="@/assets/images/default_v.png" alt />
+      <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">今日刷新点数已用完</div>
         <div class="mt-25 text-black">
@@ -231,7 +227,7 @@
         </div>
         <div class="card">
           <div class="center">
-            <img src="@/assets/images/icon-tag1.png" alt />
+            <img src="@/assets/images/icon-tag1.png"  />
             自动刷新卡
           </div>
         </div>
@@ -263,8 +259,8 @@ const pageNum = ref(1);
 const pageSize = ref(10);
 const pageNum2 = ref(1);
 const pageSize2 = ref(10);
-const positionList = ref([]);
-const downPositionList = ref([]);
+const positionList:any = ref([]);
+const downPositionList:any = ref([]);
 const autoRefrensh=function(positionId:any){
   centerDialogVisible.value = true
 }
@@ -407,17 +403,11 @@ const deleteClick = function (positionId: any, positionStatus: any) {
     type: "warning",
   })
     .then(async () => {
-      console.log(1);
-
       let res1 = await deletePosition({
         positionId,
         userId: 10000,
         positionStatus,
       });
-      console.log(3);
-
-      console.log(res1);
-
       if (res1.code == 200) {
         ElMessage({
           type: "success",
@@ -445,9 +435,6 @@ const tab = function (num: number) {
   currentIndex.value = num;
 };
 const to = function (path: string) {
-  // router.push({
-  //   path,
-  // });
   window.location.href=path+'.html'
 };
 const setPosition = function (id: any) {

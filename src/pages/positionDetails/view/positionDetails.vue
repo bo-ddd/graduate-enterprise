@@ -350,15 +350,15 @@ const handleChange = function (value: any) {
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
-const educationArr = ref([]);
-const industryArr = ref([]);
-const professionalArr = ref([]);
-const moneyLeftArr1 = ref([]);
-const moneyRightArr1 = ref([]);
-const moneyLeftArr2 = ref([]);
-const moneyRightArr2 = ref([]);
-const dayArr = ref([]);
-const monthArr = ref([]);
+const educationArr:any  = ref([]);
+const industryArr:any  = ref([]);
+const professionalArr:any  = ref([]);
+const moneyLeftArr1:any  = ref([]);
+const moneyRightArr1:any  = ref([]);
+const moneyLeftArr2:any  = ref([]);
+const moneyRightArr2:any  = ref([]);
+const dayArr:any  = ref([]);
+const monthArr:any  = ref([]);
 const ruleForm: any = reactive({
   data: {
     positionNature: 1, //工作性质
@@ -382,12 +382,12 @@ const ruleForm: any = reactive({
 const radio1 = ref("1");
 const radio2 = ref("0");
 const getData = async function () {
-  const res = await use.getEducation(); //学历
-  const res2 = await use.getCompanyIndustry(); //行业
-  const res3 = await use.getProfessional(); //专业
-  const res4 = await use.getWishMoney(); //薪资
-  const res5 = await use.getMonthDay(); //月和天
-  const res6 = await use.getInternshipMoney(); //实习薪资
+  const res = await use.getEducation({}); //学历
+  const res2 = await use.getCompanyIndustry({}); //行业
+  const res3 = await use.getProfessional({}); //专业
+  const res4 = await use.getWishMoney({}); //薪资
+  const res5 = await use.getMonthDay({}); //月和天
+  const res6 = await use.getInternshipMoney({}); //实习薪资
   console.log(res);
   if (res.code == 200) {
     educationArr.value = res.data;

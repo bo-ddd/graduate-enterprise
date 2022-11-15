@@ -29,22 +29,22 @@
 
                             <template #file="{ file }">
                                 <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <img class="el-upload-list__item-thumbnail" :src="file.url"/>
                                     <span class="el-upload-list__item-actions">
                                         <span class="el-upload-list__item-preview"
-                                            @click="handlePictureCardPreview(file)">
+                                            @click="handlePictureCardPreview()">
                                             <el-icon>
                                                 <zoom-in />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleDownload(file)">
+                                            @click="handleDownload()">
                                             <el-icon>
                                                 <Download />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleRemove(file)">
+                                            @click="handleRemove()">
                                             <el-icon>
                                                 <Delete />
                                             </el-icon>
@@ -119,23 +119,23 @@
                                 </el-icon>
 
                                 <template #file="{ file }">
-                                    <div @click="add(file)">
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <div @click="add()">
+                                        <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                         <span class="el-upload-list__item-actions">
                                             <span class="el-upload-list__item-preview"
-                                                @click="handlePictureCardPreview(file)">
+                                                @click="handlePictureCardPreview()">
                                                 <el-icon>
                                                     <zoom-in />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @change="handleDownload(file)">
+                                                @change="handleDownload()">
                                                 <el-icon>
                                                     <Download />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @click="handleRemove(file)">
+                                                @click="handleRemove()">
                                                 <el-icon>
                                                     <Delete />
                                                 </el-icon>
@@ -490,7 +490,6 @@ import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
-import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
 // ajax
 const use = useHomeStore();
@@ -499,7 +498,7 @@ const centerDialogVisible = ref(true);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 跳转页面的方法
-let nav = (name: string) => {
+const nav = (name: string) => {
     window.location.href = `${name}.html`;
 };
 const RegisteredArea = [
@@ -537,11 +536,9 @@ const form = reactive({
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
 });
-function add(file: any) {
-};
+const add = () => { };
 // 点击提交按钮走的方法
-const onSubmit = () => {
-};
+const onSubmit = () => { };
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
@@ -550,64 +547,55 @@ const enterpriseScaleVal = ref('请选择');
 const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
-const forbiddenData = ref(<any>[]);
-const handleChange = (value: any) => {
-};
+const forbiddenData: any = ref([]);
+const handleChange = () => { };
 // 调用 获取所属行业下拉框接口 报错
-let getIndustryList = async function () {
-    let res = await use.getIndustryList();
+const getIndustryList = async function () {
+    const res = await use.getIndustryList();
     Object.assign(forbiddenData.value, res.data);
 };
 getIndustryList();
 // 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = (file: UploadFile) => {
-};
-const handlePictureCardPreview = (file: UploadFile) => {
+const handleRemove = () => { };
+const handlePictureCardPreview = () => {
     dialogVisible.value = true;
 };
-const handleDownload = (file: UploadFile) => {
-};
+const handleDownload = () => { };
 // 企业性质
-interface EnterpriseNature {
-    label: string,
-    value: number,
-    createTime: null,
-    modifyTime: null
-};
-let enterpriseNature = reactive<EnterpriseNature[]>([]);
+let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
-let getEnterpriseNatureList = async function () {
-    let res = await use.getEnterpriseNatureList();
+const getEnterpriseNatureList = async function () {
+    const res = await use.getEnterpriseNatureList();
     Object.assign(enterpriseNature, res.data);
 };
 getEnterpriseNatureList();
 // 企业规模
 interface EnterpriseScale {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
 };
-let enterpriseScale = reactive<EnterpriseScale[]>([]);
+let enterpriseScale: any | EnterpriseScale = ref([]);
 // 调用 获取企业规模下拉框
-let getEnterpriseSizeList = async function () {
-    let res = await use.getEnterpriseSizeList();
+const getEnterpriseSizeList = async function () {
+    const res = await use.getEnterpriseSizeList();
     Object.assign(enterpriseScale, res.data);
 };
 getEnterpriseSizeList();
 // 企业标签
 interface EnterpriseLabel {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
 };
-let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
+let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
-let getEnterpriseTagList = async function () {
-    let res = await use.getEnterpriseTagList();
+const getEnterpriseTagList = async function () {
+    const res = await use.getEnterpriseTagList();
     Object.assign(enterpriseLabel, res.data);
 };
 getEnterpriseTagList();
@@ -618,9 +606,9 @@ interface SchoolList {
     schoolName: string,
     sortId: number,
 };
-const schoolList = reactive<SchoolList[]>([]);
-let getSchoolList = async function () {
-    let res = await use.getSchoolList();
+const schoolList: any | SchoolList = ref([]);
+const getSchoolList = async function () {
+    const res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
 };
 getSchoolList();

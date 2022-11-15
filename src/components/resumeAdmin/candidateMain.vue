@@ -109,7 +109,7 @@ let getUserInfo = async (item: any) => {
     if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
     showResumeImage.value = true;
     resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
-    let res = await enterprise.getResumeUrl({
+    let res:any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
         userId: item.userId
     })
@@ -124,7 +124,7 @@ let getUserInfo = async (item: any) => {
 let batchInappropriate = async () => {
     console.log(checkedCities.value);
     let deliveryId = checkedCities.value.toString();
-    let res = await enterprise.modifyResumeStatus({
+    let res:any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 6,
         userId: 10000
@@ -148,7 +148,7 @@ let batchInappropriate = async () => {
 let batchbyFilter = async () => {
     console.log(checkedCities.value);
     let deliveryId = checkedCities.value.toString();
-    let res = await enterprise.modifyResumeStatus({
+    let res:any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 3,
         userId: 10000
@@ -172,7 +172,7 @@ let batchbyFilter = async () => {
  */
 let inappropriate = async (event:Event,item: any) => {
     event.stopPropagation();
-    let res = await enterprise.modifyResume({
+    let res:any = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
         interviewName: item.interviewName,
@@ -200,7 +200,7 @@ let inappropriate = async (event:Event,item: any) => {
  */
 let byFilter = async (event:Event,item: any) => {
     event.stopPropagation();
-    let res = await enterprise.modifyResume({
+    let res:any = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
         interviewName: item.interviewName,
@@ -246,7 +246,7 @@ const handleCheckedCitiesChange = (value: any[]) => {
 let applicationStage: any = ref([]);
 let stageValue = ref();
 let getStage = async () => {
-    let res = await enterprise.getStage({});
+    let res:any = await enterprise.getStage({});
     if (res.code == 200) {
         applicationStage.value = res.data;
     } else {
@@ -262,7 +262,7 @@ getStage();
 let allPositions: any = ref([]);
 let positionDropValue = ref();
 let getPositionDrop = async () => {
-    let res = await enterprise.getPositionDrop({ userId: 10000 });
+    let res:any = await enterprise.getPositionDrop({ userId: 10000 });
     if (res.code == 200) {
         allPositions.value = res.data;
     } else {
@@ -277,7 +277,7 @@ getPositionDrop();
 let educationList: any = ref([]);
 let educationValue = ref();
 let getEducation = async () => {
-    let res = await enterprise.getEducation({});
+    let res:any = await enterprise.getEducation({});
     if (res.code == 200) {
         educationList.value = res.data;
     } else {
@@ -295,7 +295,7 @@ let pageSize = ref(10);
 let currentPage = ref(1);
 let total = ref();
 let getResume = async () => {
-    let res = await enterprise.getResume({
+    let res:any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
         userId: 10000,
@@ -317,7 +317,7 @@ getResume();
  * 模糊查询
  */
 let fuzzyQuery = async () => {
-    let res = await enterprise.getResume({
+    let res:any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
         userId: 10000,

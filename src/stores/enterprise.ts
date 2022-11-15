@@ -52,5 +52,12 @@ export const useEnterpriseStore = defineStore("enterprise", () => {
     return Api.modifyResumeStatus(payload)
   }
 
-  return { getEducation, getResume, getPositionDrop, getStage, modifyResume, modifyResumeStatus };
+  let getResumeUrl = (payload: {
+    resumeId: number,
+    userId: number
+  }) => {
+    return Api.getResumeUrl(payload)
+  }
+
+  return { getEducation, getResume, getPositionDrop, getStage, modifyResume, modifyResumeStatus, getResumeUrl };
 });
