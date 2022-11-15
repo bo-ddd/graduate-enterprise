@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import {  useRoute } from 'vue-router'
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -9,7 +10,7 @@ let list = reactive([
   {
     id: 1,
     title: '首页',
-    url: '/home.html',
+    url: '/',
   },
   {
     id: 2,
@@ -33,6 +34,8 @@ let list = reactive([
   },
 ])
 
+let route = useRoute();
+let acitveIndex = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
     if(window.location.href == window.location.origin + key.url) return;
     window.location.href = window.location.origin + key.url;
@@ -49,9 +52,8 @@ const dialogFormVisible = ref(false)
           <span class="fs-12 c-dadada">校园招聘平台</span>
         </div>
         <!-- 菜单 -->
-        <el-menu :ellipsis="false" default-active="1" class="el-menu-demo" mode="horizontal">
-          <el-menu-item v-for="item in list" :key="item" :index="item.id" @click="handleSelect(item)">{{ item.title
-          }}</el-menu-item>
+        <el-menu :ellipsis="false" :default-active="acitveIndex" class="el-menu-demo" mode="horizontal">
+          <el-menu-item v-for="item in list" :key="item" :index="item.id" @click="handleSelect(item)">{{item.title}}</el-menu-item>
         </el-menu>
       </div>
       <div class="user align-center">
@@ -67,7 +69,9 @@ const dialogFormVisible = ref(false)
             <el-dropdown-menu>
               <el-dropdown-item @click="dialogFormVisible = true">修改密码</el-dropdown-item>
               <el-dropdown-item>联系客服</el-dropdown-item>
-              <el-dropdown-item @click="">退出登录</el-dropdown-item>
+              <el-dropdown-item @click="handleSelect({
+                url:'/login.html'
+              })">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
