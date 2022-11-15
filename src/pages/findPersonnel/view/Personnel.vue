@@ -12,7 +12,15 @@ interface Check {
 let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
-let form = reactive({
+interface Form{
+    sex:null|number,
+    education:null|number,
+    professional:null|number,
+    city:null|number,
+    wishMoneyLeft:null|number,
+    wishMoneyRight:null|number,
+}
+let form:Form = reactive({
     sex: null,//性别
     education: null,//学历
     professional: null,//专业
