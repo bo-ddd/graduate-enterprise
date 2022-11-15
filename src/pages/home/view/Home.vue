@@ -221,6 +221,7 @@ const use = useHomeStore();
 let nav = (name: string) => {
     window.location.href = `${name}.html`
     console.log(name)
+    console.log(name)
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
