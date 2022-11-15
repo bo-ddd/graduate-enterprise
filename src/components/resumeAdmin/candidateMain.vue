@@ -26,7 +26,22 @@
         </div>
 
         <div class="main">
-                <el-empty class="mt-20"  v-if="!cardList.length" image-size="260" description="暂无简历数据"/>
+            <el-empty class="mt-20" v-if="!cardList.length" image-size="260" description="暂无简历数据" />
+
+            <!-- 简历弹出框 --> 
+            <el-dialog v-model="showResumeImage" width="55%" :lock-scroll="false" :align-center="true"
+                class="resume-image">
+                <div class="resume-box">
+                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn">通过初筛</div>
+                    <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true,btnSpan = false">
+                        <img v-show="btnImg" src="@/assets/images/onload.png"  alt="">
+                        <span v-show="btnSpan" >通过初筛后才能下载简历</span>
+                    </div>
+                    <div class="resume-btn" @click="inappropriate($event,itemObj)">不合适</div>
+                </div>
+                <img :src="resumeUrl" alt="">
+            </el-dialog>
+
             <card.cardWrap class="mt-15" v-for="item in cardList" :key="item">
                 <template #header>
                     <card.cardHeader :time="item.modifyTime">
@@ -36,19 +51,20 @@
                     </card.cardHeader>
                 </template>
                 <template #main>
-                    <card.cardItem :userinfo="{
+                    <card.cardItem @click="getUserInfo(item)" :userinfo="{
                         sex: item.userSex,
                         name: item.userName,
                         deliveryStatus: item.deliveryStatus,
                         education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`
                     }">
                         <template #btn>
-                            <el-button @click="inappropriate(item)">不合适</el-button>
-                            <el-button @click="byFilter(item)" type="primary">通过初筛</el-button>
+                            <el-button @click="inappropriate($event,item)">不合适</el-button>
+                            <el-button @click="byFilter($event,item)" type="primary">通过初筛</el-button>
                         </template>
                     </card.cardItem>
                 </template>
             </card.cardWrap>
+
             <div class="pagination" v-show="cardList.length > 5">
                 <el-pagination :page-size="pageSize" v-model:current-page="currentPage" :pager-count="11"
                     layout="prev, pager, next" :total="total" />
@@ -67,6 +83,40 @@ import { useEnterpriseStore } from "@/stores/enterprise"
 let enterprise = useEnterpriseStore();
 let userName = ref("");
 let invitationStatus = ref(false);
+let itemObj = ref();
+
+/**
+ * 
+ */
+let btnImg = ref(true);
+let btnSpan = ref(false);
+let isOnload = () => {
+    if(resumeBtn.value){
+        btnImg.value = false;
+        btnSpan.value = true
+    }
+}
+
+/**
+ * getUserInfo
+ */
+let resumeUrl = ref();
+let showResumeImage = ref(false);
+let resumeBtn = ref(true);
+let getUserInfo = async (item: any) => {
+    itemObj.value = item;
+    resumeBtn.value = true;
+    if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
+    showResumeImage.value = true;
+    resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
+    let res = await enterprise.getResumeUrl({
+        resumeId: item.resumeId,
+        userId: item.userId
+    })
+    if (res.code == 200) {
+        console.log(res);
+    }
+}
 
 /***
  * 批量不合适
@@ -120,7 +170,8 @@ let batchbyFilter = async () => {
 /**\
  * 不合适
  */
-let inappropriate = async (item: any) => {
+let inappropriate = async (event:Event,item: any) => {
+    event.stopPropagation();
     let res = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
@@ -138,6 +189,7 @@ let inappropriate = async (item: any) => {
             type: 'success',
         })
         getResume();
+        resumeBtn.value = true;
     } else {
         ElMessage.error('this is a error message.')
     }
@@ -146,7 +198,8 @@ let inappropriate = async (item: any) => {
 /***
  * 通过初筛
  */
-let byFilter = async (item: any) => {
+let byFilter = async (event:Event,item: any) => {
+    event.stopPropagation();
     let res = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
@@ -164,6 +217,7 @@ let byFilter = async (item: any) => {
             type: 'success',
         })
         getResume();
+        resumeBtn.value = false;
     } else {
         ElMessage.error('this is a error message.')
     }
@@ -290,9 +344,49 @@ let fuzzyQuery = async () => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-dialog) {
+    margin-top: 20px;
+    background: #e8e8e8;
+    text-align: center;
+}
+
+:deep(.el-dialog__body) {
+    padding: 0;
+}
+
 .candidate {
     .main {
         min-height: 50vh;
+        padding: 0 !important;
+
+        .resume-image {
+            img {
+                width: 100%;
+                margin: 0 auto;
+                text-align: center;
+            }
+        }
+
+        .resume-box {
+            position: fixed;
+            bottom: 11%;
+            left: 50%;
+            transform: translate(-50%);
+            display: flex;
+            gap: 0 20px;
+
+            .resume-btn {
+                background: rgba(0, 0, 0, 0.533);
+                padding:18px 20px;
+                border-radius: 40px;
+                color: #ffffff;
+              
+                img {
+                    width:20px;
+                    height:20px;
+                }
+            }
+        }
     }
 
     .pagination {
