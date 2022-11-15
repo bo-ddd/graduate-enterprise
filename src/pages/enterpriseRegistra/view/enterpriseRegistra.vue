@@ -269,6 +269,7 @@ const form = reactive({
 
 function add(file: any) {
     console.log(file)
+    console.log(file)
 }
 // 点击提交按钮走的方法
 const onSubmit = () => {
