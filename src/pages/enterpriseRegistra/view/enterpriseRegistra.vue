@@ -2,7 +2,7 @@
     <div class="enterprise-registra">
         <div class="wrap container">
             <div class="title-wrap">
-                <h2>企业信息编辑11111</h2>
+                <h2>企业信息编辑</h2>
             </div>
             <el-form :model="form" label-width="120px">
                 <div class="form">
@@ -68,16 +68,14 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" class="el-input_240" v-model="form.companyIndustryLeft"
-                            :options="forbiddenData" @change="handleChange">
+                        <el-cascader placeholder="请选择" class="el-input_240" v-model="sshy" :options="forbiddenData"
+                            @change="handleChange">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
                             </template>
                         </el-cascader>
                     </el-form-item>
 
-
-                    <!-- 正常状态的选择器 -->
                     <el-form-item label="企业性质">
                         <el-select v-model="form.companyNature" placeholder="请选择" size="large">
                             <el-option v-for="item in enterpriseNature" :key="item.value" :label="item.label"
@@ -86,14 +84,14 @@
                     </el-form-item>
 
                     <el-form-item label="企业规模">
-                        <el-select v-model="enterpriseScaleVal" placeholder="请选择" size="large">
+                        <el-select v-model="form.companySize" placeholder="请选择" size="large">
                             <el-option v-for="item in enterpriseScale" :key="item.value" :label="item.label"
                                 :value="item.value" />
                         </el-select>
                     </el-form-item>
 
                     <el-form-item label="企业标签">
-                        <el-select v-model="enterpriseLabelVal" placeholder="请选择" size="large">
+                        <el-select v-model="form.companyTag" placeholder="请选择" size="large">
                             <el-option v-for="item in enterpriseLabel" :key="item.value" :label="item.label"
                                 :value="item.value" />
                         </el-select>
@@ -111,7 +109,7 @@
                     <div class="align-center">
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
-                            <el-upload action="#" :on-success="abc" list-type="picture-card" :auto-upload="false">
+                            <el-upload action="#" list-type="picture-card" :auto-upload="false">
                                 <el-icon class="uplpoad-icon flex-column-center">
                                     <div>
                                         <Plus />
@@ -184,7 +182,7 @@
                     </div>
 
                     <!-- 企业官网 -->
-                    <el-form-item label="企业官网">
+                    <el-form-item label="企业官网" class="mt-20">
                         <el-input placeholder="非必填" class="input_280-40" v-model="form.companyWebUrl" />
                     </el-form-item>
 
@@ -237,24 +235,6 @@ const RegisteredArea = [
             {
                 value: 'childrenvalue',
                 label: 'childrenlabel',
-                children: [
-                    {
-                        value: 'consistency',
-                        label: 'Consistency',
-                    },
-                    {
-                        value: 'feedback',
-                        label: 'Feedback',
-                    },
-                    {
-                        value: 'efficiency',
-                        label: 'Efficiency',
-                    },
-                    {
-                        value: 'controllability',
-                        label: 'Controllability',
-                    },
-                ],
             }
         ]
     }
@@ -284,19 +264,37 @@ const form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
+    userId: 10000,
 });
 
 function add(file: any) {
     console.log(file)
 }
-
-function abc(value: any) {
-    console.log(value)
-}
 // 点击提交按钮走的方法
 const onSubmit = () => {
     console.log(form)
-    // setModifyEnterpriseInfo();
+    setModifyEnterpriseInfo({
+        companyAddr: form.companyAddr,
+        companyContactEmail: form.companyContactEmail,
+        companyContactName: form.companyContactName,
+        companyContactPhone: form.companyContactPhone,
+        companyFullName: form.companyFullName,
+        companyIndustryLeft: form.companyIndustryLeft,
+        companyIndustryRight: form.companyIndustryRight,
+        companyIntroducation: form.companyIntroducation,
+        companyLicense: form.companyLicense,
+        companyLogo: form.companyLogo,
+        companyName: form.companyName,
+        companyNature: form.companyNature,
+        companyRegisterAddr: form.companyRegisterAddr,
+        companySize: form.companySize,
+        companySocialCreditCode: form.companySocialCreditCode,
+        companyStatus: form.companyStatus,
+        companyTag: form.companyTag,
+        companyWebUrl: form.companyWebUrl,
+        companyWishSchool: form.companyWishSchool,
+        userId: form.userId,
+    });
 };
 // companyWebUrl
 let getEnterpriseData = reactive<any[]>([]);
@@ -344,6 +342,7 @@ let setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
 
 
 // 所属行业
+const sshy = ref([])
 const forbiddenData = ref(<any>[]);
 const handleChange = (value: any) => {
     console.log(value)
