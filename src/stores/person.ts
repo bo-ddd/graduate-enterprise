@@ -33,5 +33,9 @@ export const usePersonStore = defineStore('person', () => {
   function getPosition(params:any){
     return Api.getPosition(params);
   }
-  return { count , getEducation, getMajorList,getSexList,getPositionList,getWishMoney,getTalentList,getInviteList,inviteTalent,getPosition}
+   //邀请人才下拉框
+   function getInviteDrop(params:any){
+    return Api.getInviteDrop();
+  }
+  return { count , getEducation, getMajorList,getSexList,getPositionList,getWishMoney,getTalentList,getInviteList,inviteTalent,getPosition,getInviteDrop}
 })
