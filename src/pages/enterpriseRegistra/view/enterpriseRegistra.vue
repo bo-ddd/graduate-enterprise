@@ -224,7 +224,6 @@ import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
-import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
 const RegisteredArea = [
     {
@@ -265,7 +264,7 @@ const form = reactive({
     userId: 10000,
 });
 
-const add = (file: any) => { };
+const add = () => { };
 // 点击提交按钮走的方法
 const onSubmit = () => {
     setModifyEnterpriseInfo({
@@ -292,7 +291,7 @@ const onSubmit = () => {
     });
 };
 // companyWebUrl
-let getEnterpriseData = reactive<any[]>([]);
+let getEnterpriseData: any = ref([]);
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
     const res = await use.getEnterprise({ userId: 10000 });
