@@ -2,10 +2,9 @@ import axios from 'axios';
 
 import { postConfig,getConfig } from './config'
 
-
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么,一般配置一些请求头的公共信息；
-    config.headers.token = sessionStorage.getItem('token');
+    (config as any).headers.token = sessionStorage.getItem('token');
     return config;
 })
 
@@ -128,7 +127,7 @@ export default {
     getTalentList:(params:any)=>{
         return axios.post('/company/getTalent',params,postConfig);
     },
-    getResume:(params)=>{
+    getResume:(params:any)=>{
         return axios.post('/company/getResume',params,postConfig);
     },
 
