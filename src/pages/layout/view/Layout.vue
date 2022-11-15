@@ -38,7 +38,7 @@ let list = reactive([
   },
 ])
 
-const activeIndex = ref(route.path);
+let activeIndex = ref(route.path);
 
 if(route.path == '/'){
   router.push({
@@ -56,8 +56,8 @@ const handleSelect = (key: any) => {
   }
 }
 
-const outLogin = () => {
-  activeIndex.value = "0";
+let outLogin = () => {
+  activeIndex.value = "1";
   router.push({ path: '/login' })
 }
 
