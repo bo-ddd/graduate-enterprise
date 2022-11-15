@@ -138,7 +138,7 @@ getWishMoneyList();
 
 //获取到人才的列表
 const getTalentList = async () => {
-    let obj = {};
+    let obj:any = {};
     console.log(form);
     for (const key in form) {
         if(form[key]){
@@ -202,7 +202,7 @@ const invitationPost =async (userId:number)=>{
 
 //获取职位类别
 const getPositionCategory = async ()=>{
-    const res = await PersonStore.getPosition();
+    const res:any = await PersonStore.getPosition();
     if(res.code !== 200) return;
     // positionDownList: (2) [{…}, {…}]
     // positionTypeId: "1"
@@ -219,7 +219,7 @@ const getPositionCategory = async ()=>{
 getPositionCategory();
 const getMoney = (data:string)=>{
     if(!data) return '';
-    const res = data.split(",").sort((a,b)=>{ return a - b});
+    const res = data.split(",").sort((a:any,b:any)=>{ return a - b});
     return `${res[0]}-${res[1]}k`
 }
 //邀请人才下拉框
