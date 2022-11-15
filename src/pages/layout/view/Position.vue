@@ -367,7 +367,6 @@ let getPositionList = async function () {
     userId: 10000,
     pageSize: pageSize.value,
     positionStatus: 2,
-    positionStatus2: '',
   });
   let res2 = await getEnterprise({
     userId: 10000,
@@ -384,10 +383,10 @@ let getPositionList = async function () {
 //获取下线分页数据
 const getDownList = async function () {
   let res = await use.getPosition({
-    pageIndex: pageNum2.value,
+    pageIndex: 0,
     userId: 10000,
     pageSize: pageSize2.value,
-    positionStatus: 3,
+    positionStatus: 2,
   });
   if (res.code == 200) {
     downNum.value = res.data ? res.data.maxCount : 0;
