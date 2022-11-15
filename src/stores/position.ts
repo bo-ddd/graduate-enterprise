@@ -15,43 +15,43 @@ interface Res{
 export const usePositionStore = defineStore("position", () => {
 
     function getPosition(params:any) {
-        return Api.getPositionData(params) as Res;
+        return (Api.getPositionData(params) as Res);
     }
     function getProfessional() {
-        return Api.getMajorList() as Res;
+        return (Api.getMajorList() as Res);
     }
     function getMonthDay() {
-        return Api.getMonthDay() as Res;
+        return (Api.getMonthDay() as Res);
     }
     function getEducation() {
-        return Api.getEducationList() as Res;
+        return (Api.getEducationList() as Res);
     }
     function getCompanyIndustry() {
-        return Api.getCompanyIndustry() as Res;
+        return (Api.getCompanyIndustry() as Res);
     }
     function getWishMoney() {
-        return Api.getWishMoney() as Res;
+        return (Api.getWishMoney() as Res);
     }
     function getInternshipMoney(){
-        return Api.getInternshipMoney() as Res
+        return (Api.getInternshipMoney() as Res);
     }
     function addPosition(params:any){
-        return Api.releasePosition(params) as Res
+        return (Api.releasePosition(params) as Res);
     }
     function deletePosition(params:any){
-        return Api.deletePosition(params) as Res
+        return (Api.deletePosition(params) as Res);
     }
     function updatePosition(params:any){
-        return Api.modifyPosition(params) as Res
+        return (Api.modifyPosition(params) as Res);
     }
     function updatePositionStatus(params:any){
-        return Api.modifyPositionStatus(params) as Res
+        return (Api.modifyPositionStatus(params) as Res);
     }
     function getPositionDetail(params:any){
-        return Api.getPositionDetail(params) as Res
+        return (Api.getPositionDetail(params) as Res);
     }
     function refreshPosition(params:any){
-        return Api.refreshPosition(params) as Res
+        return (Api.refreshPosition(params) as Res);
     }
     return { getPosition, getProfessional, getMonthDay, getEducation, getCompanyIndustry, getWishMoney,getInternshipMoney,addPosition,deletePosition,updatePosition,updatePositionStatus,getPositionDetail,refreshPosition };
 });
