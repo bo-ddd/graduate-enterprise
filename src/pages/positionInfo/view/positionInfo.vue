@@ -1,4 +1,5 @@
 <template>
+  <Layout></Layout>
   <div class="position-info position-wrap">
     <div class="title mb-40 mt-65">职位信息</div>
     <el-form
@@ -274,6 +275,7 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
+import Layout from "@/pages/layout/view/Layout.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
