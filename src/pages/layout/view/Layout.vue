@@ -49,8 +49,8 @@ const dialogFormVisible = ref(false)
           <span class="fs-12 c-dadada">校园招聘平台</span>
         </div>
         <!-- 菜单 -->
-        <el-menu :ellipsis="false" :default-active="1" class="el-menu-demo" mode="horizontal">
-          <el-menu-item v-for="item in list" :key="item.url" :index="item.url" @click="handleSelect(item)">{{ item.title
+        <el-menu :ellipsis="false" default-active="1" class="el-menu-demo" mode="horizontal">
+          <el-menu-item v-for="item in list" :key="item" :index="item.id" @click="handleSelect(item)">{{ item.title
           }}</el-menu-item>
         </el-menu>
       </div>
