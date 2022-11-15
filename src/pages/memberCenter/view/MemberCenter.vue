@@ -161,7 +161,7 @@ let router = useRouter();
 let vipList: any = reactive([]);
 let useVip = useVipStore();
 let getVip = async () => {
-    let res = await useVip.getVip({});
+    const res:any = await useVip.getVip({});
     vipList.push(...res.data);
     console.log(res);
 }
@@ -199,8 +199,14 @@ let ulList = [
         title: '职位自动刷新卡'
     },
 ]
+
 let handle = function (index: number): void {
-    router.push({ path: '/MemberDetails', query: vipList[index] })
+    let params = '';
+    console.log(vipList[index])
+    for (const key in vipList[index]) {
+      params += `${key}=${vipList[index][key]}&`
+    }
+    window.location.href = `/MemberDetails.html?${params}`
 }
 
 </script>

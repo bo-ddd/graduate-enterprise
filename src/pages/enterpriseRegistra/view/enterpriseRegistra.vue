@@ -31,8 +31,7 @@
                                 <div>
                                     <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                     <span class="el-upload-list__item-actions">
-                                        <span class="el-upload-list__item-preview"
-                                            @click="handlePictureCardPreview()">
+                                        <span class="el-upload-list__item-preview" @click="handlePictureCardPreview()">
                                             <el-icon>
                                                 <zoom-in />
                                             </el-icon>
@@ -116,8 +115,8 @@
                                     <div class="fs-13">上传图片</div>
                                 </el-icon>
                                 <template #file="{ file }">
-                                    <div @click="add()">
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url"/>
+                                    <div>
+                                        <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                         <span class="el-upload-list__item-actions">
                                             <span class="el-upload-list__item-preview"
                                                 @click="handlePictureCardPreview()">
@@ -264,7 +263,6 @@ const form = reactive({
     userId: 10000,
 });
 
-const add = () => { };
 // 点击提交按钮走的方法
 const onSubmit = () => {
     setModifyEnterpriseInfo({
@@ -323,15 +321,19 @@ interface EnterpriseInfoType {
     companyWishSchool?: string,
     userId: number
 };
+interface Res {
+    code: number,
+    data: string | [] | any,
+    msg: string,
+}
 const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
-    const res = await use.setModifyEnterpriseInfo(payload);
+    const res: any | Res = await use.setModifyEnterpriseInfo(payload);
     if (res.code == 200) {
         getEnterprise();
     };
 };
 // 所属行业
 const forbiddenData: any = ref([]);
-
 // 调用 获取所属行业下拉框接口 报错
 const getIndustryList = async function () {
     const res = await use.getIndustryList();
@@ -340,9 +342,9 @@ const getIndustryList = async function () {
 getIndustryList();
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = () => { };
-const handlePictureCardPreview = () => dialogVisible.value = true;
-const handleDownload = () => { };
+const handleRemove = (): any | void => { };
+const handlePictureCardPreview = (): any | void => dialogVisible.value = true;
+const handleDownload = (): any | void => { };
 let enterpriseNature: any = ref([]);
 const getEnterpriseNatureList = async function () {
     const res = await use.getEnterpriseNatureList();
