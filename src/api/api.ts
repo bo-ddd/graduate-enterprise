@@ -28,68 +28,68 @@ axios.interceptors.response.use(function (response) {
 //接口定义的方式；  //这个项目中，在这个地方声明接口；
 export default {
     //登录
-    login: (params) => {
+    login: (params:any) => {
         return axios.post('/company/login', params, postConfig)
     },
 
 
-    getEducation:(params)=>{
+    getEducation:(params:any)=>{
         return axios.post('/drop/getEducation',params,postConfig)
     },
 
     /**
      * 获取学历下拉框
      */
-    getEducationList:(params)=>{
+    getEducationList:(params:any)=>{
         return axios.post('/drop/getEducation',params,postConfig);
     },
 
     /**
      * 获取企业详细信息
      */
-    getEnterpriseInfo: (params) => {
+    getEnterpriseInfo: (params:any) => {
         return axios.post('/company/getCompanyCommon', params, postConfig);
     },
     
     /**
      * 修改企业详细信息
      */
-    setModifyEnterpriseInfo:(params)=>{
+    setModifyEnterpriseInfo:(params:any)=>{
         return axios.post('/company/modifyCompanyCommon',params,postConfig);
     },
 
     /**
      * 获取所属行业下拉框
      */
-    getIndustryList: (params) => {
+    getIndustryList: (params:any) => {
         return axios.post('/drop/getCompanyIndustry', params, postConfig);
     },
 
     /**
      * 获取企业性质下拉框
      */
-    getEnterpriseNatureList: (params) => {
+    getEnterpriseNatureList: (params:any) => {
         return axios.post('/drop/getCompanyNature', params, postConfig);
     },
     
     /**
      * 获取企业规模下拉框
      */
-    getEnterpriseSizeList: (params) => {
+    getEnterpriseSizeList: (params:any) => {
         return axios.post('/drop/getCompanySize', params, postConfig);
     },
     
     /**
      * 获取企业标签下拉框
      */
-    getEnterpriseTagList: (params) => {
+    getEnterpriseTagList: (params:any) => {
         return axios.post('/drop/getCompanyTag', params, postConfig);
     },
     
     /**
      * 获取学校下拉框
      */
-    getSchoolList: (params) => {
+    getSchoolList: (params:any) => {
         return axios.post('/drop/getSchool', params, postConfig);
     },
 
@@ -97,14 +97,14 @@ export default {
     /**
      * 获取专业下拉框
      */
-    getMajorList:(params)=>{
+    getMajorList:(params:any)=>{
         return axios.post('/drop/getProfessional',params,postConfig);
     },
 
     /**
      * 获取期望薪资
      */
-    getWishMoney:(params)=>{
+    getWishMoney:(params:any)=>{
         return axios.post('/drop/getWishMoney',params,postConfig);
     },
 
@@ -118,14 +118,14 @@ export default {
     /**
      * 获取企业职位列表
      */
-     getPositionDrop:(params)=>{
+     getPositionDrop:(params:any)=>{
         return axios.post('/drop/getPositionDrop',params,postConfig);
     },
 
     /**
      * 获取人才列表
      */
-    getTalentList:(params)=>{
+    getTalentList:(params:any)=>{
         return axios.post('/company/getTalent',params,postConfig);
     },
     getResume:(params)=>{
@@ -135,100 +135,100 @@ export default {
     /**
      * 获取实习月数和天数下拉框
      */
-    getMonthDay:(params)=>{
+    getMonthDay:(params:any)=>{
         return axios.post('/drop/drop/getMonthDay',params,postConfig);
     },
 
     /**
      * 获取职位类别下拉框
      */
-    getCompanyIndustry:(params)=>{
+    getCompanyIndustry:(params:any)=>{
         return axios.post('/drop/getCompanyIndustry',params,postConfig);
     },
         
     /**
      * 获取企业职位列表
      */
-     getPositionData:(params)=>{
+     getPositionData:(params:any)=>{
         return axios.post('/company/getPosition',params,postConfig);
     },
         
     /**
      * 获取实习薪资下拉列表
      */
-     getInternshipMoney:(params)=>{
+     getInternshipMoney:(params:any)=>{
         return axios.post('/drop/getInternshipMoney',params,postConfig);
     },
     /**
      * 发布职业
      */
-     releasePosition:(params)=>{
+     releasePosition:(params:any)=>{
         return axios.post('/company/releasePosition',params,postConfig);
     },
 
     /**
      * 应聘阶段下拉框
      */
-    getStage:(params)=>{
+    getStage:(params:any)=>{
         return axios.post('/drop/getStage',params,postConfig);
     },
 
     /**
      * 修改简历状态
      */
-     modifyResume:(params)=>{
+     modifyResume:(params:any)=>{
         return axios.post('/company/modifyResume',params,postConfig);
      },
 
      /**
       * 邀请人才列表
       */
-      getInvite:(params)=>{
+      getInvite:(params:any)=>{
         return axios.post('/company/getInvite',params,postConfig);
       },
 
       /**
        * 邀请人才
        */
-      inviteTalent:(params)=>{
+      inviteTalent:(params:any)=>{
         return axios.post('/company/inviteTalent',params,postConfig)
       },
       /**
        * 删除职位
        */
-      deletePosition:(params)=>{
+      deletePosition:(params:any)=>{
         return axios.post('/company/delPosition',params,postConfig)
       },
       /**
        * 修改职位信息
        */
-       modifyPosition:(params)=>{
+       modifyPosition:(params:any)=>{
         return axios.post('/company/modifyPosition',params,postConfig)
       },
       /**
        * 获取VIP下拉框
        */
-       getVip:(params)=>{
+       getVip:(params:any)=>{
         return axios.post('/drop/getVip',params,postConfig)
       },
 
       /**
        * 获取职位类别下拉框
        */
-      getPosition:(params)=>{
+      getPosition:(params:any)=>{
         return axios.post('/drop/getPosition',params,postConfig);
       },
 
       /**
        *批量修改状态
        */
-     modifyResumeStatus:(params)=>{
+     modifyResumeStatus:(params:any)=>{
         return axios.post('/company/modifyResumeStatus',params,postConfig)
      },
      /**
        *支付宝支付
        */
-     payment:(params)=>{
+     payment:(params:any)=>{
         let towParams = '?';
          for (let key in params) {
             towParams += `${key}=${params[key]}&`
@@ -238,32 +238,32 @@ export default {
      /**
        * 修改职位状态
        */
-      modifyPositionStatus:(params)=>{
+      modifyPositionStatus:(params:any)=>{
         return axios.post('/company/modifyPositionStatus',params,postConfig)
       },
       /**
         * 获取职位信息
         */
-       getPositionDetail:(params)=>{
+       getPositionDetail:(params:any)=>{
          return axios.post('/company/getPositionById',params,postConfig)
        },
       /**
         * 刷新职位
         */
-       refreshPosition:(params)=>{
+       refreshPosition:(params:any)=>{
          return axios.post('/company/refreshPosition',params,postConfig)
        },
       /**
         * @describe 修改企业意向学校
         * @param 
         */
-       setEnterpriseSchoolOfIntention:(params)=>{
+       setEnterpriseSchoolOfIntention:(params:any)=>{
          return axios.post('/company/modifyCompanyWishSchool',params,postConfig)
        },
        /**
         * 获取简历url
         */
-        getResumeUrl:(params)=>{
+        getResumeUrl:(params:any)=>{
             return axios.post('/company/getResumeUrl',params,postConfig)
         },
         
@@ -271,7 +271,7 @@ export default {
          * @description 邀请人才下拉框
          * @param
          */
-        getInviteDrop:(params)=>{
+        getInviteDrop:(params:any)=>{
             return axios.post('/drop/getInvite',params,postConfig)
        }
 }
