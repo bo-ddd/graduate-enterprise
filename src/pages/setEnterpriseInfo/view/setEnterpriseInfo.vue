@@ -490,7 +490,6 @@ import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
-import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
 // ajax
 const use = useHomeStore();
@@ -537,10 +536,9 @@ const form = reactive({
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
 });
-const add = (file: any) => { };
+const add = () => { };
 // 点击提交按钮走的方法
-const onSubmit = () => {
-};
+const onSubmit = () => { };
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
@@ -549,8 +547,8 @@ const enterpriseScaleVal = ref('请选择');
 const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
-const forbiddenData = ref(<any>[]);
-const handleChange = (value: any) => { };
+const forbiddenData: any = ref([]);
+const handleChange = () => { };
 // 调用 获取所属行业下拉框接口 报错
 const getIndustryList = async function () {
     const res = await use.getIndustryList();
@@ -560,13 +558,13 @@ getIndustryList();
 // 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = (file: UploadFile) => { };
-const handlePictureCardPreview = (file: UploadFile) => {
+const handleRemove = () => { };
+const handlePictureCardPreview = () => {
     dialogVisible.value = true;
 };
-const handleDownload = (file: UploadFile) => { };
+const handleDownload = () => { };
 // 企业性质
-let enterpriseNature = reactive<EnterpriseScale[]>([]);
+let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
 const getEnterpriseNatureList = async function () {
     const res = await use.getEnterpriseNatureList();
@@ -580,7 +578,7 @@ interface EnterpriseScale {
     modifyTime: null | Date,
     value: number,
 };
-let enterpriseScale = reactive<EnterpriseScale[]>([]);
+let enterpriseScale: any | EnterpriseScale = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
     const res = await use.getEnterpriseSizeList();
@@ -594,7 +592,7 @@ interface EnterpriseLabel {
     modifyTime: null | Date,
     value: number,
 };
-let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
+let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
     const res = await use.getEnterpriseTagList();
@@ -608,7 +606,7 @@ interface SchoolList {
     schoolName: string,
     sortId: number,
 };
-const schoolList = reactive<SchoolList[]>([]);
+const schoolList: any | SchoolList = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
