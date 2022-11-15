@@ -68,7 +68,7 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" class="el-input_240" v-model="sshy" :options="forbiddenData"
+                        <el-cascader placeholder="请选择" class="el-input_240" :options="forbiddenData"
                             @change="handleChange">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
@@ -268,12 +268,9 @@ const form = reactive({
 });
 
 function add(file: any) {
-    console.log(file)
-    console.log(file)
-}
+};
 // 点击提交按钮走的方法
 const onSubmit = () => {
-    console.log(form)
     setModifyEnterpriseInfo({
         companyAddr: form.companyAddr,
         companyContactEmail: form.companyContactEmail,
@@ -305,7 +302,7 @@ let getEnterprise = async function () {
     Object.assign(getEnterpriseData, res.data);
     console.log('获取企业详细信息接口', getEnterpriseData);
     Object.assign(form, res.data);
-}
+};
 getEnterprise();
 
 // 修改企业详细信息接口
@@ -330,56 +327,45 @@ interface EnterpriseInfoType {
     companyWebUrl?: string,
     companyWishSchool?: string,
     userId: number
-}
+};
 let setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
     let res = await use.setModifyEnterpriseInfo(payload);
     if (res.code == 200) {
-        console.log('修改成功  可以重新获取数据了')
         getEnterprise();
-    }
-    console.log('修改企业详细信息接口', res);
-}
+    };
+};
 
 
 
 // 所属行业
-const sshy = ref([])
 const forbiddenData = ref(<any>[]);
 const handleChange = (value: any) => {
-    console.log(value)
-}
+};
 
 // 调用 获取所属行业下拉框接口 报错
 let getIndustryList = async function () {
     let res = await use.getIndustryList();
-    Object.assign(forbiddenData.value, res.data)
-    console.log(forbiddenData.value)
-}
+    Object.assign(forbiddenData.value, res.data);
+};
 getIndustryList();
 
 // 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
 const handleRemove = (file: UploadFile) => {
-    console.log(file)
 };
 const handlePictureCardPreview = (file: UploadFile) => {
-    console.log('log ~ file', file);
     dialogVisible.value = true;
-    console.log(1);
-
 };
 const handleDownload = (file: UploadFile) => {
-    console.log(file)
-    console.log('log ~ file.url', file.url);
 };
 
 // 企业性质
-const enterpriseNatureVal = ref('其他')
+const enterpriseNatureVal = ref('其他');
 // 企业规模
-const enterpriseScaleVal = ref('100-499人')
+const enterpriseScaleVal = ref('100-499人');
 // 企业标签
-const enterpriseLabelVal = ref('其他')
+const enterpriseLabelVal = ref('其他');
 
 // 企业性质
 interface EnterpriseNature {
@@ -387,13 +373,13 @@ interface EnterpriseNature {
     value: number,
     createTime: null,
     modifyTime: null
-}
+};
 let enterpriseNature = reactive<EnterpriseNature[]>([]);
 // 调用 获取企业性质下拉框
 let getEnterpriseNatureList = async function () {
     let res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature, res.data)
-}
+    Object.assign(enterpriseNature, res.data);
+};
 getEnterpriseNatureList();
 
 // 企业规模
@@ -402,13 +388,13 @@ interface EnterpriseScale {
     label: string,
     modifyTime: null,
     value: number,
-}
-let enterpriseScale = reactive<EnterpriseScale[]>([])
+};
+let enterpriseScale = reactive<EnterpriseScale[]>([]);
 // 调用 获取企业规模下拉框
 let getEnterpriseSizeList = async function () {
     let res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale, res.data)
-}
+    Object.assign(enterpriseScale, res.data);
+};
 getEnterpriseSizeList();
 
 // 企业标签
@@ -417,13 +403,13 @@ interface EnterpriseLabel {
     label: string,
     modifyTime: null,
     value: number,
-}
+};
 let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
 // 调用 获取企业标签下拉框
 let getEnterpriseTagList = async function () {
     let res = await use.getEnterpriseTagList();
     Object.assign(enterpriseLabel, res.data);
-}
+};
 getEnterpriseTagList();
 
 
@@ -433,12 +419,12 @@ interface SchoolList {
     schoolId: number,
     schoolName: string,
     sortId: number,
-}
+};
 const schoolList = reactive<SchoolList[]>([]);
 let getSchoolList = async function () {
     let res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
-}
+};
 getSchoolList();
 </script>
 
