@@ -18,12 +18,12 @@ let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
 interface Form{
-    sex?:null|number,
-    education?:null|number,
-    professional?:null|number,
-    city?:null|number,
-    wishMoneyLeft?:null|number,
-    wishMoneyRight?:null|number,
+    sex?:null|number|string,
+    education?:null|number|string,
+    professional?:null|number|string,
+    city?:null|number|string,
+    wishMoneyLeft?:null|number|string,
+    wishMoneyRight?:null|number|string,
 }
 let form:Form = reactive({
     sex: null,//性别
@@ -81,7 +81,8 @@ const handleGuideChange = (bool: boolean) => {
 
 //清空选择的方法
 const cancelCheck = () => {
-    for (const key in form as any) {
+    let key: keyof Form;
+    for (key in form) {
         form[key] = null;
     }
 }
@@ -153,7 +154,8 @@ getWishMoneyList();
 const getTalentList = async () => {
     let obj:any = {};
     console.log(form);
-    for (const key in form) {
+    let key: keyof Form;
+    for (key in form) {
         if(form[key]){
             obj[key] = form[key];
         }
@@ -221,7 +223,13 @@ const getPositionCategory = async ()=>{
     // positionTypeId: "1"
     // positionTypeName: "互联网"
     // sortId: 1
-    let data:any[] = res.data;
+    interface Data{
+        positionDownList: Array<any>;
+        positionTypeId: "1";
+        positionTypeName:string;
+        sortId: number;
+    }
+    let data:Data[] = res.data;
     data.forEach(item => {
         item.positionDownList.forEach(child=>{
             child['positionTypeName'] = child['positionName'];
