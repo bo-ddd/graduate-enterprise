@@ -9,6 +9,11 @@ interface Check {
     label: string | number,
     value: string | number,
 }
+interface Res {
+code: number,
+ data: string | [] | any,
+ msg: string,
+}
 let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
@@ -93,7 +98,7 @@ let invitationList = reactive<any[]>([]);//这个是邀请人才的列表
 let statusList = reactive<any[]>([]);//邀请人才状态
 //这个是学历的列表
 const getEducationList = async () => {
-    const res:any = await PersonStore.getEducation();
+    const res:Res = await PersonStore.getEducation();
     if (res.code !== 200) return;
     let resData = (res.data).reverse();//获取学历数据
     educationArr.push(...resData);
@@ -102,7 +107,7 @@ getEducationList();//调用获取学历列表
 
 //这个是获取邀请次数的方法
 const getInvationsNumber = async () => {
-    const res:any = await HomeStore.getEnterprise({
+    const res:Res = await HomeStore.getEnterprise({
         userId: 10000,
     })
     if (res.code != 200) return;
@@ -112,7 +117,7 @@ getInvationsNumber();
 
 //这个是获取专业列表的方法
 const getProfessionalList = async () => {
-    const res:any = await PersonStore.getMajorList();
+    const res:Res = await PersonStore.getMajorList();
     if (res.code !== 200) return;
     majorArr.length = 0;
     majorArr.push(...(res.data));
@@ -121,7 +126,7 @@ getProfessionalList();//调用获取专业列表
 
 //这个是获取性别列表的方法
 const getSexList = async () => {
-    const res:any = await PersonStore.getSexList();
+    const res:Res = await PersonStore.getSexList();
     if (res.code !== 200) return;
     sexArr.push(...(res.data));
 }
@@ -129,7 +134,7 @@ getSexList();
 
 //这个是获取职位列表的方法
 const getPositionList = async () => {
-    const res:any = await PersonStore.getPositionList({
+    const res:Res = await PersonStore.getPositionList({
         userId: 10000,
     });
     positionArr.push(...(res.data))
@@ -138,7 +143,7 @@ getPositionList();
 
 //获取期望薪资的接口
 const getWishMoneyList = async () => {
-    let res = await PersonStore.getWishMoney();
+    const res:Res = await PersonStore.getWishMoney();
     wishMoneyLeftList.push(...(res.data).wishMoenyLeftList);
     wishMoneyRightList.push(...(res.data).wishMoenyRightList);
 }
@@ -160,7 +165,7 @@ const getTalentList = async () => {
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
     console.log('-------这个是获取人才------');
-    const res = await PersonStore.getTalentList(obj);
+    const res:Res = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
@@ -172,7 +177,7 @@ getTalentList();
 
 //邀请人才的方法;
 const inviteTalent = async () => {
-    const res = await PersonStore.inviteTalent({
+    const res:Res = await PersonStore.inviteTalent({
         inviteUserId: invitationUserId.value,
         userId: 10000,
         positionId:checkPosition.value,
@@ -188,7 +193,7 @@ const inviteTalent = async () => {
 
 //获取邀请人才列表
 const inviteTalentList = async ()=>{
-    const res = await PersonStore.getInviteList({
+    const res:Res = await PersonStore.getInviteList({
         userId:10000,
     })
     if(res.code !== 200) return;
@@ -210,13 +215,13 @@ const invitationPost =async (userId:number)=>{
 
 //获取职位类别
 const getPositionCategory = async ()=>{
-    const res:any = await PersonStore.getPosition();
+    const res:Res = await PersonStore.getPosition();
     if(res.code !== 200) return;
     // positionDownList: (2) [{…}, {…}]
     // positionTypeId: "1"
     // positionTypeName: "互联网"
     // sortId: 1
-    let data = res.data;
+    let data:any[] = res.data;
     data.forEach(item => {
         item.positionDownList.forEach(child=>{
             child['positionTypeName'] = child['positionName'];
@@ -225,14 +230,14 @@ const getPositionCategory = async ()=>{
     positionCategoryList.push(...(data));
 }
 getPositionCategory();
-const getMoney = (data:string)=>{
+const getMoney:(data:string)=>string = (data:string)=>{
     if(!data) return '';
     const res = data.split(",").sort((a:any,b:any)=>{ return a - b});
     return `${res[0]}-${res[1]}k`
 }
 //邀请人才下拉框
 const getInviteDrop = async ()=>{
-    const res = await PersonStore.getInviteDrop();
+    const res:Res = await PersonStore.getInviteDrop();
     statusList.push(...(res.data));
 }
 getInviteDrop();

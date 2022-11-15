@@ -35,7 +35,7 @@ export const usePersonStore = defineStore('person', () => {
   }
    //邀请人才下拉框
    function getInviteDrop(params:any){
-    return Api.getInviteDrop();
+    return Api.getInviteDrop(params);
   }
   return { count , getEducation, getMajorList,getSexList,getPositionList,getWishMoney,getTalentList,getInviteList,inviteTalent,getPosition,getInviteDrop}
 })
