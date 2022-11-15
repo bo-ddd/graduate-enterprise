@@ -29,22 +29,22 @@
 
                             <template #file="{ file }">
                                 <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                     <span class="el-upload-list__item-actions">
                                         <span class="el-upload-list__item-preview"
-                                            @click="handlePictureCardPreview(file)">
+                                            @click="handlePictureCardPreview()">
                                             <el-icon>
                                                 <zoom-in />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleDownload(file)">
+                                            @click="handleDownload()">
                                             <el-icon>
                                                 <Download />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleRemove(file)">
+                                            @click="handleRemove()">
                                             <el-icon>
                                                 <Delete />
                                             </el-icon>
@@ -116,23 +116,23 @@
                                     <div class="fs-13">上传图片</div>
                                 </el-icon>
                                 <template #file="{ file }">
-                                    <div @click="add(file)">
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <div @click="add()">
+                                        <img class="el-upload-list__item-thumbnail" :src="file.url"/>
                                         <span class="el-upload-list__item-actions">
                                             <span class="el-upload-list__item-preview"
-                                                @click="handlePictureCardPreview(file)">
+                                                @click="handlePictureCardPreview()">
                                                 <el-icon>
                                                     <zoom-in />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @change="handleDownload(file)">
+                                                @change="handleDownload()">
                                                 <el-icon>
                                                     <Download />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @click="handleRemove(file)">
+                                                @click="handleRemove()">
                                                 <el-icon>
                                                     <Delete />
                                                 </el-icon>
