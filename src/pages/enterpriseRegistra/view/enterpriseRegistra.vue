@@ -2,7 +2,7 @@
     <div class="enterprise-registra">
         <div class="wrap container">
             <div class="title-wrap">
-                <h2>企业信息编辑</h2>
+                <h2>企业信息编辑11111</h2>
             </div>
             <el-form :model="form" label-width="120px">
                 <div class="form">
