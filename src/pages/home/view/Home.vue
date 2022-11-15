@@ -220,7 +220,6 @@ const use = useHomeStore();
 // 跳转页面的方法
 const nav = (name: string) => {
     window.location.href = `${name}.html`
-    console.log(name)
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
@@ -259,9 +258,14 @@ interface setEnterpriseSchoolOfIntentionType {
     companyWishSchool: [Number] | any,// 企业意向学校 多选格式1,2,3 ,
     userId: Number,// 用户id
 }
+interface Res {
+    code: number,
+    data: string | [] | any,
+    msg: string,
+}
 // 这是修改意向学校的接口
 const setEnterpriseSchoolOfIntention = async function (payload: setEnterpriseSchoolOfIntentionType) {
-    const res = await use.setEnterpriseSchoolOfIntention(payload);
+    const res: any | Res = await use.setEnterpriseSchoolOfIntention(payload);
     console.log(res)
     if (res.code == 200) {
         ElMessage({

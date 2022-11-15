@@ -29,10 +29,9 @@
 
                             <template #file="{ file }">
                                 <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url"/>
+                                    <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                     <span class="el-upload-list__item-actions">
-                                        <span class="el-upload-list__item-preview"
-                                            @click="handlePictureCardPreview()">
+                                        <span class="el-upload-list__item-preview" @click="handlePictureCardPreview()">
                                             <el-icon>
                                                 <zoom-in />
                                             </el-icon>
@@ -119,7 +118,7 @@
                                 </el-icon>
 
                                 <template #file="{ file }">
-                                    <div @click="add()">
+                                    <div>
                                         <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                         <span class="el-upload-list__item-actions">
                                             <span class="el-upload-list__item-preview"
@@ -536,7 +535,6 @@ const form = reactive({
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
 });
-const add = () => { };
 // 点击提交按钮走的方法
 const onSubmit = () => { };
 // 企业性质
@@ -547,7 +545,7 @@ const enterpriseScaleVal = ref('请选择');
 const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
-const forbiddenData: any = ref([]);
+const forbiddenData: any | [] = ref([]);
 const handleChange = () => { };
 // 调用 获取所属行业下拉框接口 报错
 const getIndustryList = async function () {
