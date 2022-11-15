@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
-
+import { useRoute } from 'vue-router';
 let route = useRoute();
-let router = useRouter();
-const activeName = ref(route.path);
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -38,33 +35,11 @@ let list = reactive([
   },
 ])
 
-let activeIndex = ref(route.path);
-
-if(route.path == '/'){
-  router.push({
-      path: "/home.html"
-    })
+const handleSelect = (key: any) => {  
+    if(window.location.href == window.location.origin + key.url) return;
+    window.location.href = window.location.origin + key.url;
 }
-
-const handleSelect = (key: any) => {
-  activeName.value = key.url;
-  activeIndex.value = key.url;
-  if (route.name != key.url) {
-    router.push({
-      path: key.url
-    })
-  }
-}
-
-let outLogin = () => {
-  activeIndex.value = "1";
-  router.push({ path: '/login' })
-}
-
-
 const dialogFormVisible = ref(false)
-
-
 </script>
 
 <template>
@@ -76,7 +51,7 @@ const dialogFormVisible = ref(false)
           <span class="fs-12 c-dadada">校园招聘平台</span>
         </div>
         <!-- 菜单 -->
-        <el-menu :ellipsis="false" :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
+        <el-menu :ellipsis="false" :default-active="1" class="el-menu-demo" mode="horizontal">
           <el-menu-item v-for="item in list" :key="item.url" :index="item.url" @click="handleSelect(item)">{{ item.title
           }}</el-menu-item>
         </el-menu>
@@ -94,7 +69,7 @@ const dialogFormVisible = ref(false)
             <el-dropdown-menu>
               <el-dropdown-item @click="dialogFormVisible = true">修改密码</el-dropdown-item>
               <el-dropdown-item>联系客服</el-dropdown-item>
-              <el-dropdown-item @click="outLogin">退出登录</el-dropdown-item>
+              <el-dropdown-item @click="">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -135,7 +110,7 @@ const dialogFormVisible = ref(false)
         <img src="@/assets/images/icon-kefu.png">
       </div>
     </div>
-    <RouterView />
+
     <!-- 这个是疑问咨询的图片 -->
 </template>
 
