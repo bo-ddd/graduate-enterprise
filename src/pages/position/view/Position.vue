@@ -106,8 +106,6 @@
               v-model:page-size="pageSize"
               layout="prev, pager, next"
               :total="recruitNum"
-              @next-click="next"
-              @prev-click="prev"
               @current-change="handleCurrentChange"
             />
           </div>
@@ -179,8 +177,6 @@
                 v-model:page-size="pageSize2"
                 layout="prev, pager, next"
                 :total="downNum"
-                @next-click="next2"
-                @prev-click="prev2"
                 @current-change="handleCurrentChange2"
               />
             </div>
@@ -254,18 +250,6 @@ import { useRouter } from "vue-router";
 import { Position } from "@element-plus/icons-vue";
 let use = usePositionStore();
 let { getEnterprise } = useHomeStore();
-const next=function(){
-
-}
-const next2=function(){
-
-}
-const prev=function(){
-  
-}
-const prev2=function(){
-
-}
 const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
 const recruitNum = ref(0);
@@ -419,17 +403,11 @@ const deleteClick = function (positionId: any, positionStatus: any) {
     type: "warning",
   })
     .then(async () => {
-      console.log(1);
-
       let res1 = await deletePosition({
         positionId,
         userId: 10000,
         positionStatus,
       });
-      console.log(3);
-
-      console.log(res1);
-
       if (res1.code == 200) {
         ElMessage({
           type: "success",
@@ -457,9 +435,6 @@ const tab = function (num: number) {
   currentIndex.value = num;
 };
 const to = function (path: string) {
-  // router.push({
-  //   path,
-  // });
   window.location.href=path+'.html'
 };
 const setPosition = function (id: any) {
