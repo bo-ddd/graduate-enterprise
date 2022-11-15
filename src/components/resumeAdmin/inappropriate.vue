@@ -35,7 +35,7 @@ let enterprise = useEnterpriseStore();
 let resumeList:any = ref([]);
 
 let getResume = async () => {
-    let res = await enterprise.getResume({
+    let res:any = await enterprise.getResume({
         userId: 10000,
         companyId: 10000,
         deliveryStatus: 6,
@@ -52,7 +52,7 @@ getResume();
  * 恢复为候选人
  */
  let recovery = async (item: any) => {
-    let res = await enterprise.modifyResume({
+    let res:any = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
         interviewName: item.interviewName,
