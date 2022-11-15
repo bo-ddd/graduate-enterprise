@@ -66,7 +66,7 @@
         <el-form-item prop="positionNature">
           <el-radio-group :v-model="1">
             <el-radio
-              v-if="ruleForm.data.positionNature==0"
+              v-if="ruleForm.data.positionNature===0"
               class="select-btn"
               label="0"
               size="large"
