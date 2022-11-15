@@ -541,8 +541,3 @@ getSchoolList();
         }
     }
 }
-
-.mb-24 {
-    margin-bottom: 24px;
-}
-</style>
