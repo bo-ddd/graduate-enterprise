@@ -3,10 +3,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/layout.html',
-      name: 'layout',
-      alias:"/",
-      component: ()=> import('@/pages/layout/view/Layout.vue'),
+      path: '/resume.html',
+      name: 'Resume',
+      component: () => import('@/pages/resume/view/Resume.vue')
     },
     ]
 })

@@ -1,4 +1,7 @@
 <template>
+
+<Layout></Layout>
+
     <div class="resume">
         <div class="header">
             <el-tabs class="demo-tabs" v-model="activeName" stretch="true">
@@ -18,6 +21,7 @@ import { ref } from 'vue'
 import candidateMain from "@/components/resumeAdmin/candidateMain.vue";
 import interviewMain from "@/components/resumeAdmin/interviewMain.vue";
 import inappropriate from "@/components/resumeAdmin/inappropriate.vue";
+import Layout from "@/pages/layout/view/Layout.vue";
 let activeName = ref("first");
 
 </script>

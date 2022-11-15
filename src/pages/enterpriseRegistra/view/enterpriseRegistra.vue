@@ -2,7 +2,7 @@
     <div class="enterprise-registra">
         <div class="wrap container">
             <div class="title-wrap">
-                <h2>企业信息编辑</h2>
+                <h2>企业信息编辑11111</h2>
             </div>
             <el-form :model="form" label-width="120px">
                 <div class="form">
@@ -58,7 +58,6 @@
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
                         <el-cascader placeholder="请输入" class="el-input_240" :options="RegisteredArea" clearable>
-
                         </el-cascader>
                     </el-form-item>
 
@@ -227,7 +226,6 @@
 // 底部
 import footerBar from '@/components/footer/footerBar.vue';
 // 这个是企业注册地区的数据
-import RegisteredArea from './registeredArea';
 // 这个是form表单要用的
 import { reactive } from 'vue';
 // 这个是企业LOGO上传头像需要用到的
@@ -235,6 +233,36 @@ import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
+const RegisteredArea = [
+    {
+        value: 'value',
+        label: 'label',
+        children: [
+            {
+                value: 'childrenvalue',
+                label: 'childrenlabel',
+                children: [
+                    {
+                        value: 'consistency',
+                        label: 'Consistency',
+                    },
+                    {
+                        value: 'feedback',
+                        label: 'Feedback',
+                    },
+                    {
+                        value: 'efficiency',
+                        label: 'Efficiency',
+                    },
+                    {
+                        value: 'controllability',
+                        label: 'Controllability',
+                    },
+                ],
+            }
+        ]
+    }
+]
 // ajax
 const use = useHomeStore();
 
@@ -272,10 +300,11 @@ function abc(value: any) {
 // 点击提交按钮走的方法
 const onSubmit = () => {
     console.log(form)
+    setModifyEnterpriseInfo();
 };
 // companyWebUrl
 let getEnterpriseData = reactive<any[]>([]);
-// 调用 获取企业详细信息接口 报错
+// 调用 获取企业详细信息接口 
 let getEnterprise = async function () {
     let res = await use.getEnterprise({ userId: 10000 });
     Object.assign(getEnterpriseData, res.data);
@@ -284,15 +313,19 @@ let getEnterprise = async function () {
 }
 getEnterprise();
 
-// 调用 修改企业详细信息接口 报错
-// let setModifyEnterpriseInfo = async function () {
-//     let res = await use.setModifyEnterpriseInfo({
-//         companyAddr: '山西',
-//         userId: 10000
-//     });
-//     console.log(res);
-// }
-// setModifyEnterpriseInfo();
+// 调用 修改企业详细信息接口
+let setModifyEnterpriseInfo = async function () {
+    let res = await use.setModifyEnterpriseInfo({
+        companyAddr: '山西',
+        userId: 10000
+    });
+    if (res.code == 200) {
+        console.log('修改成功  可以重新获取数据了')
+        getEnterprise();
+    }
+    console.log('修改企业详细信息接口', res);
+}
+
 
 
 // 所属行业
@@ -540,9 +573,5 @@ getSchoolList();
             }
         }
     }
-}
-
-.mb-24 {
-    margin-bottom: 24px;
 }
 </style>
