@@ -15,43 +15,43 @@ interface Res{
 export const usePositionStore = defineStore("position", () => {
 
     function getPosition(params:any) {
-        return Api.getPositionData(params) as Res;
+        return (Api.getPositionData(params) as any);
     }
-    function getProfessional() {
-        return Api.getMajorList() as Res;
+    function getProfessional(params:any) {
+        return (Api.getMajorList(params) as  any);
     }
-    function getMonthDay() {
-        return Api.getMonthDay() as Res;
+    function getMonthDay(params:any) {
+        return (Api.getMonthDay(params) as any);
     }
-    function getEducation() {
-        return Api.getEducationList() as Res;
+    function getEducation(params:any) {
+        return (Api.getEducationList(params) as any);
     }
-    function getCompanyIndustry() {
-        return Api.getCompanyIndustry() as Res;
+    function getCompanyIndustry(params:any) {
+        return (Api.getCompanyIndustry(params) as any);
     }
-    function getWishMoney() {
-        return Api.getWishMoney() as Res;
+    function getWishMoney(params:any) {
+        return (Api.getWishMoney(params) as any);
     }
-    function getInternshipMoney(){
-        return Api.getInternshipMoney() as Res
+    function getInternshipMoney(params:any){
+        return (Api.getInternshipMoney(params) as any);
     }
     function addPosition(params:any){
-        return Api.releasePosition(params) as Res
+        return (Api.releasePosition(params) as any);
     }
     function deletePosition(params:any){
-        return Api.deletePosition(params) as Res
+        return (Api.deletePosition(params) as any);
     }
     function updatePosition(params:any){
-        return Api.modifyPosition(params) as Res
+        return (Api.modifyPosition(params) as any);
     }
     function updatePositionStatus(params:any){
-        return Api.modifyPositionStatus(params) as Res
+        return (Api.modifyPositionStatus(params) as any);
     }
     function getPositionDetail(params:any){
-        return Api.getPositionDetail(params) as Res
+        return (Api.getPositionDetail(params) as any);
     }
     function refreshPosition(params:any){
-        return Api.refreshPosition(params) as Res
+        return (Api.refreshPosition(params) as any);
     }
     return { getPosition, getProfessional, getMonthDay, getEducation, getCompanyIndustry, getWishMoney,getInternshipMoney,addPosition,deletePosition,updatePosition,updatePositionStatus,getPositionDetail,refreshPosition };
 });

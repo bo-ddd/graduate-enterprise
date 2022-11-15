@@ -335,12 +335,12 @@ const ruleForm:any  = reactive({
   },
 });
 const getData = async function () {
-  const res = await use.getEducation(); //学历
-  const res2 = await use.getCompanyIndustry(); //行业
-  const res3 = await use.getProfessional(); //专业
-  const res4 = await use.getWishMoney(); //薪资
-  const res5 = await use.getMonthDay(); //月和天
-  const res6 = await use.getInternshipMoney(); //实习薪资
+  const res = await use.getEducation({}); //学历
+  const res2 = await use.getCompanyIndustry({}); //行业
+  const res3 = await use.getProfessional({}); //专业
+  const res4 = await use.getWishMoney({}); //薪资
+  const res5 = await use.getMonthDay({}); //月和天
+  const res6 = await use.getInternshipMoney({}); //实习薪资
   console.log(res);
   if (res.code == 200) {
     educationArr.value = res.data;
