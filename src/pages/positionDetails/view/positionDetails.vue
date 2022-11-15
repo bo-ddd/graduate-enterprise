@@ -350,15 +350,15 @@ const handleChange = function (value: any) {
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
-const educationArr = ref([]);
-const industryArr = ref([]);
-const professionalArr = ref([]);
-const moneyLeftArr1 = ref([]);
-const moneyRightArr1 = ref([]);
-const moneyLeftArr2 = ref([]);
-const moneyRightArr2 = ref([]);
-const dayArr = ref([]);
-const monthArr = ref([]);
+const educationArr:any  = ref([]);
+const industryArr:any  = ref([]);
+const professionalArr:any  = ref([]);
+const moneyLeftArr1:any  = ref([]);
+const moneyRightArr1:any  = ref([]);
+const moneyLeftArr2:any  = ref([]);
+const moneyRightArr2:any  = ref([]);
+const dayArr:any  = ref([]);
+const monthArr:any  = ref([]);
 const ruleForm: any = reactive({
   data: {
     positionNature: 1, //工作性质

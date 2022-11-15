@@ -263,8 +263,8 @@ const pageNum = ref(1);
 const pageSize = ref(10);
 const pageNum2 = ref(1);
 const pageSize2 = ref(10);
-const positionList = ref([]);
-const downPositionList = ref([]);
+const positionList:any = ref([]);
+const downPositionList:any = ref([]);
 const autoRefrensh=function(positionId:any){
   centerDialogVisible.value = true
 }
