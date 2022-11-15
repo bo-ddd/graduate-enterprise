@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref, reactive, type Ref, watch } from "vue";
+import LayOut from "@/pages/layout/view/Layout.vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
@@ -221,6 +222,7 @@ let getMoney = (data:string)=>{
 }
 </script>
 <template>
+    <LayOut></LayOut>
     <div class="personnel">
         <div class="operation-wrap box-shadow">
             <div class="wrap operation-container fs-18">
