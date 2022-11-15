@@ -166,7 +166,7 @@
             <div class="dialog_body">
                 <div class="dialog_body-header-r">
                     <div class="dialog_body-header-r_test">
-                        <b class="c356ffb"> {{ EnterpriseInfo.companyWishSchool.length }} </b>
+                        <b class="c356ffb"> {{ schoolLen }} </b>
                         <span>/50</span>
                     </div>
                 </div>
@@ -210,15 +210,13 @@ import { useHomeStore } from '@/stores/home';
 import { ref, reactive, computed } from 'vue'
 import type { Ref } from "vue";
 import footerBar from '@/components/footer/footerBar.vue';
-// import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
-// 路由
-// let router = useRouter();
 // ajax
 const use = useHomeStore();
 // 跳转页面的方法
 let nav = (name: string) => {
     window.location.href = `${name}.html`
+    console.log(name)
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
@@ -235,20 +233,18 @@ const schoolList: Ref<Array<{
 let getSchoolList = async function () {
     let res = await use.getSchoolList()
     Object.assign(schoolList.value, res.data)
-    console.log('获取意向学校的数据', schoolList.value);
 }
 getSchoolList();
 // 单选框组的值
 const radioValue = ref(false)
 // 提交意向学校弹层数据的方法
 const confirm = () => {
-    console.log('选中的意向学校的 ID：', selectValue.value)
     console.log('单选框选择的是：', radioValue.value, radioValue.value == true ? '仅意向' : '所有学校')
     let companyWishSchool: any = [];
     selectValue.value.forEach(element => {
         companyWishSchool.push(element);
     });
-    // 点击提交按钮的时候用  调接口传参
+    // 点击提交按钮的时候用  调修改意向学校的接口
     setEnterpriseSchoolOfIntention({
         companyOnlyWishSchool: radioValue.value,
         companyWishSchool,
@@ -313,16 +309,15 @@ const change = ref<string>('')
 let getEnterpriseInfo = async () => {
     let res = await use.getEnterprise({ userId: 10000 });
     Object.assign(EnterpriseInfo, res.data)
-    console.log('获取企业详细信息接口', EnterpriseInfo);
     change.value = ''
     schoolList.value.forEach((el: any) => {
         EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
             if (el.schoolId == element) {
                 change.value += el.schoolName + '、'
-                console.log(change.value)
             }
         });
     });
+    change.value = change.value.substring(0, change.value.length - 1)
     if (change.value == '' || change.value == undefined) {
         getEnterpriseInfo()
     }
