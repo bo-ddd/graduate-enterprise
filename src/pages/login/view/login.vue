@@ -315,6 +315,7 @@ const rulesPass = reactive<FormRules>({
     // ],
 })
 
+
 const submitFormPass = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
@@ -325,7 +326,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 console.log("-----------res---------------")
                 console.log(res);
                 if (res.code == 200) {
-                    window.location.href = 'http://127.0.0.1:5173/'
+                    window.location.href = `${window.location.origin}/`;
                 }
             }
             login({

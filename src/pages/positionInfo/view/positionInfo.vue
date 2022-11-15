@@ -243,9 +243,8 @@
             class="w-340"
             placeholder="请选择工作地点"
           >
-            <template #default="{ node,data }">
+            <template #default="{ data }">
               <span>{{ data.label }}</span>
-              <span v-if="!node.isLeaf">({{ data.children.length }})</span>
             </template>
           </el-cascader>
         </el-form-item>
@@ -291,9 +290,9 @@ interface Res {
 const props = {
   expandTrigger: "hover",
 };
- onMounted(()=>{
+onMounted(() => {
   //  to("/position");
- })
+});
 const value = ref("");
 const activeNum = ref(-1);
 const activeNum2 = ref(-1);
@@ -304,16 +303,16 @@ const handleChange = function (value: any) {
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 
-const educationArr = ref([]);
+const educationArr:any  = ref([]);
 const industryArr: any = ref([]);
-const professionalArr = ref([]);
-const moneyLeftArr1 = ref([]);
-const moneyRightArr1 = ref([]);
-const moneyLeftArr2 = ref([]);
-const moneyRightArr2 = ref([]);
-const dayArr = ref([]);
-const monthArr = ref([]);
-const ruleForm = reactive({
+const professionalArr:any = ref([]);
+const moneyLeftArr1:any = ref([]);
+const moneyRightArr1:any = ref([]);
+const moneyLeftArr2:any  = ref([]);
+const moneyRightArr2:any  = ref([]);
+const dayArr:any  = ref([]);
+const monthArr:any  = ref([]);
+const ruleForm:any  = reactive({
   data: {
     positionNature: 0, //工作性质
     positionName: "", //职位名称
@@ -607,18 +606,17 @@ const submitForm = async (formEl: FormInstance | undefined) => {
           cancelButtonText: "取消",
           type: "warning",
         }
-      )
-        .then(() => {
-          addPosition(ruleForm.data);
-        })
+      ).then(() => {
+        addPosition(ruleForm.data);
+      });
     } else {
       console.log("error submit!", fields);
-      ElMessage.error((<any>Object).values(fields)[0][0].message);
+      ElMessage.error((Object as any).values(fields)[0][0].message);
     }
   });
 };
 const addPosition = async function (params: any) {
-  const {
+  let {
     positionEducation,
     positionNature,
     positionName,
@@ -642,7 +640,7 @@ const addPosition = async function (params: any) {
     positionEducation, //学历id
     positionNature, //工作性质
     positionName, //职位名称
-    positionPositive:positionPositive?true:false, //是否转正
+    positionPositive: (positionPositive ? true : false), //是否转正
     positionDetailedAddr, //详细地址
     positionDes, //职位描述
     positionSize, //招聘人数
@@ -674,7 +672,7 @@ const addPosition = async function (params: any) {
   }
 };
 const to = function (path: string) {
-  window.location.href=path+'.html'
+  window.location.href = path + ".html";
 };
 </script>
 

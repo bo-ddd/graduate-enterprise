@@ -29,22 +29,22 @@
 
                             <template #file="{ file }">
                                 <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <img class="el-upload-list__item-thumbnail" :src="file.url"/>
                                     <span class="el-upload-list__item-actions">
                                         <span class="el-upload-list__item-preview"
-                                            @click="handlePictureCardPreview(file)">
+                                            @click="handlePictureCardPreview()">
                                             <el-icon>
                                                 <zoom-in />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleDownload(file)">
+                                            @click="handleDownload()">
                                             <el-icon>
                                                 <Download />
                                             </el-icon>
                                         </span>
                                         <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleRemove(file)">
+                                            @click="handleRemove()">
                                             <el-icon>
                                                 <Delete />
                                             </el-icon>
@@ -119,23 +119,23 @@
                                 </el-icon>
 
                                 <template #file="{ file }">
-                                    <div @click="add(file)">
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                                    <div @click="add()">
+                                        <img class="el-upload-list__item-thumbnail" :src="file.url" />
                                         <span class="el-upload-list__item-actions">
                                             <span class="el-upload-list__item-preview"
-                                                @click="handlePictureCardPreview(file)">
+                                                @click="handlePictureCardPreview()">
                                                 <el-icon>
                                                     <zoom-in />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @change="handleDownload(file)">
+                                                @change="handleDownload()">
                                                 <el-icon>
                                                     <Download />
                                                 </el-icon>
                                             </span>
                                             <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @click="handleRemove(file)">
+                                                @click="handleRemove()">
                                                 <el-icon>
                                                     <Delete />
                                                 </el-icon>
@@ -487,18 +487,10 @@
 
 <script setup lang="ts">
 import footerBar from '@/components/footer/footerBar.vue';
-// 这个是企业注册地区的数据
-// 这个是form表单要用的
 import { reactive } from 'vue';
-// 这个是企业LOGO上传头像需要用到的
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
-import type { UploadFile } from 'element-plus';
 import { useHomeStore } from '@/stores/home';
-    
-import { useRouter } from 'vue-router';
-// 路由
-let router = useRouter();
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否
@@ -506,9 +498,21 @@ const centerDialogVisible = ref(true);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 跳转页面的方法
-let nav = (name: string) => {
-    router.push(name);
-}
+const nav = (name: string) => {
+    window.location.href = `${name}.html`;
+};
+const RegisteredArea = [
+    {
+        value: 'value',
+        label: 'label',
+        children: [
+            {
+                value: 'childrenvalue',
+                label: 'childrenlabel',
+            }
+        ]
+    }
+];
 // form 表单数据
 const form = reactive({
     companyFullName: '',// 企业全称
@@ -532,87 +536,68 @@ const form = reactive({
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
 });
-function add(file: any) {
-    console.log(file)
-}
+const add = () => { };
 // 点击提交按钮走的方法
-const onSubmit = () => {
-    console.log(form)
-};
+const onSubmit = () => { };
 // 企业性质
-const enterpriseNatureVal = ref('请选择')
+const enterpriseNatureVal = ref('请选择');
 // 企业规模
-const enterpriseScaleVal = ref('请选择')
+const enterpriseScaleVal = ref('请选择');
 // 企业标签
-const enterpriseLabelVal = ref('请选择')
+const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
-const forbiddenData = ref(<any>[]);
-const handleChange = (value: any) => {
-    console.log(value)
-}
+const forbiddenData: any = ref([]);
+const handleChange = () => { };
 // 调用 获取所属行业下拉框接口 报错
-let getIndustryList = async function () {
-    let res = await use.getIndustryList();
-    Object.assign(forbiddenData.value, res.data)
-}
+const getIndustryList = async function () {
+    const res = await use.getIndustryList();
+    Object.assign(forbiddenData.value, res.data);
+};
 getIndustryList();
 // 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = (file: UploadFile) => {
-    console.log(file)
-};
-const handlePictureCardPreview = (file: UploadFile) => {
-    console.log('log ~ file', file);
+const handleRemove = () => { };
+const handlePictureCardPreview = () => {
     dialogVisible.value = true;
-    console.log(1);
 };
-const handleDownload = (file: UploadFile) => {
-    console.log(file)
-    console.log('log ~ file.url', file.url);
-};
+const handleDownload = () => { };
 // 企业性质
-interface EnterpriseNature {
-    label: string,
-    value: number,
-    createTime: null,
-    modifyTime: null
-}
-let enterpriseNature = reactive<EnterpriseNature[]>([]);
+let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
-let getEnterpriseNatureList = async function () {
-    let res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature, res.data)
-}
+const getEnterpriseNatureList = async function () {
+    const res = await use.getEnterpriseNatureList();
+    Object.assign(enterpriseNature, res.data);
+};
 getEnterpriseNatureList();
 // 企业规模
 interface EnterpriseScale {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
-}
-let enterpriseScale = reactive<EnterpriseScale[]>([])
+};
+let enterpriseScale: any | EnterpriseScale = ref([]);
 // 调用 获取企业规模下拉框
-let getEnterpriseSizeList = async function () {
-    let res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale, res.data)
-}
+const getEnterpriseSizeList = async function () {
+    const res = await use.getEnterpriseSizeList();
+    Object.assign(enterpriseScale, res.data);
+};
 getEnterpriseSizeList();
 // 企业标签
 interface EnterpriseLabel {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
-}
-let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
+};
+let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
-let getEnterpriseTagList = async function () {
-    let res = await use.getEnterpriseTagList();
+const getEnterpriseTagList = async function () {
+    const res = await use.getEnterpriseTagList();
     Object.assign(enterpriseLabel, res.data);
-}
+};
 getEnterpriseTagList();
 const schoolListVal = ref([]);
 // 学校列表
@@ -620,12 +605,12 @@ interface SchoolList {
     schoolId: number,
     schoolName: string,
     sortId: number,
-}
-const schoolList = reactive<SchoolList[]>([]);
-let getSchoolList = async function () {
-    let res = await use.getSchoolList();
+};
+const schoolList: any | SchoolList = ref([]);
+const getSchoolList = async function () {
+    const res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
-}
+};
 getSchoolList();
 </script>
 
@@ -641,21 +626,26 @@ getSchoolList();
     height: 187px;
     border-radius: 10px;
 }
-:deep(.el-dialog_two .el-dialog__header){
+
+:deep(.el-dialog_two .el-dialog__header) {
     padding: 50px 0 0 0;
 }
-:deep(.el-dialog_two .el-dialog__body){
+
+:deep(.el-dialog_two .el-dialog__body) {
     height: auto;
     border: none;
     font-size: 12px;
-    div{
+
+    div {
         margin: 9px 0;
         color: #38393b;
     }
-    b{
+
+    b {
         color: #000;
     }
 }
+
 :deep(.el-dialog_two .el-dialog__footer) {
     padding: 24px 20px 24px 0;
     margin: 0;
