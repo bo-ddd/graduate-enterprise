@@ -241,7 +241,6 @@ const RegisteredArea = [
 ]
 // ajax
 const use = useHomeStore();
-
 // form 表单数据
 const form = reactive({
     companyFullName: '',// 企业全称
@@ -267,8 +266,7 @@ const form = reactive({
     userId: 10000,
 });
 
-function add(file: any) {
-};
+const add = (file: any) => { };
 // 点击提交按钮走的方法
 const onSubmit = () => {
     setModifyEnterpriseInfo({
@@ -297,10 +295,9 @@ const onSubmit = () => {
 // companyWebUrl
 let getEnterpriseData = reactive<any[]>([]);
 // 调用 获取企业详细信息接口 
-let getEnterprise = async function () {
-    let res = await use.getEnterprise({ userId: 10000 });
+const getEnterprise = async function () {
+    const res = await use.getEnterprise({ userId: 10000 });
     Object.assign(getEnterpriseData, res.data);
-    console.log('获取企业详细信息接口', getEnterpriseData);
     Object.assign(form, res.data);
 };
 getEnterprise();
@@ -328,92 +325,76 @@ interface EnterpriseInfoType {
     companyWishSchool?: string,
     userId: number
 };
-let setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
-    let res = await use.setModifyEnterpriseInfo(payload);
+const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
+    const res = await use.setModifyEnterpriseInfo(payload);
     if (res.code == 200) {
         getEnterprise();
     };
 };
-
-
-
 // 所属行业
 const forbiddenData = ref(<any>[]);
 const handleChange = (value: any) => {
 };
-
 // 调用 获取所属行业下拉框接口 报错
-let getIndustryList = async function () {
-    let res = await use.getIndustryList();
+const getIndustryList = async function () {
+    const res = await use.getIndustryList();
     Object.assign(forbiddenData.value, res.data);
 };
 getIndustryList();
-
 // 上传企业LOGO的逻辑
 const dialogVisible = ref(false);
 const disabled = ref(false);
-const handleRemove = (file: UploadFile) => {
-};
+const handleRemove = (file: UploadFile) => { };
 const handlePictureCardPreview = (file: UploadFile) => {
     dialogVisible.value = true;
 };
-const handleDownload = (file: UploadFile) => {
-};
-
+const handleDownload = (file: UploadFile) => { };
 // 企业性质
-const enterpriseNatureVal = ref('其他');
-// 企业规模
-const enterpriseScaleVal = ref('100-499人');
-// 企业标签
-const enterpriseLabelVal = ref('其他');
-
-// 企业性质
-interface EnterpriseNature {
+interface EnterpriseNatureType {
+    createTime: null | Date,
     label: string,
+    modifyTime: null | Date,
     value: number,
-    createTime: null,
-    modifyTime: null
 };
-let enterpriseNature = reactive<EnterpriseNature[]>([]);
+let enterpriseNature = reactive<EnterpriseNatureType[]>([]);
 // 调用 获取企业性质下拉框
-let getEnterpriseNatureList = async function () {
-    let res = await use.getEnterpriseNatureList();
+const getEnterpriseNatureList = async function () {
+    const res = await use.getEnterpriseNatureList();
     Object.assign(enterpriseNature, res.data);
 };
 getEnterpriseNatureList();
 
 // 企业规模
 interface EnterpriseScale {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
 };
 let enterpriseScale = reactive<EnterpriseScale[]>([]);
 // 调用 获取企业规模下拉框
-let getEnterpriseSizeList = async function () {
-    let res = await use.getEnterpriseSizeList();
+const getEnterpriseSizeList = async function () {
+    const res = await use.getEnterpriseSizeList();
     Object.assign(enterpriseScale, res.data);
 };
 getEnterpriseSizeList();
 
 // 企业标签
 interface EnterpriseLabel {
-    createTime: null,
+    createTime: null | Date,
     label: string,
-    modifyTime: null,
+    modifyTime: null | Date,
     value: number,
 };
 let enterpriseLabel = reactive<EnterpriseLabel[]>([]);
 // 调用 获取企业标签下拉框
-let getEnterpriseTagList = async function () {
-    let res = await use.getEnterpriseTagList();
+const getEnterpriseTagList = async function () {
+    const res = await use.getEnterpriseTagList();
     Object.assign(enterpriseLabel, res.data);
 };
 getEnterpriseTagList();
 
-
-const schoolListVal = ref([]);
+const schoolListVal: any = ref([]);
 // 学校列表
 interface SchoolList {
     schoolId: number,
@@ -421,8 +402,8 @@ interface SchoolList {
     sortId: number,
 };
 const schoolList = reactive<SchoolList[]>([]);
-let getSchoolList = async function () {
-    let res = await use.getSchoolList();
+const getSchoolList = async function () {
+    const res = await use.getSchoolList();
     Object.assign(schoolList, res.data);
 };
 getSchoolList();

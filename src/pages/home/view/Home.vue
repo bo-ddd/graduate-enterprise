@@ -218,14 +218,14 @@ import { ElMessage } from 'element-plus'
 // ajax
 const use = useHomeStore();
 // 跳转页面的方法
-let nav = (name: string) => {
+const nav = (name: string) => {
     window.location.href = `${name}.html`
     console.log(name)
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
 // 意向学校 多选框选择的值
-let selectValue = ref([]);
+let selectValue: any = ref([]);
 const schoolLen = computed(() => EnterpriseInfo.companyWishSchool.length);
 // 意向学校 数据
 const schoolList: Ref<Array<{
@@ -234,8 +234,8 @@ const schoolList: Ref<Array<{
     schoolName: string,
 }>> = ref([]);
 // 获取意向学校的数据
-let getSchoolList = async function () {
-    let res = await use.getSchoolList()
+const getSchoolList = async function () {
+    const res = await use.getSchoolList()
     Object.assign(schoolList.value, res.data)
 }
 getSchoolList();
@@ -243,9 +243,8 @@ getSchoolList();
 const radioValue = ref(false)
 // 提交意向学校弹层数据的方法
 const confirm = () => {
-    console.log('单选框选择的是：', radioValue.value, radioValue.value == true ? '仅意向' : '所有学校')
     let companyWishSchool: any = [];
-    selectValue.value.forEach(element => {
+    selectValue.value.forEach((element: any) => {
         companyWishSchool.push(element);
     });
     // 点击提交按钮的时候用  调修改意向学校的接口
@@ -261,8 +260,8 @@ interface setEnterpriseSchoolOfIntentionType {
     userId: Number,// 用户id
 }
 // 这是修改意向学校的接口
-let setEnterpriseSchoolOfIntention = async function (payload: setEnterpriseSchoolOfIntentionType) {
-    let res = await use.setEnterpriseSchoolOfIntention(payload);
+const setEnterpriseSchoolOfIntention = async function (payload: setEnterpriseSchoolOfIntentionType) {
+    const res = await use.setEnterpriseSchoolOfIntention(payload);
     console.log(res)
     if (res.code == 200) {
         ElMessage({
@@ -310,8 +309,8 @@ const EnterpriseInfo: EnterpriseInfoType = reactive({
 }) as EnterpriseInfoType;
 // 获取企业详细信息接口
 const change = ref<string>('')
-let getEnterpriseInfo = async () => {
-    let res = await use.getEnterprise({ userId: 10000 });
+const getEnterpriseInfo = async () => {
+    const res = await use.getEnterprise({ userId: 10000 });
     Object.assign(EnterpriseInfo, res.data)
     change.value = ''
     schoolList.value.forEach((el: any) => {
