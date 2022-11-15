@@ -1,4 +1,5 @@
 <template>
+  <Layout></Layout>
   <div class="position-info position-wrap">
     <div class="head-tip">
       <div
@@ -287,6 +288,8 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
+
+import Layout from "@/pages/layout/view/Layout.vue";
 import { ElMessage } from "element-plus";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, computed, reactive, ref, inject } from "vue";
@@ -693,7 +696,7 @@ const setPositon = async function (params: any) {
   }
 };
 const to = function (path: string) {
-  window.location.href=path+'.html'
+  window.location.href=path+'.html，'
 };
 </script>
 

@@ -1,4 +1,5 @@
 <template>
+  <Layout></Layout>
   <div class="position-page">
     <div class="position-header flex-ja-center" ref="tab-box">
       <div
@@ -243,6 +244,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import Layout from "@/pages/layout/view/Layout.vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";

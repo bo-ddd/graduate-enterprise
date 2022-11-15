@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { useRoute } from 'vue-router';
-let route = useRoute();
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
