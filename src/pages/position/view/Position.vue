@@ -116,7 +116,7 @@
       <div class="tab2" v-show="currentIndex==1">
         <div class="void-box void-title flex-ja-center" v-show="downNum==0">
           <div class>
-            <img src="@/assets/images/img-no_position.png" alt />
+            <img src="@/assets/images/img-no_position.png"   />
             <div class="mt-15">暂无已下线职位</div>
           </div>
         </div>
@@ -192,7 +192,7 @@
   <FooterBar></FooterBar>
   <div class="dialog-box">
     <el-dialog v-model="centerDialogVisible" title center>
-      <img class="back-img" src="@/assets/images/default_v.png" alt />
+      <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">您当前账户中暂无 &nbsp; "自动刷新卡"</div>
         <div class="mt-25 text-gray">
@@ -202,15 +202,15 @@
         <div class="mt-25 text-black">更多权益也可一起解锁</div>
         <div class="list mt-15">
           <div class="align-center">
-            <img src="@/assets/images/icon-home_vipbanner1.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner1.png" />
             <span class="ml-10">在招职位数量解锁</span>
           </div>
           <div class="align-center ml-25">
-            <img src="@/assets/images/icon-home_vipbanner2.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner2.png" />
             <span class="ml-10">更多职位刷新点数</span>
           </div>
           <div class="align-center mt-15">
-            <img src="@/assets/images/icon-home_vipbanner4.png" alt />
+            <img src="@/assets/images/icon-home_vipbanner4.png" />
             <span class="ml-10">更多主动下载简历点数</span>
           </div>
         </div>
@@ -222,7 +222,7 @@
   </div>
   <div class="dialog-box">
     <el-dialog v-model="centerDialogVisible2" title center>
-      <img class="back-img" src="@/assets/images/default_v.png" alt />
+      <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">今日刷新点数已用完</div>
         <div class="mt-25 text-black">
@@ -231,7 +231,7 @@
         </div>
         <div class="card">
           <div class="center">
-            <img src="@/assets/images/icon-tag1.png" alt />
+            <img src="@/assets/images/icon-tag1.png"  />
             自动刷新卡
           </div>
         </div>
@@ -254,6 +254,18 @@ import { useRouter } from "vue-router";
 import { Position } from "@element-plus/icons-vue";
 let use = usePositionStore();
 let { getEnterprise } = useHomeStore();
+const next=function(){
+
+}
+const next2=function(){
+
+}
+const prev=function(){
+  
+}
+const prev2=function(){
+
+}
 const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
 const recruitNum = ref(0);
