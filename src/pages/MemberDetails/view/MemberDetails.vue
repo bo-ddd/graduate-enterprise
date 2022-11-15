@@ -93,7 +93,7 @@ let order = {
 let params =ref('');
 let toPayment = function () {
     let usePayment = async(options:any)=>{
-        let res = await payment.payment(options);
+        let res:any = await payment.payment(options);
         console.log(res);
         if(res.code==200){
             router.push({ path: '/payment', query: { ...order } })
