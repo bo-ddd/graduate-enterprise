@@ -35,7 +35,7 @@ let list = reactive([
 ])
 
 let route = useRoute();
-let acitveIndex = ref(list.find(item=>item.url == route.path)?.id);
+let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
     if(window.location.href == window.location.origin + key.url) return;
     window.location.href = window.location.origin + key.url;
@@ -53,7 +53,7 @@ const dialogFormVisible = ref(false)
         </div>
         <!-- 菜单 -->
         <el-menu :ellipsis="false" :default-active="acitveIndex" class="el-menu-demo" mode="horizontal">
-          <el-menu-item v-for="item,index in list" :key="index" :index="index" @click="handleSelect(item)">{{item.title}}</el-menu-item>
+          <el-menu-item v-for="item,index in list" :key="`${index}`" :index="index" @click="handleSelect(item)">{{item.title}}</el-menu-item>
         </el-menu>
       </div>
       <div class="user align-center">

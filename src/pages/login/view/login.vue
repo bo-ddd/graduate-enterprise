@@ -215,6 +215,7 @@
 <script setup lang="ts">
 
 import { reactive, ref } from 'vue'
+import type {Ref} from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules, } from 'element-plus'
 import { ElMessage } from 'element-plus'
@@ -297,7 +298,7 @@ let validatePhone = (rule: any, value: any, callback: any) => {
 
 
 // 密码登录
-const formPassSize = ref('default')
+const formPassSize:Ref<string> = ref('default')
 const ruleFormPassRef = ref<FormInstance>()
 const ruleFormPass = reactive({
     phone: '',
@@ -337,7 +338,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
     })
 }
 //验证码登录
-const formValidateSize = ref('default')
+const formValidateSize:Ref<string> = ref('default')
 const ruleFormValidateRef = ref<FormInstance>()
 const ruleFormValidate = reactive({
     phone: '',
@@ -380,7 +381,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
 }
 
 //注冊
-const formRegisterSize = ref('default')
+const formRegisterSize:Ref<string> = ref('default')
 const ruleFormRegisterRef = ref<FormInstance>()
 const ruleFormRegister = reactive({
     phone: '',
@@ -437,7 +438,7 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
     })
 }
 //忘记密码
-const formForgotPwSize = ref('default')
+const formForgotPwSize:Ref<string> = ref('default')
 const ruleFormForgotPwRef = ref<FormInstance>()
 const ruleFormForgotPw = reactive({
     phone: '',
@@ -469,7 +470,7 @@ const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     })
 }
 //重置密码
-const formResetPwSize = ref('default')
+const formResetPwSize:Ref<string> = ref('default')
 const ruleFormResetPwRef = ref<FormInstance>()
 const ruleFormResetPw = reactive({
     password: '',
