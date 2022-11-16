@@ -187,7 +187,7 @@
   </div>
   <FooterBar></FooterBar>
   <div class="dialog-box">
-    <el-dialog v-model="centerDialogVisible" title center>
+    <el-dialog v-model="centerDialogVisible" center>
       <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">您当前账户中暂无 &nbsp; "自动刷新卡"</div>
@@ -217,7 +217,7 @@
     </el-dialog>
   </div>
   <div class="dialog-box">
-    <el-dialog v-model="centerDialogVisible2" title center>
+    <el-dialog v-model="centerDialogVisible2" center>
       <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">今日刷新点数已用完</div>

@@ -36,7 +36,7 @@
       :rules="rules"
       label-width="120px"
       class="demo-ruleForm"
-      :size="formSize"
+      size="default"
     >
       <div class="mb-40 align-center defaultImages">
         <span class="flex-noshrink mr-10">职业名称</span>
@@ -339,7 +339,6 @@ const props = {
 const value = ref("");
 const activeNum = ref(-1);
 const activeNum2 = ref(-1);
-const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
 const educationArr:any  = ref([]);
