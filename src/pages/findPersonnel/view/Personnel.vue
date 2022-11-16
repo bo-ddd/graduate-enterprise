@@ -5,6 +5,8 @@ import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
 import Layout from "@/pages/layout/view/Layout.vue";
+
+
 interface Check {
     id: number,
     label: string | number,
@@ -19,12 +21,12 @@ let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
 interface Form{
-    sex?:null|number|string,
-    education?:null|number|string,
-    professional?:null|number|string,
-    city?:null|number|string,
-    wishMoneyLeft?:null|number|string,
-    wishMoneyRight?:null|number|string,
+    sex?:any,
+    education?:any,
+    professional?:any,
+    city?:any,
+    wishMoneyLeft?:any,
+    wishMoneyRight?:any,
 }
 let form:Form = reactive({
     sex: null,//性别
@@ -35,7 +37,10 @@ let form:Form = reactive({
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
 
-let invitationForm = reactive({
+let invitationForm = reactive<{
+    status:any;
+    professional:any;
+}>({
     status:null,
     professional:null,
 });
