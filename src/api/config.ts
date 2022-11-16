@@ -19,3 +19,13 @@ export const getConfig = {
     },
     timeout: 5000
 };
+
+export const uploadConfig = {
+    url: "",
+    baseURL: serveUrl,
+    headers: {
+      "Content-Type": "multipart/form-data",
+      "X-Requested-With": "XMLHttpRequest"
+    },
+    timeout: 5000
+}
