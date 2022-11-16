@@ -26,7 +26,7 @@
         </div>
 
         <div class="main">
-            <el-empty class="mt-20" v-if="!cardList.length" image-size="260" description="暂无简历数据" />
+            <el-empty class="mt-20" v-if="!cardList.length" :image-size="260" description="暂无简历数据" />
 
             <!-- 简历弹出框 --> 
             <el-dialog v-model="showResumeImage" width="55%"  :lock-scroll="false" :align-center="true" class="resume-image">
@@ -232,7 +232,7 @@ const checkAll = ref(false);
 const isIndeterminate = ref(false);
 const checkedCities = ref([]); //选中的数组  选中几个就往里面放几个
 let cities = ref([]);
-const handleCheckAllChange = (val: boolean) => {
+const handleCheckAllChange = (val: any) => {
     checkedCities.value = val ? cities.value : [];
     isIndeterminate.value = false;
 }

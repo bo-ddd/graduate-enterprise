@@ -4,7 +4,7 @@
 
     <div class="resume">
         <div class="header">
-            <el-tabs class="demo-tabs" v-model="activeName" stretch="true">
+            <el-tabs class="demo-tabs" v-model="activeName" :stretch="true">
                 <el-tab-pane label="候选人" name="first"></el-tab-pane>
                 <el-tab-pane label="面试管理" name="second"></el-tab-pane>
                 <el-tab-pane label="不合适" name="third"></el-tab-pane>
