@@ -54,7 +54,6 @@
             v-model="ruleForm.data.positionTypeArr"
             :props="props"
             :options="industryArr"
-            @change="handleChange"
             placeholder="请选择职业类别"
             disabled
           />
@@ -253,7 +252,6 @@
           <el-cascader
             v-model="ruleForm.data.positionAddr"
             :options="cityData"
-            @change="handleChange"
             class="w-340"
             placeholder="请选择工作地点"
           >
@@ -290,6 +288,7 @@
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
 import { ElMessage } from "element-plus";
+import { Delete,CircleCheck,Warning } from "@element-plus/icons-vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, computed, reactive, ref, inject } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -305,8 +304,6 @@ onMounted(async () => {
   let res = await use.getPositionDetail({
     positionId: route.query.positionId,
   });
-  console.log(res);
-
   if (res.code == 200) {
     positionStatus.value = res.data.positionStatus;
     positionId.value = res.data.positionId;
@@ -331,7 +328,6 @@ onMounted(async () => {
     ruleForm.data.internshipDay = res.data.positionDay; //每周天数
     ruleForm.data.internshipMonth = res.data.positionMonth; //实习月数
     ruleForm.data.positionAddr = res.data.positionAddr.split(","); //工作地点
-    console.log(ruleForm.data);
   }
 });
 interface Res {
@@ -343,10 +339,6 @@ const props = {
 const value = ref("");
 const activeNum = ref(-1);
 const activeNum2 = ref(-1);
-
-const handleChange = function (value: any) {
-  console.log(value);
-};
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
@@ -388,12 +380,11 @@ const getData = async function () {
   const res4 = await use.getWishMoney({}); //薪资
   const res5 = await use.getMonthDay({}); //月和天
   const res6 = await use.getInternshipMoney({}); //实习薪资
-  console.log(res);
   if (res.code == 200) {
     educationArr.value = res.data;
   }
   if (res2.code == 200) {
-    let a = res2.data.map((item: any) => {
+    industryArr.value = res2.data.map((item: any) => {
       return {
         value: item.value,
         label: item.label,
@@ -405,8 +396,6 @@ const getData = async function () {
         }),
       };
     });
-    console.log(a);
-    industryArr.value = a;
   }
   if (res3.code == 200) {
     professionalArr.value = res3.data;
@@ -426,8 +415,6 @@ const getData = async function () {
 };
 const salaryStart1 = function (rule: any, value: any, callback: any) {
   if (ruleForm.data.positionNature == 0) {
-    console.log(111);
-
     if (!value) {
       return callback(new Error("请选择"));
     } else if (
@@ -493,9 +480,6 @@ const salaryEnd2 = function (rule: any, value: any, callback: any) {
   }
 };
 const positiveChange = function (rule: any, value: any, callback: any) {
-  console.log("---------");
-  console.log(value);
-
   if (ruleForm.data.positionNature == 1) {
     if (value === "") {
       return callback(new Error("请选择转正机会"));
@@ -600,7 +584,6 @@ const rules = reactive<FormRules>({
   ],
 });
 const select = function (index: number) {
-  console.log(rules);
   if (activeNum.value == -1) {
     (ruleForm.data.positionPositive as any) = "";
   }
@@ -619,9 +602,6 @@ const select2 = function (index: number) {
 };
 
 const submitForm = async (formEl: FormInstance | undefined) => {
-  console.log(ruleForm.data);
-  console.log(formEl);
-
   if (!formEl) return;
   await formEl.validate((valid, fields: any) => {
     console.log(valid);
@@ -676,7 +656,6 @@ const setPositon = async function (params: any) {
     positionId: positionId.value, //职位id
   };
   let res = await use.updatePosition(form);
-  console.log(res);
   if (res.code == 200) {
     ElMessage({
       type: "success",
@@ -691,7 +670,7 @@ const setPositon = async function (params: any) {
   }
 };
 const to = function (path: string) {
-  window.location.href = path + ".html，";
+  window.location.href = path + ".html";
 };
 </script>
 
