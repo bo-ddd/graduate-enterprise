@@ -561,6 +561,7 @@ img {
 
             &>.describe {
                 margin-top: 20px;
+                line-height: 1;
             }
 
             &>.right-title .spot {
@@ -580,7 +581,7 @@ img {
         &>.btm-item {
             width: 245px;
             height: 145px;
-
+            margin: 0 72px ;
             .left h3 {
                 margin: 8px 0;
             }

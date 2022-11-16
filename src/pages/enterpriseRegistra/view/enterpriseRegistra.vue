@@ -334,7 +334,6 @@ const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
 };
 // 所属行业
 const forbiddenData: any = ref([]);
-// 调用 获取所属行业下拉框接口 报错
 const getIndustryList = async function () {
     const res = await use.getIndustryList();
     Object.assign(forbiddenData.value, res.data);
