@@ -159,7 +159,6 @@ getWishMoneyList();
 //获取到人才的列表
 const getTalentList = async () => {
     let obj:any = {};
-    console.log(form);
     let key: keyof Form;
     for (key in form) {
         if(form[key]){
@@ -172,14 +171,11 @@ const getTalentList = async () => {
     }
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
-    console.log('-------这个是获取人才------');
     const res:Res|any = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
     paging.total = res.data.totalCount;
-    console.log(paging);
-    console.log(res.data.talentList);
 }
 getTalentList();
 
@@ -191,10 +187,7 @@ const inviteTalent = async () => {
         positionId:checkPosition.value,
     });
     dialogFormVisible.value = false;
-    if(res.code !==200){
-        console.log('邀请人才接口报错');
-    }else{
-        console.log('邀请人才成功!!');
+    if(res.code ==200){
         getInvationsNumber();
     }
 }
