@@ -32,7 +32,9 @@
             <el-dialog v-model="showResumeImage" width="55%"  :lock-scroll="false" :align-center="true" class="resume-image">
            
                 <div class="resume-box">
-                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn">通过初筛</div>
+                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn"> 
+                        通过初筛
+                    </div>
                     <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true,btnSpan = false">
                         <img v-show="btnImg" src="@/assets/images/onload.png"  alt="">
                         <span v-show="btnSpan" >通过初筛后才能下载简历</span>
