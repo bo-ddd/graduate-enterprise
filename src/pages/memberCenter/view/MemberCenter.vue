@@ -163,11 +163,9 @@ let useVip = useVipStore();
 let getVip = async () => {
     const res:any = await useVip.getVip({});
     vipList.push(...res.data);
-    console.log(res);
 }
 (async function () {
     await getVip();
-    console.log(vipList);
 })()
 let ulList = [
     {
@@ -202,7 +200,6 @@ let ulList = [
 
 let handle = function (index: number): void {
     let params = '';
-    console.log(vipList[index])
     for (const key in vipList[index]) {
       params += `${key}=${vipList[index][key]}&`
     }

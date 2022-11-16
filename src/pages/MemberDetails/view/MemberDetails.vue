@@ -83,7 +83,6 @@ let isPaymentActive = function (name: number): void {
     selectPayment.value = name
 }
 let data = route.query as any;
-console.log(data);
 let order = {
     orderPrice: selectPayment.value * data.vipPrice,
     vipName: data.vipName,
