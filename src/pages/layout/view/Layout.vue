@@ -53,7 +53,7 @@ const dialogFormVisible = ref(false)
         </div>
         <!-- 菜单 -->
         <el-menu :ellipsis="false" :default-active="acitveIndex" class="el-menu-demo" mode="horizontal">
-          <el-menu-item v-for="item in list" :key="item" :index="item.id" @click="handleSelect(item)">{{item.title}}</el-menu-item>
+          <el-menu-item v-for="item,index in list" :key="index" :index="index" @click="handleSelect(item)">{{item.title}}</el-menu-item>
         </el-menu>
       </div>
       <div class="user align-center">

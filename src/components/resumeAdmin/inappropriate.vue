@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="inappropriate">
-            <el-empty class="mt-20"  v-if="!resumeList.length" image-size="260" description="暂无数据"/>
+            <el-empty class="mt-20"  v-if="!resumeList.length" :image-size="260" description="暂无数据"/>
             <card.cardWrap v-for="item in resumeList" class="mt-15">
                 <template #header>
                     <card.cardHeader :time="item.interviewTime || '2022-09-21 18:25:48' ">投递职位&nbsp;|&nbsp;{{ item.positionName }}</card.cardHeader>
