@@ -204,9 +204,18 @@ import cityJson from "@/assets/json/city.json";
 import { ElMessage } from 'element-plus'
 // import type { UploadProps } from 'element-plus'
 // const imageUrl = ref('');
-
-// ajax
 const use = useHomeStore();
+
+// const beforeAvatarUpload: UploadProps['beforeUpload'] =async (rawFile) => {
+//     console.log('--------上传图片之前---------');
+//     let formData = new FormData();
+//     formData.append('userId', 10000);
+//     formData.append('companyLicense', rawFile);
+//     const res = await use.UploadFilled(formData);
+//     console.log(res);
+//     console.log('log ~ rawFile', rawFile);
+// }
+// ajax
 interface Form {
     companyAddr?: string,
     companyContactEmail?: string,
@@ -229,15 +238,7 @@ interface Form {
     companyWishSchool?: string,
     userId: number
 }
-// const beforeAvatarUpload: UploadProps['beforeUpload'] =async (rawFile) => {
-//     console.log('--------上传图片之前---------');
-//     let formData = new FormData();
-//     formData.append('userId', 10000);
-//     formData.append('companyLicense', rawFile);
-//     const res = await use.UploadFilled(formData);
-//     console.log(res);
-//     console.log('log ~ rawFile', rawFile);
-// }
+
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
 // form 表单数据
@@ -323,7 +324,16 @@ const getEnterprise = async function () {
     console.log(res.data)
     Object.assign(form, res.data);
     companyIndustry.value = res.data.companyIndustry.split(' - ');
-    console.log('companyIndustry.value', companyIndustry.value);
+    forbiddenData.value.forEach((element: any) => {
+        if (companyIndustry.value[0] == element.label) {
+            companyIndustry.value[0] = element.value;
+            element.children.forEach((elementChildren: any) => {
+                if (companyIndustry.value[1] == elementChildren.label) {
+                    companyIndustry.value[1] = elementChildren.value
+                }
+            });
+        }
+    });
 };
 getEnterprise();
 
