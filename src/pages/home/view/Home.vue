@@ -158,6 +158,7 @@
         </div>
 
         <footer-bar></footer-bar>
+        
 
         <!-- 弹层 -->
         <el-dialog class="dialog" v-model="centerDialogVisible" align-center :show-close="false" title="Warning"
