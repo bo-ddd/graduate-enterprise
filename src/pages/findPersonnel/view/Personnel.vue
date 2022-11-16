@@ -175,6 +175,7 @@ const getTalentList = async () => {
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
+    console.log(talentList);
     paging.total = res.data.totalCount;
 }
 getTalentList();
@@ -200,6 +201,7 @@ const inviteTalentList = async ()=>{
     if(res.code !== 200) return;
     invitationList.length = 0;
     invitationList.push(...(res.data.talentList));
+    console.log(invitationList);
     pagingInvite.total = res.data.totalCount;
 }
 inviteTalentList();
@@ -389,7 +391,7 @@ getInviteDrop();
 
         <!-- 我邀请的页面 -->
         <div class="invitation-library-wrap" v-show="checkItem == 1">
-            <div class="container wrap" v-show="false">
+            <div class="container wrap" v-show="!invitationList.length">
                 <!-- 如果没人邀请显示的页面 -->
                 <div class="nolist">
                     <img src="@/assets/images/myinvited_nolist.4b83c481.png">
