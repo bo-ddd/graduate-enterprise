@@ -21,7 +21,7 @@
                         <!-- 密码登录 -->
                         <el-tab-pane label="密码登录" name="first">
                             <el-form ref="ruleFormPassRef" label-position="right" :model="ruleFormPass"
-                                :rules="rulesPass" label-width="120px" class="demo-ruleForm" :size="formPassSize">
+                                :rules="rulesPass" label-width="120px" class="demo-ruleForm" size="default">
                                 <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
                                     <el-input class="input" v-model="ruleFormPass.phone" placeholder="请输入注册手机号" />
                                 </el-form-item>
@@ -49,7 +49,7 @@
                         <el-tab-pane label="验证码登录" name="second">
                             <el-form ref="ruleFormValidateRef" label-position="right" :model="ruleFormValidate"
                                 :rules="rulesValidate" label-width="120px" class="demo-ruleForm"
-                                :size="formValidateSize">
+                                size="default">
                                 <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
                                     <!-- 手机号 -->
                                     <el-input class="input" v-model="ruleFormValidate.phone" placeholder="请输入手机号" />
@@ -90,7 +90,7 @@
                 </div>
                 <div class="main ">
                     <el-form ref="ruleFormRegisterRef" label-position="right" :model="ruleFormRegister"
-                        :rules="rulesRegister" label-width="120px" class="demo-ruleForm" :size="formRegisterSize">
+                        :rules="rulesRegister" label-width="120px" class="demo-ruleForm" size="default">
                         <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
                             <!-- 手机号 -->
                             <el-input class="input" v-model="ruleFormRegister.phone" placeholder="请输入手机号" />
@@ -139,7 +139,7 @@
                     </el-steps>
                     <!-- 第一步 -->
                     <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right" :model="ruleFormForgotPw"
-                        :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" :size="formForgotPwSize">
+                        :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" size="default">
                         <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
                             <!-- 手机号 -->
                             <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
@@ -172,7 +172,7 @@
                     </el-form>
                     <!-- 第二步 -->
                     <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right" :model="ruleFormResetPw"
-                        :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" :size="formResetPwSize">
+                        :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" size="default">
                         <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="password">
                             <!-- 重置密码 -->
                             <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码"
@@ -297,7 +297,7 @@ let validatePhone = (rule: any, value: any, callback: any) => {
 
 
 // 密码登录
-const formPassSize:string = 'default';
+// const formPassSize:string = 'default';
 const ruleFormPassRef = ref<FormInstance>()
 const ruleFormPass = reactive({
     phone: '',
@@ -337,7 +337,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
     })
 }
 //验证码登录
-const formValidateSize:string = 'default';
+// const formValidateSize:string = 'default';
 const ruleFormValidateRef = ref<FormInstance>()
 const ruleFormValidate = reactive({
     phone: '',
@@ -380,7 +380,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
 }
 
 //注冊
-const formRegisterSize:string = 'default';
+// const formRegisterSize:string = 'default';
 const ruleFormRegisterRef = ref<FormInstance>()
 const ruleFormRegister = reactive({
     phone: '',
@@ -437,7 +437,7 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
     })
 }
 //忘记密码
-const formForgotPwSize:string = 'default';
+// const formForgotPwSize:string = 'default';
 const ruleFormForgotPwRef = ref<FormInstance>()
 const ruleFormForgotPw = reactive({
     phone: '',
@@ -469,7 +469,7 @@ const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     })
 }
 //重置密码
-const formResetPwSize:string = 'default';
+// const formResetPwSize:string = 'default';
 const ruleFormResetPwRef = ref<FormInstance>()
 const ruleFormResetPw = reactive({
     password: '',
