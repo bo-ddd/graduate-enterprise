@@ -240,11 +240,7 @@
             :options="cityData"
             class="w-340"
             placeholder="请选择工作地点"
-          >
-            <template #default="{ data }">
-              <span>{{ data.label }}</span>
-            </template>
-          </el-cascader>
+          />
         </el-form-item>
         <span class="ml-28 flex-noshrink mr-10">详细地址</span>
         <el-form-item prop="positionDetailedAddr" class="w-100">
@@ -273,7 +269,7 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox, ElForm, ElRadio } from "element-plus";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -285,11 +281,11 @@ let use = usePositionStore();
 interface Res {
   code: number;
 }
-const propsRole:any = {
+const propsRole: any = {
   expandTrigger: "hover",
 };
 onMounted(() => {
-getData();
+  getData();
 });
 const value = ref("");
 const activeNum = ref(-1);
@@ -297,16 +293,16 @@ const activeNum2 = ref(-1);
 
 const ruleFormRef = ref<FormInstance>();
 
-const educationArr:any  = ref([]);
+const educationArr: any = ref([]);
 const industryArr: any = ref([]);
-const professionalArr:any = ref([]);
-const moneyLeftArr1:any = ref([]);
-const moneyRightArr1:any = ref([]);
-const moneyLeftArr2:any  = ref([]);
-const moneyRightArr2:any  = ref([]);
-const dayArr:any  = ref([]);
-const monthArr:any  = ref([]);
-const ruleForm:any  = reactive({
+const professionalArr: any = ref([]);
+const moneyLeftArr1: any = ref([]);
+const moneyRightArr1: any = ref([]);
+const moneyLeftArr2: any = ref([]);
+const moneyRightArr2: any = ref([]);
+const dayArr: any = ref([]);
+const monthArr: any = ref([]);
+const ruleForm: any = reactive({
   data: {
     positionNature: 0, //工作性质
     positionName: "", //职位名称
@@ -614,7 +610,7 @@ const addPosition = async function (params: any) {
     positionEducation, //学历id
     positionNature, //工作性质
     positionName, //职位名称
-    positionPositive: (positionPositive ? true : false), //是否转正
+    positionPositive: positionPositive ? true : false, //是否转正
     positionDetailedAddr, //详细地址
     positionDes, //职位描述
     positionSize, //招聘人数
