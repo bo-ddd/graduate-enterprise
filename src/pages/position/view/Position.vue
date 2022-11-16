@@ -362,7 +362,7 @@ let getPositionList = async function () {
     pageIndex: pageNum.value,
     userId: 10000,
     pageSize: pageSize.value,
-    positionStatus: 2,
+    positionStatus: 1,
   });
   let res2 = await getEnterprise({
     userId: 10000,
