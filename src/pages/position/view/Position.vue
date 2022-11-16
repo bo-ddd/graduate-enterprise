@@ -161,7 +161,7 @@
                   </div>
                 </div>
                 <div class="refresh-info align-center">
-                  <div class="cur-po" @click="setPosition(item)">编辑</div>
+                  <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
                   <div class="bor"></div>
                   <div class="cur-po" @click="setPositionStatus(item.positionId,1)">开始招聘</div>
                   <div class="bor"></div>
@@ -264,6 +264,10 @@ const downPositionList:any = ref([]);
 const autoRefrensh=function(positionId:any){
   centerDialogVisible.value = true
 }
+onMounted(() => {
+  getPositionList();
+  getDownList();
+});
 const refresh = function (positionId: any) {
   if (orderNum.value > 0) {
     ElMessageBox.confirm(
@@ -344,10 +348,6 @@ const setPositionStatus = async function (
     }
   }
 };
-onMounted(() => {
-  getPositionList();
-  getDownList();
-});
 //在招分页：
 const handleCurrentChange = async (val: number) => {
   pageNum.value = val;
@@ -438,12 +438,7 @@ const to = function (path: string) {
   window.location.href=path+'.html'
 };
 const setPosition = function (id: any) {
-  router.push({
-    path: "/positionDetails",
-    query: {
-      positionId: id,
-    },
-  });
+  window.location.href=`positionDetails.html?positionId=${id}`
 };
 </script>
 <style lang="scss" scoped>
