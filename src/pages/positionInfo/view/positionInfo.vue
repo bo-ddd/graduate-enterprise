@@ -26,7 +26,6 @@
             v-model="ruleForm.data.positionTypeArr"
             :props="props"
             :options="industryArr"
-            @change="handleChange"
             placeholder="请选择职业类别"
           />
         </el-form-item>
@@ -239,7 +238,6 @@
           <el-cascader
             v-model="ruleForm.data.positionAddr"
             :options="cityData"
-            @change="handleChange"
             class="w-340"
             placeholder="请选择工作地点"
           >
@@ -291,15 +289,12 @@ const props = {
   expandTrigger: "hover",
 };
 onMounted(() => {
-  //  to("/position");
+getData();
 });
 const value = ref("");
 const activeNum = ref(-1);
 const activeNum2 = ref(-1);
 
-const handleChange = function (value: any) {
-  console.log(value);
-};
 const formSize = ref("default");
 const ruleFormRef = ref<FormInstance>();
 
@@ -341,12 +336,11 @@ const getData = async function () {
   const res4 = await use.getWishMoney({}); //薪资
   const res5 = await use.getMonthDay({}); //月和天
   const res6 = await use.getInternshipMoney({}); //实习薪资
-  console.log(res);
   if (res.code == 200) {
     educationArr.value = res.data;
   }
   if (res2.code == 200) {
-    let a = res2.data.map((item: any) => {
+    industryArr.value = res2.data.map((item: any) => {
       return {
         value: item.value,
         label: item.label,
@@ -359,8 +353,6 @@ const getData = async function () {
         }),
       };
     });
-    console.log(a);
-    industryArr.value = a;
   }
   if (res3.code == 200) {
     professionalArr.value = res3.data;
@@ -378,7 +370,6 @@ const getData = async function () {
     moneyRightArr2.value = res6.data.wishMoenyRightList;
   }
 };
-getData();
 const salaryStart1 = function (rule: any, value: any, callback: any) {
   if (ruleForm.data.positionNature == 0) {
     console.log(111);
@@ -431,8 +422,6 @@ const salaryEnd1 = function (rule: any, value: any, callback: any) {
 };
 const salaryEnd2 = function (rule: any, value: any, callback: any) {
   if (ruleForm.data.positionNature == 1) {
-    console.log(111);
-
     if (!value) {
       return callback(new Error("请选择"));
     } else if (
@@ -448,9 +437,6 @@ const salaryEnd2 = function (rule: any, value: any, callback: any) {
   }
 };
 const positiveChange = function (rule: any, value: any, callback: any) {
-  console.log("---------");
-  console.log(value);
-
   if (ruleForm.data.positionNature == 1) {
     if (value === "") {
       return callback(new Error("请选择转正机会"));
@@ -555,14 +541,12 @@ const rules = reactive<FormRules>({
   ],
 });
 const select = function (index: number) {
-  console.log(rules);
   if (activeNum.value == -1) {
     (ruleForm.data.positionPositive as any) = "";
   }
   if (activeNum.value == -1 && index == 0) {
     return;
   }
-  // rules.salaryStart1[0].required=false
   activeNum.value = index;
   ruleForm.data.positionNature = index;
 };
@@ -573,13 +557,8 @@ const select2 = function (index: number) {
   console.log(ruleForm.data.positionPositive);
 };
 const submitForm = async (formEl: FormInstance | undefined) => {
-  console.log(ruleForm.data);
-  console.log(formEl);
-
   if (!formEl) return;
   await formEl.validate((valid, fields: any) => {
-    console.log(valid);
-
     console.log(ruleForm.data);
     if (valid) {
       const positionType =
@@ -593,9 +572,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
             (e: any) => e.value == ruleForm.data.positionTypeArr[1]
           ).label;
       const positionNature = ruleForm.data.positionNature;
-
-      console.log("submit!");
-      // console.log(positionTypeArr);
       ElMessageBox.confirm(
         `是否确认发布类别为${positionType}, 工作性质为${
           positionNature == 0 ? "全职" : "实习"
@@ -610,7 +586,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         addPosition(ruleForm.data);
       });
     } else {
-      console.log("error submit!", fields);
       ElMessage.error((Object as any).values(fields)[0][0].message);
     }
   });
@@ -657,7 +632,6 @@ const addPosition = async function (params: any) {
     positionId: "", //职位id
   };
   let res = await use.addPosition(form);
-  console.log(res);
   if (res.code == 200) {
     ElMessage({
       type: "success",

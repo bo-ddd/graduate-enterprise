@@ -4,6 +4,7 @@ import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
+import Layout from "@/pages/layout/view/Layout.vue";
 interface Check {
     id: number,
     label: string | number,
@@ -252,6 +253,7 @@ getInviteDrop();
 </script>
 <template>
     <div class="personnel">
+        <Layout></Layout>
         <div class="operation-wrap box-shadow">
             <div class="wrap operation-container fs-18">
                 <div class="operation-item" @click="handleItemChange(0)">
