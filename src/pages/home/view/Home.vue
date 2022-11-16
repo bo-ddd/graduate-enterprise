@@ -158,7 +158,7 @@
         </div>
 
         <footer-bar></footer-bar>
-        
+
 
         <!-- 弹层 -->
         <el-dialog class="dialog" v-model="centerDialogVisible" align-center :show-close="false" title="Warning"
@@ -266,7 +266,6 @@ interface Res {
 // 这是修改意向学校的接口
 const setEnterpriseSchoolOfIntention = async function (payload: setEnterpriseSchoolOfIntentionType) {
     const res: any | Res = await use.setEnterpriseSchoolOfIntention(payload);
-    console.log(res)
     if (res.code == 200) {
         ElMessage({
             message: '修改成功！',
