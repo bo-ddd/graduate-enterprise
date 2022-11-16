@@ -177,8 +177,7 @@
                     <label class="mr-12">意向学校</label>
                     <el-select v-model="selectValue" size="large" multiple filterable allow-create default-first-option
                         :reserve-keyword="false" placeholder="请输入">
-                        <el-option v-for="item in schoolList" :key="item.schoolId" :label="item.schoolName"
-                            :value="item.schoolId" />
+                        <el-option v-for="item in schoolList" :label="item.schoolName" :value="item.schoolId" />
                     </el-select>
                 </div>
                 <div class="ml-68">可搜索添加意向学校</div>
@@ -348,6 +347,7 @@ getEnterpriseInfo()
 :deep(.el-dialog__header) {
     margin: 0;
     padding: 10px 0 10px 0;
+    text-align: center;
 
     .dialog_header-h4 {
         padding: 0 0 10px 0;
