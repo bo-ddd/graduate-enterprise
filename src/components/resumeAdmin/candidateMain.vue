@@ -29,10 +29,12 @@
             <el-empty class="mt-20" v-if="!cardList.length" image-size="260" description="暂无简历数据" />
 
             <!-- 简历弹出框 --> 
-            <el-dialog v-model="showResumeImage" width="55%" :lock-scroll="false" :align-center="true"
-                class="resume-image">
+            <el-dialog v-model="showResumeImage" width="55%"  :lock-scroll="false" :align-center="true" class="resume-image">
+           
                 <div class="resume-box">
-                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn">通过初筛</div>
+                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn"> 
+                        通过初筛
+                    </div>
                     <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true,btnSpan = false">
                         <img v-show="btnImg" src="@/assets/images/onload.png"  alt="">
                         <span v-show="btnSpan" >通过初筛后才能下载简历</span>
@@ -344,6 +346,18 @@ let fuzzyQuery = async () => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-dialog__close){
+    font-size:33px !important;
+    margin-left:60px;
+    margin-bottom:60px !important;
+    color: #ffffff;
+}
+
+:deep(.el-dialog__header){
+    padding: 0;
+    padding-bottom: 0;
+}
+
 :deep(.el-dialog) {
     margin-top: 20px;
     background: #e8e8e8;
