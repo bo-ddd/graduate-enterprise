@@ -367,8 +367,6 @@ const getData = async function () {
 };
 const salaryStart1 = function (rule: any, value: any, callback: any) {
   if (ruleForm.data.positionNature == 0) {
-    console.log(111);
-
     if (!value) {
       return callback(new Error("请选择"));
     } else if (
@@ -549,12 +547,10 @@ const select2 = function (index: number) {
   activeNum2.value = index;
   ruleForm.data.positionPositive = (activeNum.value == 1 &&
     activeNum2.value == 0) as any;
-  console.log(ruleForm.data.positionPositive);
 };
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields: any) => {
-    console.log(ruleForm.data);
     if (valid) {
       const positionType =
         industryArr.value.find(

@@ -56,7 +56,7 @@
 
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
-                        <el-cascader placeholder="请输入" class="el-input_240" :options="RegisteredArea" clearable />
+                        <el-cascader placeholder="请输入" class="el-input_240" :options="cityJson" :props="{ 'label': 'name', 'value': 'code' }" clearable />
                     </el-form-item>
 
                     <!-- 详细注册地址 -->
@@ -490,6 +490,7 @@ import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
+import cityJson from "@/assets/json/city.json";
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否

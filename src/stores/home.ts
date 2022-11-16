@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import Api from "@/api/api";
+import { UploadFilled } from "@element-plus/icons-vue";
 
 
 export const useHomeStore = defineStore("home", () => {
@@ -78,6 +79,9 @@ export const useHomeStore = defineStore("home", () => {
     }) {
         return Api.getPositionData(payload);
     }
+    function UploadFilled(payload: any){ 
+        return Api.uploadFile(payload);
+    }
 
     return {
         getEnterprise,
@@ -89,5 +93,6 @@ export const useHomeStore = defineStore("home", () => {
         getSchoolList,
         getPositionList,
         setEnterpriseSchoolOfIntention,
+        UploadFilled,
     };
 });

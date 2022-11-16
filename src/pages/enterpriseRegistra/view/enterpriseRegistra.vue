@@ -9,7 +9,7 @@
                     <h3>基本信息</h3>
                     <!-- 企业全称 -->
                     <el-form-item label="企业全称">
-                        <el-input class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyName" />
+                        <el-input class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
                     </el-form-item>
 
                     <!-- 品牌全称 -->
@@ -56,7 +56,8 @@
 
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
-                        <el-cascader placeholder="请输入" class="el-input_240" :options="RegisteredArea" clearable>
+                        <el-cascader placeholder="请输入" class="el-input_240" v-model="form.companyRegisterAddr"
+                            :options="cityJson" :props="{ 'label': 'name', 'value': 'name' }" clearable>
                         </el-cascader>
                     </el-form-item>
 
@@ -67,7 +68,8 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" class="el-input_240" :options="forbiddenData">
+                        <el-cascader placeholder="请选择" v-model="companyIndustry" class="el-input_240"
+                            :options="forbiddenData">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
                             </template>
@@ -194,7 +196,7 @@
 
                         <div class="align-center">
                             <el-form-item label="学校">
-                                <el-select size="large" class="school-input" v-model="schoolListVal" multiple
+                                <el-select size="large" class="school-input" v-model="form.companyWishSchool" multiple
                                     placeholder="请输入">
                                     <el-option v-for="item in schoolList" :key="item.sortId" :label="item.schoolName"
                                         :value="item.schoolId" />
@@ -224,22 +226,35 @@ import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
-const RegisteredArea = [
-    {
-        value: 'value',
-        label: 'label',
-        children: [
-            {
-                value: 'childrenvalue',
-                label: 'childrenlabel',
-            }
-        ]
-    }
-]
+import cityJson from "@/assets/json/city.json";
+import { ElMessage } from 'element-plus'
 // ajax
 const use = useHomeStore();
+interface Form {
+    companyAddr?: string,
+    companyContactEmail?: string,
+    companyContactName?: string,
+    companyContactPhone?: string,
+    companyFullName?: string,
+    companyIndustryLeft?: string,
+    companyIndustryRight?: string,
+    companyIntroducation?: string,
+    companyLicense?: string,
+    companyLogo?: any,
+    companyName?: string,
+    companyNature?: number,
+    companyRegisterAddr?: string | any,
+    companySize?: number,
+    companySocialCreditCode?: string,
+    companyStatus?: number,
+    companyTag?: number,
+    companyWebUrl?: string,
+    companyWishSchool?: string,
+    userId: number
+}
+let companyIndustry: any = ref([]) as any;
 // form 表单数据
-const form = reactive({
+const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
@@ -253,7 +268,6 @@ const form = reactive({
     companyTag: 0,// 企业标签 integer
     companySocialCreditCode: '',//企业社会信用代码
     companyLicense: '',// 企业营业执照 file
-    companyLicenseUrl: '',// 企业营业执照Url 不填
     companyContactName: '',// 企业联系人
     companyContactPhone: '',// 企业联系电话
     companyContactEmail: '',// 企业接收简历邮箱
@@ -264,41 +278,70 @@ const form = reactive({
 });
 
 // 点击提交按钮走的方法
-const onSubmit = () => {
-    setModifyEnterpriseInfo({
-        companyAddr: form.companyAddr,
-        companyContactEmail: form.companyContactEmail,
-        companyContactName: form.companyContactName,
-        companyContactPhone: form.companyContactPhone,
-        companyFullName: form.companyFullName,
-        companyIndustryLeft: form.companyIndustryLeft,
-        companyIndustryRight: form.companyIndustryRight,
-        companyIntroducation: form.companyIntroducation,
-        companyLicense: form.companyLicense,
-        companyLogo: form.companyLogo,
-        companyName: form.companyName,
-        companyNature: form.companyNature,
-        companyRegisterAddr: form.companyRegisterAddr,
-        companySize: form.companySize,
-        companySocialCreditCode: form.companySocialCreditCode,
-        companyStatus: form.companyStatus,
-        companyTag: form.companyTag,
-        companyWebUrl: form.companyWebUrl,
-        companyWishSchool: form.companyWishSchool,
+console.log('cityJson', cityJson)
+const onSubmit = async () => {
+    console.log('form', form)
+    let obj: Form | any = {};
+    let key: keyof Form;
+    for (key in form) {
+        if (form[key]) {
+            obj[key] = form[key]
+        }
+    }
+    console.log('校验完要传给后端的', obj)
+    console.log('所属行业选中的', companyIndustry.value);
+    // console.log('企业注册地区', form.companyRegisterAddr.join(','))
+    // companyContactEmail: form.companyContactEmail,
+    // companyContactName: form.companyContactName,
+    // companyContactPhone: form.companyContactPhone,
+
+    // companyIntroducation: form.companyIntroducation,
+    // companyLicense: form.companyLicense,
+    // companyLogo: form.companyLogo,
+    // companyNature: form.companyNature,
+    // companySocialCreditCode: form.companySocialCreditCode,
+    // companyStatus: form.companyStatus,
+    // companyTag: form.companyTag,
+    // companyWebUrl: form.companyWebUrl,
+    // companyWishSchool: form.companyWishSchool,
+    const res: any | Res = await use.setModifyEnterpriseInfo({
+        // companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
+        // companyFullName: form.companyFullName,
+        // companyName: form.companyName,
+        // companySize: form.companySize,
+        // companyAddr: form.companyAddr,
+        companyIndustryLeft: companyIndustry.value[0],
+        companyIndustryRight: companyIndustry.value[1],
         userId: form.userId,
     });
+    if (res.code == 200) {
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+        getEnterprise();
+    };
+
+    // setModifyEnterpriseInfo({
+    //     companyFullName: form.companyFullName,
+    //     companyName: form.companyName,
+    //     companySize: form.companySize,
+    //     userId: form.userId,
+    // });
 };
 // companyWebUrl
-let getEnterpriseData: any = ref([]);
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
     const res = await use.getEnterprise({ userId: 10000 });
-    Object.assign(getEnterpriseData, res.data);
+    console.log(res.data)
     Object.assign(form, res.data);
+    // companyIndustry.value = res.data.companyIndustry
+    let aaa = res.data.companyIndustry.splice(res.data.companyIndustry)
+    console.log('获取企业详细信息方法里打印的',aaa)
 };
 getEnterprise();
 
-// 修改企业详细信息接口
+
 interface EnterpriseInfoType {
     companyAddr?: string,
     companyContactEmail?: string,
@@ -326,9 +369,14 @@ interface Res {
     data: string | [] | any,
     msg: string,
 }
+// 修改企业详细信息接口
 const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
     const res: any | Res = await use.setModifyEnterpriseInfo(payload);
     if (res.code == 200) {
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
         getEnterprise();
     };
 };
@@ -347,14 +395,14 @@ const handleDownload = (): any | void => { };
 let enterpriseNature: any = ref([]);
 const getEnterpriseNatureList = async function () {
     const res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature, res.data);
+    Object.assign(enterpriseNature.value, res.data);
 };
 getEnterpriseNatureList();
 let enterpriseScale: any = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
     const res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale, res.data);
+    Object.assign(enterpriseScale.value, res.data);
 };
 getEnterpriseSizeList();
 
@@ -369,21 +417,21 @@ let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
     const res = await use.getEnterpriseTagList();
-    Object.assign(enterpriseLabel, res.data);
+    Object.assign(enterpriseLabel.value, res.data);
 };
 getEnterpriseTagList();
 
 const schoolListVal: any = ref([]);
 // 学校列表
-interface SchoolList {
+interface SchoolListType {
     schoolId: number,
     schoolName: string,
     sortId: number,
 };
-const schoolList: any | SchoolList = ref([]);
+const schoolList: any | SchoolListType = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
-    Object.assign(schoolList, res.data);
+    Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
 </script>

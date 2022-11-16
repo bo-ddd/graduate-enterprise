@@ -54,8 +54,8 @@
             v-model="ruleForm.data.positionTypeArr"
             :props="propsRole"
             :options="industryArr"
-            placeholder="请选择职业类别"
             disabled
+            placeholder="请选择职业类别"
           />
         </el-form-item>
       </div>
@@ -352,7 +352,7 @@ const dayArr:any  = ref([]);
 const monthArr:any  = ref([]);
 const ruleForm: any = reactive({
   data: {
-    positionNature: 1, //工作性质
+    positionNature: '', //工作性质
     positionName: "", //职位名称
     positionPositive: "", //是否转正
     salaryStart1: "", //薪资始
@@ -462,8 +462,6 @@ const salaryEnd1 = function (rule: any, value: any, callback: any) {
 };
 const salaryEnd2 = function (rule: any, value: any, callback: any) {
   if (ruleForm.data.positionNature == 1) {
-    console.log(111);
-
     if (!value) {
       return callback(new Error("请选择"));
     } else if (
@@ -597,15 +595,11 @@ const select2 = function (index: number) {
   activeNum2.value = index;
   ruleForm.data.positionPositive = (activeNum.value == 1 &&
     activeNum2.value == 0) as any;
-  console.log(ruleForm.data.positionPositive);
 };
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields: any) => {
-    console.log(valid);
-
-    console.log(ruleForm.data);
     if(valid){
       setPositon(ruleForm.data);
     }else{
