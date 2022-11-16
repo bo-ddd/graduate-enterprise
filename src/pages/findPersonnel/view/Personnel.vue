@@ -5,6 +5,8 @@ import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
 import Layout from "@/pages/layout/view/Layout.vue";
+
+
 interface Check {
     id: number,
     label: string | number,
@@ -19,12 +21,12 @@ let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
 interface Form{
-    sex?:null|number|string,
-    education?:null|number|string,
-    professional?:null|number|string,
-    city?:null|number|string,
-    wishMoneyLeft?:null|number|string,
-    wishMoneyRight?:null|number|string,
+    sex?:any,
+    education?:any,
+    professional?:any,
+    city?:any,
+    wishMoneyLeft?:any,
+    wishMoneyRight?:any,
 }
 let form:Form = reactive({
     sex: null,//性别
@@ -35,7 +37,10 @@ let form:Form = reactive({
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
 
-let invitationForm = reactive({
+let invitationForm = reactive<{
+    status:any;
+    professional:any;
+}>({
     status:null,
     professional:null,
 });
@@ -154,7 +159,6 @@ getWishMoneyList();
 //获取到人才的列表
 const getTalentList = async () => {
     let obj:any = {};
-    console.log(form);
     let key: keyof Form;
     for (key in form) {
         if(form[key]){
@@ -167,14 +171,11 @@ const getTalentList = async () => {
     }
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
-    console.log('-------这个是获取人才------');
     const res:Res|any = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
     paging.total = res.data.totalCount;
-    console.log(paging);
-    console.log(res.data.talentList);
 }
 getTalentList();
 
@@ -186,10 +187,7 @@ const inviteTalent = async () => {
         positionId:checkPosition.value,
     });
     dialogFormVisible.value = false;
-    if(res.code !==200){
-        console.log('邀请人才接口报错');
-    }else{
-        console.log('邀请人才成功!!');
+    if(res.code ==200){
         getInvationsNumber();
     }
 }

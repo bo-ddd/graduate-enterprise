@@ -52,7 +52,7 @@
           <el-cascader
             class="w-360"
             v-model="ruleForm.data.positionTypeArr"
-            :props="props"
+            :props="propsRole"
             :options="industryArr"
             placeholder="请选择职业类别"
             disabled
@@ -333,7 +333,7 @@ onMounted(async () => {
 interface Res {
   code: number;
 }
-const props = {
+const propsRole:any = {
   expandTrigger: "hover",
 };
 const value = ref("");
