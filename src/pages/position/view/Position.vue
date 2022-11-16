@@ -283,8 +283,6 @@ const refresh = function (positionId: any) {
         positionId,
         userId: 10000,
       });
-      console.log(res);
-
       if (res.code == 200) {
         ElMessage({
           type: "success",
@@ -389,8 +387,6 @@ const getDownList = async function () {
   if (res.code == 200) {
     downNum.value = res.data ? res.data.maxCount : 0;
     downPositionList.value = res.data ? res.data.data : [];
-    console.log(res);
-    console.log(downPositionList);
   }
 };
 let deletePosition = function (params: any) {
