@@ -34,7 +34,7 @@
                         <div class="describe ml-16">您现在可以发布职位信息、报名招聘会</div>
                     </div>
                 </div>
-                <div class="btm justify-content">
+                <div class="btm flex-j-c-s-b">
                     <div class="btm-item  btm-item_hover hand" @click="nav('position')">
                         <div class="just-between">
                             <div class="left">
@@ -116,7 +116,7 @@
                         <el-button type="primary" @click="centerDialogVisible = true">选择意向学校</el-button>
                     </div>
                 </div>
-                <div class="mt-25 text">
+                <div class="mt-19 text">
                     {{ change }}
                 </div>
             </div>
@@ -330,12 +330,15 @@ const getEnterpriseInfo = async () => {
     }
 }
 getEnterpriseInfo()
-
 </script>
 
 <style lang="scss" scoped>
 .dialog-footer button:first-child {
     margin-right: 10px;
+}
+
+.mt-19 {
+    margin-top: 19px;
 }
 
 :deep(.dialog) {
@@ -578,10 +581,12 @@ img {
         height: 160px;
         box-sizing: border-box;
 
+
         &>.btm-item {
             width: 245px;
             height: 145px;
-            margin: 0 72px ;
+            margin: 0 25px;
+
             .left h3 {
                 margin: 8px 0;
             }
@@ -645,6 +650,12 @@ img {
     .top img {
         max-width: 12px;
     }
+}
+
+.flex-j-c-s-b {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .vip {
