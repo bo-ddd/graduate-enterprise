@@ -79,6 +79,12 @@ export const useHomeStore = defineStore("home", () => {
     }) {
         return Api.getPositionData(payload);
     }
+    /**
+     * @returns 上传接口 入参如下：
+     * @param userId : integer | Nunber
+     * @param userLogo : file
+     * @param companyLicense : file
+     */
     function UploadFilled(payload: any){ 
         return Api.uploadFile(payload);
     }

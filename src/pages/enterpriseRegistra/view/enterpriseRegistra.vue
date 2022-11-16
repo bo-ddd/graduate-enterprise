@@ -109,39 +109,13 @@
                     <div class="align-center">
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
-                            <el-upload action="#" list-type="picture-card" :auto-upload="false">
-                                <el-icon class="uplpoad-icon flex-column-center">
-                                    <div>
-                                        <Plus />
-                                    </div>
-                                    <div class="fs-13">上传图片</div>
+                            <!--<el-upload class="avatar-uploader" :show-file-list="false"
+                                :before-upload="beforeAvatarUpload">
+                                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                                <el-icon v-else class="avatar-uploader-icon">
+                                    <Plus />
                                 </el-icon>
-                                <template #file="{ file }">
-                                    <div>
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url" />
-                                        <span class="el-upload-list__item-actions">
-                                            <span class="el-upload-list__item-preview"
-                                                @click="handlePictureCardPreview()">
-                                                <el-icon>
-                                                    <zoom-in />
-                                                </el-icon>
-                                            </span>
-                                            <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @change="handleDownload()">
-                                                <el-icon>
-                                                    <Download />
-                                                </el-icon>
-                                            </span>
-                                            <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @click="handleRemove()">
-                                                <el-icon>
-                                                    <Delete />
-                                                </el-icon>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </template>
-                            </el-upload>
+                            </el-upload>-->
                             <div class="business-license_test mt-10">
                                 <p>
                                     请上传清晰的营业执照, 执照中的<b>社会信用代码、企业名称</b>需与上方填写的一致。
@@ -228,6 +202,9 @@ import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
 import { ElMessage } from 'element-plus'
+// import type { UploadProps } from 'element-plus'
+// const imageUrl = ref('');
+
 // ajax
 const use = useHomeStore();
 interface Form {
@@ -252,6 +229,16 @@ interface Form {
     companyWishSchool?: string,
     userId: number
 }
+// const beforeAvatarUpload: UploadProps['beforeUpload'] =async (rawFile) => {
+//     console.log('--------上传图片之前---------');
+//     let formData = new FormData();
+//     formData.append('userId', 10000);
+//     formData.append('companyLicense', rawFile);
+//     const res = await use.UploadFilled(formData);
+//     console.log(res);
+//     console.log('log ~ rawFile', rawFile);
+// }
+// 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
 // form 表单数据
 const form: Form = reactive({
@@ -335,9 +322,8 @@ const getEnterprise = async function () {
     const res = await use.getEnterprise({ userId: 10000 });
     console.log(res.data)
     Object.assign(form, res.data);
-    // companyIndustry.value = res.data.companyIndustry
-    let aaa = res.data.companyIndustry.splice(res.data.companyIndustry)
-    console.log('获取企业详细信息方法里打印的',aaa)
+    companyIndustry.value = res.data.companyIndustry.split(' - ');
+    console.log('companyIndustry.value', companyIndustry.value);
 };
 getEnterprise();
 
