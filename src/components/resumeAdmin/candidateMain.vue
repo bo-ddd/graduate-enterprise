@@ -158,9 +158,7 @@ let inviteInterview =async ()=>{
     dialogVisible.value = false;
     let res:any = await enterprise.modifyResume(inviteFrom);
     if (res.code == 200) {
-        ElMessage({
-
-            
+        ElMessage({      
             message: 'success',
             type: 'success',
         })
@@ -198,7 +196,6 @@ let getUserInfo = async (item: any) => {
     resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
-        userId: item.userId
     })
     if (res.code == 200) {
         console.log(res);
@@ -214,7 +211,6 @@ let batchInappropriate = async () => {
     let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 6,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -238,7 +234,6 @@ let batchbyFilter = async () => {
     let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 3,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -268,7 +263,6 @@ let inappropriate = async (event: Event, item: any) => {
         interviewTime: item.interviewTime,
         positionId: item.positionId,
         statusId: 6,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -296,7 +290,6 @@ let byFilter = async (event: Event, item: any) => {
         interviewTime: item.interviewTime,
         positionId: item.positionId,
         statusId: 3,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -349,7 +342,7 @@ getStage();
 let allPositions: any = ref([]);
 let positionDropValue = ref();
 let getPositionDrop = async () => {
-    let res: any = await enterprise.getPositionDrop({ userId: 10000 });
+    let res: any = await enterprise.getPositionDrop();
     if (res.code == 200) {
         allPositions.value = res.data;
     } else {
@@ -385,7 +378,6 @@ let getResume = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        userId: 10000,
         companyId: 10000,
     });
     if (res.code == 200) {
@@ -407,7 +399,6 @@ let fuzzyQuery = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        userId: 10000,
         companyId: 10000,
         deliveryStatus: stageValue.value,
         educationId: educationValue.value,
