@@ -28,18 +28,19 @@
         <div class="main">
             <el-empty class="mt-20" v-if="!cardList.length" :image-size="260" description="暂无简历数据" />
 
-            <!-- 简历弹出框 --> 
-            <el-dialog v-model="showResumeImage" width="55%"  :lock-scroll="false" :align-center="true" class="resume-image">
-           
+            <!-- 简历弹出框 -->
+            <el-dialog v-model="showResumeImage" width="55%" :lock-scroll="false" :align-center="true"
+                class="resume-image">
+
                 <div class="resume-box">
-                    <div v-show="resumeBtn" @click="byFilter($event,itemObj)" class="resume-btn"> 
+                    <div v-show="resumeBtn" @click="byFilter($event, itemObj)" class="resume-btn">
                         通过初筛
                     </div>
-                    <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true,btnSpan = false">
-                        <img v-show="btnImg" src="@/assets/images/onload.png"  alt="">
-                        <span v-show="btnSpan" >通过初筛后才能下载简历</span>
+                    <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true, btnSpan = false">
+                        <img v-show="btnImg" src="@/assets/images/onload.png" alt="">
+                        <span v-show="btnSpan">通过初筛后才能下载简历</span>
                     </div>
-                    <div class="resume-btn" @click="inappropriate($event,itemObj)">不合适</div>
+                    <div class="resume-btn" @click="inappropriate($event, itemObj)">不合适</div>
                 </div>
                 <img :src="resumeUrl" alt="">
             </el-dialog>
@@ -60,8 +61,11 @@
                         education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`
                     }">
                         <template #btn>
-                            <el-button @click="inappropriate($event,item)">不合适</el-button>
-                            <el-button @click="byFilter($event,item)" type="primary">通过初筛</el-button>
+                            <el-button @click="inappropriate($event, item)">不合适</el-button>
+                            <el-button v-show="item.deliveryStatus == '不合适'" @click="byFilter($event, item)"
+                                type="primary">通过初筛</el-button>
+                            <el-button v-show="item.deliveryStatus == '通过初筛'" @click="dialog($event, item)"
+                                type="primary" plain>邀约面试</el-button>
                         </template>
                     </card.cardItem>
                 </template>
@@ -72,12 +76,63 @@
                     layout="prev, pager, next" :total="total" />
             </div>
         </div>
+
+        <el-dialog v-model="dialogVisible" width="40%" align-center>
+            <div class="youyue">
+                <div>
+                    <h2>邀请{{ name }}，参加面试</h2>
+                </div>
+                <div>
+                    面试职位：
+                    <el-select v-model="inviteFrom.positionId" class="m-2" placeholder="面试职位">
+                        <el-option v-for="item in allPositions" :key="item.value" :label="item.label"
+                            :value="item.value" />
+                    </el-select>
+                </div>
+
+                <div>
+                    面试时间：
+                    <el-date-picker v-model="inviteFrom.interviewTime " type="datetime" placeholder="请选择时间" format="YYYY/MM/DD hh:mm:ss"
+                        value-format="YYYY-MM-DD h:m:s a" />
+                </div>
+
+                <div>
+                    面试地点：
+                    <el-input v-model="inviteFrom.interviewAddr" class="input-width" placeholder="面试地点：" />
+                </div>
+
+                <div>
+                    联系人：
+                    <el-input v-model="inviteFrom.interviewName" class="input-width ml-15" placeholder="联系人" />
+                </div>
+                
+
+
+                <div>
+                    联系方式：
+                    <el-input v-model="inviteFrom.interviewPhone" class="input-width" placeholder="联系方式：" />
+                </div>
+
+                <div>
+                    备注信息：
+                    <el-input v-model="inviteFrom.interviewNote" class="input-text" axlength="200" placeholder="请填写备注事项" show-word-limit type="textarea" />
+                </div>
+            </div>
+
+
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button type="primary" @click="inviteInterview()">确定并发送</el-button>
+                </span>
+            </template>
+        </el-dialog>
+
         <footerBar></footerBar>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import card from "@/components/card/index";
 import footerBar from "@/components/footer/footerBar.vue"
@@ -87,13 +142,43 @@ let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
 
+/***
+ * 邀约面试  
+ */
+let name = ref();
+const dialogVisible = ref(false);
+let dialog = (event: Event, item: any) => {
+    name.value = item.userName;
+    event.stopPropagation();
+    dialogVisible.value = true;
+}
+
+let inviteFrom:any = reactive({});
+let inviteInterview =async ()=>{
+    dialogVisible.value = false;
+    let res:any = await enterprise.modifyResume(inviteFrom);
+    if (res.code == 200) {
+        ElMessage({
+
+            
+            message: 'success',
+            type: 'success',
+        })
+        getResume();
+        resumeBtn.value = false;
+    } else {
+        ElMessage.error('this is a error message.')
+    }
+}
+
+
 /**
  * 
  */
 let btnImg = ref(true);
 let btnSpan = ref(false);
 let isOnload = () => {
-    if(resumeBtn.value){
+    if (resumeBtn.value) {
         btnImg.value = false;
         btnSpan.value = true
     }
@@ -111,7 +196,7 @@ let getUserInfo = async (item: any) => {
     if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
     showResumeImage.value = true;
     resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
-    let res:any = await enterprise.getResumeUrl({
+    let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
         userId: item.userId
     })
@@ -126,7 +211,7 @@ let getUserInfo = async (item: any) => {
 let batchInappropriate = async () => {
     console.log(checkedCities.value);
     let deliveryId = checkedCities.value.toString();
-    let res:any = await enterprise.modifyResumeStatus({
+    let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 6,
         userId: 10000
@@ -150,7 +235,7 @@ let batchInappropriate = async () => {
 let batchbyFilter = async () => {
     console.log(checkedCities.value);
     let deliveryId = checkedCities.value.toString();
-    let res:any = await enterprise.modifyResumeStatus({
+    let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 3,
         userId: 10000
@@ -172,9 +257,9 @@ let batchbyFilter = async () => {
 /**\
  * 不合适
  */
-let inappropriate = async (event:Event,item: any) => {
+let inappropriate = async (event: Event, item: any) => {
     event.stopPropagation();
-    let res:any = await enterprise.modifyResume({
+    let res: any = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
         interviewName: item.interviewName,
@@ -200,9 +285,9 @@ let inappropriate = async (event:Event,item: any) => {
 /***
  * 通过初筛
  */
-let byFilter = async (event:Event,item: any) => {
+let byFilter = async (event: Event, item: any) => {
     event.stopPropagation();
-    let res:any = await enterprise.modifyResume({
+    let res: any = await enterprise.modifyResume({
         deliveryId: item.deliveryId,
         interviewAddr: item.interviewAddr,
         interviewName: item.interviewName,
@@ -248,7 +333,7 @@ const handleCheckedCitiesChange = (value: any[]) => {
 let applicationStage: any = ref([]);
 let stageValue = ref();
 let getStage = async () => {
-    let res:any = await enterprise.getStage({});
+    let res: any = await enterprise.getStage({});
     if (res.code == 200) {
         applicationStage.value = res.data;
     } else {
@@ -264,7 +349,7 @@ getStage();
 let allPositions: any = ref([]);
 let positionDropValue = ref();
 let getPositionDrop = async () => {
-    let res:any = await enterprise.getPositionDrop({ userId: 10000 });
+    let res: any = await enterprise.getPositionDrop({ userId: 10000 });
     if (res.code == 200) {
         allPositions.value = res.data;
     } else {
@@ -279,7 +364,7 @@ getPositionDrop();
 let educationList: any = ref([]);
 let educationValue = ref();
 let getEducation = async () => {
-    let res:any = await enterprise.getEducation({});
+    let res: any = await enterprise.getEducation({});
     if (res.code == 200) {
         educationList.value = res.data;
     } else {
@@ -297,7 +382,7 @@ let pageSize = ref(10);
 let currentPage = ref(1);
 let total = ref();
 let getResume = async () => {
-    let res:any = await enterprise.getResume({
+    let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
         userId: 10000,
@@ -319,7 +404,7 @@ getResume();
  * 模糊查询
  */
 let fuzzyQuery = async () => {
-    let res:any = await enterprise.getResume({
+    let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
         userId: 10000,
@@ -346,32 +431,54 @@ let fuzzyQuery = async () => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.el-dialog__close){
-    font-size:33px !important;
-    margin-left:60px;
-    margin-bottom:60px !important;
-    color: #ffffff;
-}
-
-:deep(.el-dialog__header){
-    padding: 0;
+:deep(.el-dialog__header) {
+    padding: 12px;
     padding-bottom: 0;
 }
-
 :deep(.el-dialog) {
-    margin-top: 20px;
-    background: #e8e8e8;
-    text-align: center;
+          border-radius:6px;
+        }
+
+.input-width {
+    width: 200px;
 }
 
-:deep(.el-dialog__body) {
-    padding: 0;
+.input-text {
+    width:400px;
 }
 
 .candidate {
+    .youyue {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+    }
+
     .main {
         min-height: 50vh;
         padding: 0 !important;
+
+        :deep(.el-dialog__close) {
+            font-size: 33px !important;
+            margin-left: 60px;
+            margin-bottom: 60px !important;
+            color: #ffffff;
+        }
+
+        :deep(.el-dialog__header) {
+            padding: 0;
+            padding-bottom: 0;
+        }
+
+        :deep(.el-dialog) {
+            margin-top: 20px;
+            background: #e8e8e8;
+            text-align: center;
+        }
+
+        :deep(.el-dialog__body) {
+            padding: 0;
+        }
 
         .resume-image {
             img {
@@ -391,13 +498,13 @@ let fuzzyQuery = async () => {
 
             .resume-btn {
                 background: rgba(0, 0, 0, 0.533);
-                padding:18px 20px;
+                padding: 18px 20px;
                 border-radius: 40px;
                 color: #ffffff;
-              
+
                 img {
-                    width:20px;
-                    height:20px;
+                    width: 20px;
+                    height: 20px;
                 }
             }
         }
