@@ -1,6 +1,8 @@
 import axios from 'axios';
 
-import { postConfig,getConfig } from './config'
+import { postConfig,getConfig, uploadConfig } from './config'
+
+
 
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么,一般配置一些请求头的公共信息；
@@ -273,5 +275,11 @@ export default {
          */
         getInviteDrop:(params:any)=>{
             return axios.post('/drop/getInvite',params,postConfig)
-       }
+    },
+        /**
+         * 
+         */
+    uploadFile: (params: any) => { 
+        return axios.post('/company/uploadFile',params,uploadConfig)
+    }
 }

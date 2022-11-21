@@ -32,10 +32,14 @@ export default defineConfig({
       input: ["./src/pages/index.html",
               "./src/pages/enterpriseRegistra.html",
               "./src/pages/login.html",
-              "./src/pages/MemberDetails.html",
+              "./src/pages/memberDetails.html",
               "./src/pages/positionDetails.html",
               "./src/pages/positionInfo.html",
               "./src/pages/setEnterpriseInfo.html",
+              "./src/pages/findPersonnel.html",
+              "./src/pages/memberCenter.html",
+              "./src/pages/position.html",
+              "./src/pages/resume.html",
             ],
 
       //打包到目标目录
