@@ -7,207 +7,220 @@
         <!-- --------- -->
 
         <!-- 主要内容 -->
-        <div class="warp-main just-center mt-72">
-            <!-- 左侧登录注册 -->
-            <main v-show="isOpen == 1">
-                <!-- 标题 -->
-                <div class="header ">
-                    <p class="title just-center fs-18 mt-40">2023届毕业生招聘</p>
-                    <span class="detail just-center fs-14 mt-8 c-575757">线上线下同步开展</span>
-                </div>
-                <div class="main mt-30">
-                    <!-- tabs 登录 -->
-                    <el-tabs v-model="activeName" class="demo-tabs">
-                        <!-- 密码登录 -->
-                        <el-tab-pane label="密码登录" name="first">
-                            <el-form ref="ruleFormPassRef" label-position="right" :model="ruleFormPass"
-                                :rules="rulesPass" label-width="120px" class="demo-ruleForm" size="default">
-                                <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
-                                    <el-input class="input" v-model="ruleFormPass.phone" placeholder="请输入注册手机号" />
-                                </el-form-item>
-                                <el-form-item class="mt-22 item-input" label="" label-width="105px" prop="password">
-                                    <el-input class="input" v-model="ruleFormPass.password" placeholder="请输入密码"
-                                        type="password" autocomplete="off" />
-                                </el-form-item>
-                                <el-form-item class="" label="" label-width="105px">
-                                    <p class="fs-14 c-575757 forget-pass flex" @click="isOpen = 3">忘记密码</p>
-                                </el-form-item>
-                                <el-form-item class="m-0">
-                                    <el-button class=" btn fs-16 " color="#2d8cf0" type="primary"
-                                        @click="submitFormPass(ruleFormPassRef)">立即登录
-                                    </el-button>
-                                </el-form-item>
-                                <el-form-item class="mt-5">
-                                    <el-button class=" btn btn-register fs-14" color="#356ffa" type="text"
-                                        @click="isOpen = 2">立即注册&nbsp;<img class="icon-right"
-                                            src="@/assets/images/icon-right.png" alt="">
-                                    </el-button>
-                                </el-form-item>
-                            </el-form>
-                        </el-tab-pane>
-                        <!--验证码登录 -->
-                        <el-tab-pane label="验证码登录" name="second">
-                            <el-form ref="ruleFormValidateRef" label-position="right" :model="ruleFormValidate"
-                                :rules="rulesValidate" label-width="120px" class="demo-ruleForm"
-                                size="default">
+        <div class="flex-ja-center wrap-w">
+            <div class="">
+                <div class="warp-main just-center mt-72">
+                    <!-- 左侧登录注册 -->
+                    <main v-show="isOpen == 1">
+                        <!-- 标题 -->
+                        <div class="header ">
+                            <p class="title just-center fs-18 mt-40">2023届毕业生招聘</p>
+                            <span class="detail just-center fs-14 mt-8 c-575757">线上线下同步开展</span>
+                        </div>
+                        <div class="main mt-30">
+                            <!-- tabs 登录 -->
+                            <el-tabs v-model="activeName" class="demo-tabs">
+                                <!-- 密码登录 -->
+                                <el-tab-pane label="密码登录" name="first">
+                                    <el-form ref="ruleFormPassRef" label-position="right" :model="ruleFormPass"
+                                        :rules="rulesPass" label-width="120px" class="demo-ruleForm" size="default">
+                                        <el-form-item class="mt-18 item-input" label="" label-width="105px"
+                                            prop="phone">
+                                            <el-input class="input" v-model="ruleFormPass.phone"
+                                                placeholder="请输入注册手机号" />
+                                        </el-form-item>
+                                        <el-form-item class="mt-22 item-input" label="" label-width="105px"
+                                            prop="password">
+                                            <el-input class="input" v-model="ruleFormPass.password" placeholder="请输入密码"
+                                                type="password" autocomplete="off" />
+                                        </el-form-item>
+                                        <el-form-item class="" label="" label-width="105px">
+                                            <p class="fs-14 c-575757 forget-pass flex" @click="isOpen = 3">忘记密码</p>
+                                        </el-form-item>
+                                        <el-form-item class="m-0">
+                                            <el-button class=" btn fs-16 " color="#2d8cf0" type="primary"
+                                                @click="submitFormPass(ruleFormPassRef)">立即登录
+                                            </el-button>
+                                        </el-form-item>
+                                        <el-form-item class="mt-5">
+                                            <el-button class=" btn btn-register fs-14" color="#356ffa" type="text"
+                                                @click="isOpen = 2">立即注册&nbsp;<img class="icon-right"
+                                                    src="@/assets/images/icon-right.png" alt="">
+                                            </el-button>
+                                        </el-form-item>
+                                    </el-form>
+                                </el-tab-pane>
+                                <!--验证码登录 -->
+                                <el-tab-pane label="验证码登录" name="second">
+                                    <el-form ref="ruleFormValidateRef" label-position="right" :model="ruleFormValidate"
+                                        :rules="rulesValidate" label-width="120px" class="demo-ruleForm" size="default">
+                                        <el-form-item class="mt-18 item-input" label="" label-width="105px"
+                                            prop="phone">
+                                            <!-- 手机号 -->
+                                            <el-input class="input" v-model="ruleFormValidate.phone"
+                                                placeholder="请输入手机号" />
+                                        </el-form-item>
+                                        <el-form-item class="mt-22 item-input validate" label="" label-width="105px"
+                                            prop="validate">
+                                            <!-- 验证码 -->
+                                            <div class="just-between validate-flex">
+                                                <el-input class="input" v-model="ruleFormValidate.validate"
+                                                    placeholder="请输入短信验证码" type="" autocomplete="off" />
+                                                <el-button v-show="ruleFormValidate.isCountDown" style="width:102px"
+                                                    :disabled="ruleFormValidate.phone.length == 11 ? false : true"
+                                                    :color="ruleFormValidate.phone.length == 11 ? '#356ffa' : '#ececec'"
+                                                    :class="'btn-validate ' + (ruleFormValidate.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
+                                                    @click="getvalidate($event, ruleFormValidate)">
+                                                    获取验证码</el-button>
+                                                <el-button v-show="!ruleFormValidate.isCountDown" style="width:102px"
+                                                    disabled color='#ececec' class="btn-validate c-b9b9b9">
+                                                    {{ `${ruleFormValidate.countDown}秒后重试` }}</el-button>
+                                            </div>
+                                        </el-form-item>
+                                        <el-form-item class="m-0">
+                                            <el-button class=" btn fs-16 mt-15 " color="#356ffa" type="primary"
+                                                @click="submitFormValidate(ruleFormValidateRef)">立即登录
+                                            </el-button>
+                                        </el-form-item>
+                                        <el-form-item class="mt-5">
+                                            <span
+                                                class="detail fs-12 c-8d9ea7 mt-10">未注册的用户，登录成功后将自动注册为本招聘平台的企业用户。</span>
+                                        </el-form-item>
+                                    </el-form>
+                                </el-tab-pane>
+                            </el-tabs>
+                        </div>
+                    </main>
+                    <main v-show="isOpen == 2">
+                        <div class="header just-center mt-40 mb-40">
+                            <h3 class="fs-18">新用户注册</h3>
+                        </div>
+                        <div class="main ">
+                            <el-form ref="ruleFormRegisterRef" label-position="right" :model="ruleFormRegister"
+                                :rules="rulesRegister" label-width="120px" class="demo-ruleForm" size="default">
                                 <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
                                     <!-- 手机号 -->
-                                    <el-input class="input" v-model="ruleFormValidate.phone" placeholder="请输入手机号" />
+                                    <el-input class="input" v-model="ruleFormRegister.phone" placeholder="请输入手机号" />
                                 </el-form-item>
                                 <el-form-item class="mt-22 item-input validate" label="" label-width="105px"
                                     prop="validate">
                                     <!-- 验证码 -->
                                     <div class="just-between validate-flex">
-                                        <el-input class="input" v-model="ruleFormValidate.validate"
-                                            placeholder="请输入短信验证码" type="" autocomplete="off" />
-                                        <el-button v-show="ruleFormValidate.isCountDown" style="width:102px"
-                                            :disabled="ruleFormValidate.phone.length == 11 ? false : true"
-                                            :color="ruleFormValidate.phone.length == 11 ? '#356ffa' : '#ececec'"
-                                            :class="'btn-validate ' + (ruleFormValidate.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                            @click="getvalidate($event, ruleFormValidate)">
+                                        <el-input class="input" v-model="ruleFormRegister.validate"
+                                            placeholder="请输入短信验证码" autocomplete="off" />
+                                        <el-button v-show="ruleFormRegister.isCountDown" style="width:102px"
+                                            :disabled="ruleFormRegister.phone.length == 11 ? false : true"
+                                            :color="ruleFormRegister.phone.length == 11 ? '#356ffa' : '#ececec'"
+                                            :class="'btn-validate ' + (ruleFormRegister.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
+                                            @click="getvalidate($event, ruleFormRegister)">
                                             获取验证码</el-button>
-                                        <el-button v-show="!ruleFormValidate.isCountDown" style="width:102px" disabled
+                                        <el-button v-show="!ruleFormRegister.isCountDown" style="width:102px" disabled
                                             color='#ececec' class="btn-validate c-b9b9b9">
-                                            {{ `${ruleFormValidate.countDown}秒后重试` }}</el-button>
+                                            {{ `${ruleFormRegister.countDown}秒后重试` }}</el-button>
                                     </div>
                                 </el-form-item>
+                                <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="password">
+                                    <!-- 设置密码 -->
+                                    <el-input class="input" type="password" v-model="ruleFormRegister.password"
+                                        placeholder="请设置6-16位密码" />
+                                </el-form-item>
                                 <el-form-item class="m-0">
-                                    <el-button class=" btn fs-16 mt-15 " color="#356ffa" type="primary"
-                                        @click="submitFormValidate(ruleFormValidateRef)">立即登录
+                                    <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
+                                        @click="submitFormRegister(ruleFormRegisterRef)">注册
                                     </el-button>
                                 </el-form-item>
                                 <el-form-item class="mt-5">
-                                    <span class="detail fs-12 c-8d9ea7 mt-10">未注册的用户，登录成功后将自动注册为本招聘平台的企业用户。</span>
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span class="to-login"
+                                            @click="isOpen = 1">去登录</span></p>
                                 </el-form-item>
                             </el-form>
-                        </el-tab-pane>
-                    </el-tabs>
+                        </div>
+                    </main>
+                    <main v-show="isOpen == 3">
+                        <div class="header just-center mt-40 mb-40">
+                            <h3 class="fs-18">忘记密码</h3>
+                        </div>
+                        <div class="main ">
+                            <el-steps :active="active" finish-status="success" align-center>
+                                <el-step title="验证手机号" />
+                                <el-step title="重置密码" />
+                            </el-steps>
+                            <!-- 第一步 -->
+                            <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right"
+                                :model="ruleFormForgotPw" :rules="rulesForgotPw" label-width="120px"
+                                class="demo-ruleForm" size="default">
+                                <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
+                                    <!-- 手机号 -->
+                                    <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
+                                </el-form-item>
+                                <el-form-item class="mt-22 item-input validate" label="" label-width="105px"
+                                    prop="validate">
+                                    <!-- 验证码 -->
+                                    <div class="just-between validate-flex">
+                                        <el-input class="input" v-model="ruleFormForgotPw.validate"
+                                            placeholder="请输入短信验证码" autocomplete="off" />
+                                        <el-button v-show="ruleFormForgotPw.isCountDown" style="width:102px"
+                                            :disabled="ruleFormForgotPw.phone.length == 11 ? false : true"
+                                            :color="ruleFormForgotPw.phone.length == 11 ? '#356ffa' : '#ececec'"
+                                            :class="'btn-validate ' + (ruleFormForgotPw.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
+                                            @click="getvalidate($event, ruleFormForgotPw)">
+                                            获取验证码</el-button>
+                                        <el-button v-show="!ruleFormForgotPw.isCountDown" style="width:102px" disabled
+                                            color='#ececec' class="btn-validate c-b9b9b9">
+                                            {{ `${ruleFormForgotPw.countDown}秒后重试` }}</el-button>
+                                    </div>
+                                </el-form-item>
+                                <el-form-item class="m-0">
+                                    <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
+                                        @click="submitFormForgotPw(ruleFormForgotPwRef)">找回密码
+                                    </el-button>
+                                </el-form-item>
+                                <el-form-item class="mt-5">
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10"><span class="to-login"
+                                            @click="isOpen = 1">返回登录</span></p>
+                                </el-form-item>
+                            </el-form>
+                            <!-- 第二步 -->
+                            <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right"
+                                :model="ruleFormResetPw" :rules="rulesResetPw" label-width="120px" class="demo-ruleForm"
+                                size="default">
+                                <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="password">
+                                    <!-- 重置密码 -->
+                                    <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码"
+                                        type="password" />
+                                </el-form-item>
+                                <el-form-item class="mt-22 item-input " label="" label-width="105px" prop="checkPass">
+                                    <!-- 再次输入密码 -->
+                                    <el-input class="input" v-model="ruleFormResetPw.checkPass" placeholder="请再次输入密码"
+                                        type="password" autocomplete="off" />
+                                </el-form-item>
+                                <el-form-item class="m-0">
+                                    <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
+                                        @click="submitFormResetPw(ruleFormResetPwRef)">确认
+                                    </el-button>
+                                </el-form-item>
+                                <el-form-item class="mt-5">
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10"><span class="to-login"
+                                            @click="isOpen = 1">返回登录</span></p>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </main>
+                    <!-- 右侧背景图 -->
+                    <img class="schools" src="@/assets/images/schools_login.png" alt="">
                 </div>
-            </main>
-            <main v-show="isOpen == 2">
-                <div class="header just-center mt-40 mb-40">
-                    <h3 class="fs-18">新用户注册</h3>
-                </div>
-                <div class="main ">
-                    <el-form ref="ruleFormRegisterRef" label-position="right" :model="ruleFormRegister"
-                        :rules="rulesRegister" label-width="120px" class="demo-ruleForm" size="default">
-                        <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
-                            <!-- 手机号 -->
-                            <el-input class="input" v-model="ruleFormRegister.phone" placeholder="请输入手机号" />
-                        </el-form-item>
-                        <el-form-item class="mt-22 item-input validate" label="" label-width="105px" prop="validate">
-                            <!-- 验证码 -->
-                            <div class="just-between validate-flex">
-                                <el-input class="input" v-model="ruleFormRegister.validate" placeholder="请输入短信验证码"
-                                    autocomplete="off" />
-                                <el-button v-show="ruleFormRegister.isCountDown" style="width:102px"
-                                    :disabled="ruleFormRegister.phone.length == 11 ? false : true"
-                                    :color="ruleFormRegister.phone.length == 11 ? '#356ffa' : '#ececec'"
-                                    :class="'btn-validate ' + (ruleFormRegister.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                    @click="getvalidate($event, ruleFormRegister)">
-                                    获取验证码</el-button>
-                                <el-button v-show="!ruleFormRegister.isCountDown" style="width:102px" disabled
-                                    color='#ececec' class="btn-validate c-b9b9b9">
-                                    {{ `${ruleFormRegister.countDown}秒后重试` }}</el-button>
-                            </div>
-                        </el-form-item>
-                        <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="password">
-                            <!-- 设置密码 -->
-                            <el-input class="input" type="password" v-model="ruleFormRegister.password"
-                                placeholder="请设置6-16位密码" />
-                        </el-form-item>
-                        <el-form-item class="m-0">
-                            <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
-                                @click="submitFormRegister(ruleFormRegisterRef)">注册
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item class="mt-5">
-                            <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span class="to-login"
-                                    @click="isOpen = 1">去登录</span></p>
-                        </el-form-item>
-                    </el-form>
-                </div>
-            </main>
-            <main v-show="isOpen == 3">
-                <div class="header just-center mt-40 mb-40">
-                    <h3 class="fs-18">忘记密码</h3>
-                </div>
-                <div class="main ">
-                    <el-steps :active="active" finish-status="success" align-center>
-                        <el-step title="验证手机号" />
-                        <el-step title="重置密码" />
-                    </el-steps>
-                    <!-- 第一步 -->
-                    <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right" :model="ruleFormForgotPw"
-                        :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" size="default">
-                        <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="phone">
-                            <!-- 手机号 -->
-                            <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
-                        </el-form-item>
-                        <el-form-item class="mt-22 item-input validate" label="" label-width="105px" prop="validate">
-                            <!-- 验证码 -->
-                            <div class="just-between validate-flex">
-                                <el-input class="input" v-model="ruleFormForgotPw.validate" placeholder="请输入短信验证码"
-                                    autocomplete="off" />
-                                <el-button v-show="ruleFormForgotPw.isCountDown" style="width:102px"
-                                    :disabled="ruleFormForgotPw.phone.length == 11 ? false : true"
-                                    :color="ruleFormForgotPw.phone.length == 11 ? '#356ffa' : '#ececec'"
-                                    :class="'btn-validate ' + (ruleFormForgotPw.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                    @click="getvalidate($event, ruleFormForgotPw)">
-                                    获取验证码</el-button>
-                                <el-button v-show="!ruleFormForgotPw.isCountDown" style="width:102px" disabled
-                                    color='#ececec' class="btn-validate c-b9b9b9">
-                                    {{ `${ruleFormForgotPw.countDown}秒后重试` }}</el-button>
-                            </div>
-                        </el-form-item>
-                        <el-form-item class="m-0">
-                            <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
-                                @click="submitFormForgotPw(ruleFormForgotPwRef)">找回密码
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item class="mt-5">
-                            <p class="existing-account fs-14 c-8d9ea7 mt-10"><span class="to-login"
-                                    @click="isOpen = 1">返回登录</span></p>
-                        </el-form-item>
-                    </el-form>
-                    <!-- 第二步 -->
-                    <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right" :model="ruleFormResetPw"
-                        :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" size="default">
-                        <el-form-item class="mt-18 item-input" label="" label-width="105px" prop="password">
-                            <!-- 重置密码 -->
-                            <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码"
-                                type="password" />
-                        </el-form-item>
-                        <el-form-item class="mt-22 item-input " label="" label-width="105px" prop="checkPass">
-                            <!-- 再次输入密码 -->
-                            <el-input class="input" v-model="ruleFormResetPw.checkPass" placeholder="请再次输入密码"
-                                type="password" autocomplete="off" />
-                        </el-form-item>
-                        <el-form-item class="m-0">
-                            <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
-                                @click="submitFormResetPw(ruleFormResetPwRef)">确认
-                            </el-button>
-                        </el-form-item>
-                        <el-form-item class="mt-5">
-                            <p class="existing-account fs-14 c-8d9ea7 mt-10"><span class="to-login"
-                                    @click="isOpen = 1">返回登录</span></p>
-                        </el-form-item>
-                    </el-form>
-                </div>
-            </main>
-            <!-- 右侧背景图 -->
-            <img class="schools" src="@/assets/images/schools_login.png" alt="">
+                <!-- ------------- -->
+                <!-- 页脚------ -->
+                <footer class="footer">
+                    <ul class="just-center mt-30 fs-14">
+                        <li class="just-center " v-for="item in footer" :key="item.id">
+                            <p>{{ item.title }}</p>
+                            <span class="fs-16">{{ item.quantity }}</span>
+                        </li>
+                    </ul>
+                </footer>
+            </div>
         </div>
-        <!-- ------------- -->
-        <!-- 页脚------ -->
-        <footer class="footer">
-            <ul class="just-center mt-30 fs-14">
-                <li class="just-center " v-for="item in footer" :key="item.id">
-                    <p>{{ item.title }}</p>
-                    <span class="fs-16">{{ item.quantity }}</span>
-                </li>
-            </ul>
-        </footer>
         <!-- ------------------ -->
     </div>
 </template>
@@ -223,7 +236,7 @@ const router = useRouter();
 
 interface Res {
     code: number,
-    data: string|[],
+    data: string | [],
     msg: string,
 }
 
@@ -322,9 +335,11 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
-                const res:any|Res = await user.login(options);
+                const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    window.location.href = `/`;
+                    sessionStorage.setItem('token',res.data )
+                    // window.location.href = `/`;
+                    console.log(res);
                 }
             }
             login({
@@ -363,9 +378,9 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
-                const res:any|Res = await user.login(options);
+                const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    localStorage.setItem('smsCode',ruleFormValidate.validate)
+                    localStorage.setItem('smsCode', ruleFormValidate.validate)
                     router.push({ path: '/layout.html' })
                 }
             }
@@ -375,7 +390,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 loginType: 1,
             })
         } else {
-}
+        }
     })
 }
 
@@ -411,7 +426,7 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
         if (valid) {
             // 注册接口
             let register = async (options: any) => {
-                const res:any|Res = await user.login(options);
+                const res: any | Res = await user.login(options);
                 if (res.code == 200) {
                     ElMessage({
                         message: '注册成功，请登录',
@@ -461,8 +476,8 @@ const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            localStorage.setItem('phone',ruleFormForgotPw.phone)
-            localStorage.setItem('smsCode',ruleFormForgotPw.validate)
+            localStorage.setItem('phone', ruleFormForgotPw.phone)
+            localStorage.setItem('smsCode', ruleFormForgotPw.validate)
             next();
         } else {
         }
@@ -506,23 +521,23 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
         if (valid) {
             //重置密码
             let register = async (options: any) => {
-                const res:any|Res = await user.login(options);
+                const res: any | Res = await user.login(options);
                 if (res.code == 200) {
                     ElMessage({
                         message: '重置成功，请登录',
                         type: 'success',
                     });
                     isOpen.value = 1;
-                } 
+                }
             }
             register({
-                phone:localStorage.getItem('phone'),
+                phone: localStorage.getItem('phone'),
                 password: ruleFormResetPw.password,
-                smsCode:localStorage.getItem('smsCode'),
+                smsCode: localStorage.getItem('smsCode'),
                 loginType: 3,
                 inviteCode: 0,
             })
-           
+
         } else {
         }
     })
@@ -661,7 +676,9 @@ $width100: 100%;
 }
 
 
-
+.wrap-w{
+    height: 90vh;
+}
 .wrap-login {
     height: 100vh;
     background-image: url(@/assets/images/bg_login.png);
