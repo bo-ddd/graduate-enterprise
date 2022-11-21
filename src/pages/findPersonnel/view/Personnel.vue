@@ -50,7 +50,7 @@ let invitationUserId = ref();//邀请的人才id；
 
 let checkPosition = ref();//邀请人才干什么活
 let paging = reactive({
-    total: 100,
+    total: 0,
     pageSize: 3,
     pageIndex: 1,
 });//邀请人员分页
