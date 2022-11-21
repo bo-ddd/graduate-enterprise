@@ -13,22 +13,22 @@ interface Check {
     value: string | number,
 }
 interface Res {
- code: number,
- data: string | [] | any,
- msg: string,
+    code: number,
+    data: string | [] | any,
+    msg: string,
 }
 let PersonStore = usePersonStore();//引入personStore这个状态管理
 let HomeStore = useHomeStore();//引入homeStore这个状态管理
 let industry = ref();
-interface Form{
-    sex?:any,
-    education?:any,
-    professional?:any,
-    city?:any,
-    wishMoneyLeft?:any,
-    wishMoneyRight?:any,
+interface Form {
+    sex?: any,
+    education?: any,
+    professional?: any,
+    city?: any,
+    wishMoneyLeft?: any,
+    wishMoneyRight?: any,
 }
-let form:Form = reactive({
+let form: Form = reactive({
     sex: null,//性别
     education: null,//学历
     professional: null,//专业
@@ -38,11 +38,11 @@ let form:Form = reactive({
 });//这个是人才列表模糊查询
 
 let invitationForm = reactive<{
-    status:any;
-    professional:any;
+    status: any;
+    professional: any;
 }>({
-    status:null,
-    professional:null,
+    status: null,
+    professional: null,
 });
 let inviationNumber = ref(0);//这个是当日邀请次数
 
@@ -105,7 +105,7 @@ let invitationList = reactive<any[]>([]);//这个是邀请人才的列表
 let statusList = reactive<any[]>([]);//邀请人才状态
 //这个是学历的列表
 const getEducationList = async () => {
-    const res:Res|any = await PersonStore.getEducation();
+    const res: Res | any = await PersonStore.getEducation();
     if (res.code !== 200) return;
     let resData = (res.data).reverse();//获取学历数据
     educationArr.push(...resData);
@@ -114,7 +114,7 @@ getEducationList();//调用获取学历列表
 
 //这个是获取邀请次数的方法
 const getInvationsNumber = async () => {
-    const res:Res|any = await HomeStore.getEnterprise({
+    const res: Res | any = await HomeStore.getEnterprise({
         userId: 10000,
     })
     if (res.code != 200) return;
@@ -124,7 +124,7 @@ getInvationsNumber();
 
 //这个是获取专业列表的方法
 const getProfessionalList = async () => {
-    const res:Res|any = await PersonStore.getMajorList();
+    const res: Res | any = await PersonStore.getMajorList();
     if (res.code !== 200) return;
     majorArr.length = 0;
     majorArr.push(...(res.data));
@@ -133,7 +133,7 @@ getProfessionalList();//调用获取专业列表
 
 //这个是获取性别列表的方法
 const getSexList = async () => {
-    const res:Res|any = await PersonStore.getSexList();
+    const res: Res | any = await PersonStore.getSexList();
     if (res.code !== 200) return;
     sexArr.push(...(res.data));
 }
@@ -141,7 +141,7 @@ getSexList();
 
 //这个是获取职位列表的方法
 const getPositionList = async () => {
-    const res:Res|any = await PersonStore.getPositionList({
+    const res: Res | any = await PersonStore.getPositionList({
         userId: 10000,
     });
     positionArr.push(...(res.data))
@@ -150,7 +150,7 @@ getPositionList();
 
 //获取期望薪资的接口
 const getWishMoneyList = async () => {
-    const res:Res|any = await PersonStore.getWishMoney();
+    const res: Res | any = await PersonStore.getWishMoney();
     wishMoneyLeftList.push(...(res.data).wishMoenyLeftList);
     wishMoneyRightList.push(...(res.data).wishMoenyRightList);
 }
@@ -158,20 +158,20 @@ getWishMoneyList();
 
 //获取到人才的列表
 const getTalentList = async () => {
-    let obj:any = {};
+    let obj: any = {};
     let key: keyof Form;
     for (key in form) {
-        if(form[key]){
+        if (form[key]) {
             obj[key] = form[key];
         }
     }
-    if(industry.value){
+    if (industry.value) {
         obj['industryLeft'] = industry.value[0];
         obj['industryRight'] = industry.value[1];
     }
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
-    const res:Res|any = await PersonStore.getTalentList(obj);
+    const res: Res | any = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).talentList);
@@ -182,23 +182,23 @@ getTalentList();
 
 //邀请人才的方法;
 const inviteTalent = async () => {
-    const res:Res|any = await PersonStore.inviteTalent({
+    const res: Res | any = await PersonStore.inviteTalent({
         inviteUserId: invitationUserId.value,
         userId: 10000,
-        positionId:checkPosition.value,
+        positionId: checkPosition.value,
     });
     dialogFormVisible.value = false;
-    if(res.code ==200){
+    if (res.code == 200) {
         getInvationsNumber();
     }
 }
 
 //获取邀请人才列表
-const inviteTalentList = async ()=>{
-    const res:Res|any = await PersonStore.getInviteList({
-        userId:10000,
+const inviteTalentList = async () => {
+    const res: Res | any = await PersonStore.getInviteList({
+        userId: 10000,
     })
-    if(res.code !== 200) return;
+    if (res.code !== 200) return;
     invitationList.length = 0;
     invitationList.push(...(res.data.talentList));
     console.log(invitationList);
@@ -209,7 +209,7 @@ inviteTalentList();
 //这个是邀请投递的弹层
 
 //邀请的哪个人才
-const invitationPost =async (userId:number)=>{
+const invitationPost = async (userId: number) => {
     dialogFormVisible.value = true;
     invitationUserId.value = userId;
     // 这个里面需要调用回显人才信息的接口
@@ -217,36 +217,36 @@ const invitationPost =async (userId:number)=>{
 }
 
 //获取职位类别
-const getPositionCategory = async ()=>{
-    const res:Res|any = await PersonStore.getPosition();
-    if(res.code !== 200) return;
+const getPositionCategory = async () => {
+    const res: Res | any = await PersonStore.getPosition();
+    if (res.code !== 200) return;
     // positionDownList: (2) [{…}, {…}]
     // positionTypeId: "1"
     // positionTypeName: "互联网"
     // sortId: 1
-    interface Data{
+    interface Data {
         positionDownList: Array<any>;
         positionTypeId: "1";
-        positionTypeName:string;
+        positionTypeName: string;
         sortId: number;
     }
-    let data:Data[] = res.data;
+    let data: Data[] = res.data;
     data.forEach(item => {
-        item.positionDownList.forEach(child=>{
+        item.positionDownList.forEach(child => {
             child['positionTypeName'] = child['positionName'];
         })
     });
     positionCategoryList.push(...(data));
 }
 getPositionCategory();
-const getMoney:(data:string)=>string = (data:string)=>{
-    if(!data) return '';
-    const res = data.split(",").sort((a:any,b:any)=>{ return a - b});
+const getMoney: (data: string) => string = (data: string) => {
+    if (!data) return '';
+    const res = data.split(",").sort((a: any, b: any) => { return a - b });
     return `${res[0]}-${res[1]}k`
 }
 //邀请人才下拉框
-const getInviteDrop = async ()=>{
-    const res:Res|any = await PersonStore.getInviteDrop();
+const getInviteDrop = async () => {
+    const res: Res | any = await PersonStore.getInviteDrop();
     statusList.push(...(res.data));
 }
 getInviteDrop();
@@ -260,7 +260,7 @@ getInviteDrop();
                     <p :class="[checkItem == 0 ? 'span-check' : '']">人才库</p>
                     <div :class="[checkItem == 0 ? 'btm-check' : '']"></div>
                 </div>
-                <div class="operation-item" @click="handleItemChange(1),inviteTalentList()">
+                <div class="operation-item" @click="handleItemChange(1), inviteTalentList()">
                     <p :class="[checkItem == 1 ? 'span-check' : '']">我邀请的</p>
                     <div :class="[checkItem == 1 ? 'btm-check' : '']"></div>
                 </div>
@@ -286,7 +286,9 @@ getInviteDrop();
                         <el-option v-for="item in majorArr" :key="item.sortId" :label="item.professionalName"
                             :value="item.sortId" />
                     </el-select>
-                    <el-cascader v-model="industry" placeholder="意向职位" :props="{'children':'positionDownList','label':'positionTypeName','value':'positionTypeId'}"	 class="check-education mr-30" :options="positionCategoryList" clearable />
+                    <el-cascader v-model="industry" placeholder="意向职位"
+                        :props="{ 'children': 'positionDownList', 'label': 'positionTypeName', 'value': 'positionTypeId' }"
+                        class="check-education mr-30" :options="positionCategoryList" clearable />
                 </div>
                 <div class="filter-wrap-btm">
                     <div class="check">
@@ -329,26 +331,28 @@ getInviteDrop();
 
                     <!-- 人名与最高学历 -->
                     <div class="cbleft2 ml-16">
-                        <p class="name fs-18">{{item.userName ? item.userName : '费小姐'}}</p>
+                        <p class="name fs-18">{{ item.userName }}</p>
                         <div class="description mt-16 cl-ccc">
-                            <p class="fs-12">{{ item.userAge ? item.userAge : '24' }}岁</p>
+                            <p class="fs-12">{{ item.userAge }}岁</p>
                             <div class="line"></div>
-                            <p class="fs-12">{{ item.userEducation ? item.userEducation : '硕士' }}</p>
+                            <p class="fs-12">{{ item.userEducation }}</p>
                         </div>
                     </div>
 
                     <!-- 教育经历 -->
                     <div class="cbleft3 ml-48 cl-ccc">
                         <p class="titlest fs-12 ml-16">教育经历</p>
-                        <div class="school-name">
-                            <div class="coursor"></div>
-                            <p class="fs-14 ml-12">大连理工大学</p>
-                        </div>
-                        <div class="school-description fs-12 ml-16">
-                            <p>材料科学与工程</p>
-                            <div class="line"></div>
-                            <p>硕士</p>
-                        </div>
+                        <template v-for="child in item.userEducationList" :key="child.userId">
+                            <div class="school-name">
+                                <div class="coursor"></div>
+                                <p class="fs-14 ml-12">{{ child.school }}</p>
+                            </div>
+                            <div class="school-description fs-12 ml-16">
+                                <p>{{ child.professional }}</p>
+                                <div class="line"></div>
+                                <p>{{ child.educationId }}</p>
+                            </div>
+                        </template>
                     </div>
 
                     <!-- 求职意向 -->
@@ -368,7 +372,8 @@ getInviteDrop();
                         </div>
                         <div class="occupation-item mt-16">
                             <img src="@/assets/images/icon-qianbi.png" class="icon">
-                            <p class="description fs-14 ml-12">{{ item.wishMoney ? getMoney(item.wishMoney) : '3-50k' }}</p>
+                            <p class="description fs-14 ml-12">{{ item.wishMoney ? getMoney(item.wishMoney) : '3-50k' }}
+                            </p>
                         </div>
                     </div>
 
@@ -384,7 +389,7 @@ getInviteDrop();
             <div class="page-wrap wrap mt-48">
                 <div class="page-content">
                     <el-pagination v-model:current-page="paging.pageIndex" :background="true" :pager-count="7"
-                      v-model:page-size="paging.pageSize"  layout="prev, pager, next" :total="paging.total" />
+                        v-model:page-size="paging.pageSize" layout="prev, pager, next" :total="paging.total" />
                 </div>
             </div>
         </div>
@@ -400,15 +405,17 @@ getInviteDrop();
                 </div>
                 <!-- 邀请人才的列表 -->
             </div>
-            <div class="invitation wrap">
+            <div class="invitation wrap" v-show="invitationList.length">
 
                 <!-- 邀请的选择容器 -->
                 <div class="filter-wrap">
-                    <el-select v-model="invitationForm.status"  clearable class="m-2 check-sex mr-30" placeholder="状态选择" size="large">
-                        <el-option v-for="item in statusList" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
-                    <el-select v-model="invitationForm.professional" clearable class="m-2 check-position mr-30" placeholder="意向职位选择"
+                    <el-select v-model="invitationForm.status" clearable class="m-2 check-sex mr-30" placeholder="状态选择"
                         size="large">
+                        <el-option v-for="item in statusList" :key="item.value" :label="item.label"
+                            :value="item.value" />
+                    </el-select>
+                    <el-select v-model="invitationForm.professional" clearable class="m-2 check-position mr-30"
+                        placeholder="意向职位选择" size="large">
                         <el-option v-for="item in positionArr" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
@@ -427,7 +434,7 @@ getInviteDrop();
                             <div class="right">
                                 <p>发送时间</p>
                                 <div class="line"></div>
-                                <p>2022-11-04 09:39:58</p>
+                                <p>{{item.createTime}}</p>
                             </div>
                         </div>
                         <div class="btm">
@@ -439,26 +446,28 @@ getInviteDrop();
 
                             <!-- 人名与最高学历 -->
                             <div class="cbleft2 ml-16">
-                                <p class="name fs-18">{{item.userName ? item.userName : '费小姐'}}</p>
+                                <p class="name fs-18">{{ item.userName }}</p>
                                 <div class="description mt-16 cl-ccc">
-                                    <p class="fs-12">{{ item.userAge ? item.userAge:'24' }}岁</p>
+                                    <p class="fs-12">{{ item.userAge }}岁</p>
                                     <div class="line"></div>
-                                    <p class="fs-12">{{ '硕士' }}</p>
+                                    <p class="fs-12">{{ item.userEducation }}</p>
                                 </div>
                             </div>
 
                             <!-- 教育经历 -->
                             <div class="cbleft3 ml-48 cl-ccc">
                                 <p class="titlest fs-12 ml-16">教育经历</p>
-                                <div class="school-name">
-                                    <div class="coursor"></div>
-                                    <p class="fs-14 ml-12">大连理工大学</p>
-                                </div>
-                                <div class="school-description fs-12 ml-16">
-                                    <p>材料科学与工程</p>
-                                    <div class="line"></div>
-                                    <p>硕士</p>
-                                </div>
+                                <template v-for="child in item.userEducationList" :key="child.userId">
+                                    <div class="school-name">
+                                        <div class="coursor"></div>
+                                        <p class="fs-14 ml-12">{{ child.school }}</p>
+                                    </div>
+                                    <div class="school-description fs-12 ml-16">
+                                        <p>{{ child.professional }}</p>
+                                        <div class="line"></div>
+                                        <p>{{ child.educationId }}</p>
+                                    </div>
+                                </template>
                             </div>
 
                             <!-- 求职意向 -->
@@ -470,7 +479,9 @@ getInviteDrop();
                                 </div>
                                 <div class="occupation-item mt-12">
                                     <img src="@/assets/images/icon-bangong.png" class="icon">
-                                    <p class="description fs-14 ml-12">{{item.wishPosition ? item.wishPosition : '审计专员/助理、物流专员/经理、人事专员/助理、市场营销、行政专员/助理' }}</p>
+                                    <p class="description fs-14 ml-12">{{ item.wishPosition ? item.wishPosition :
+                                            '审计专员/助理、物流专员/经理、人事专员/助理、市场营销、行政专员/助理'
+                                    }}</p>
                                 </div>
                                 <div class="occupation-item mt-16">
                                     <img src="@/assets/images/icon-qianbi.png" class="icon">
@@ -489,7 +500,8 @@ getInviteDrop();
                 <div class="page-wrap wrap mt-48">
                     <div class="page-content">
                         <el-pagination v-model:current-page="pagingInvite.pageIndex" :background="true" :pager-count="7"
-                        v-model:page-size="pagingInvite.pageSize" layout="prev, pager, next" :total="pagingInvite.total" />
+                            v-model:page-size="pagingInvite.pageSize" layout="prev, pager, next"
+                            :total="pagingInvite.total" />
                     </div>
                 </div>
             </div>
@@ -521,11 +533,11 @@ getInviteDrop();
             <p class="invitation-method mt-15">邀请方式</p>
             <div class="invitation">
                 <input type="checkbox" checked disabled>
-                <p class="ml-15">应用内邀请&微信推送</p> 
+                <p class="ml-15">应用内邀请&微信推送</p>
             </div>
             <div class="invitation">
                 <input type="checkbox">
-                <p class="ml-15">短信同步提醒</p> 
+                <p class="ml-15">短信同步提醒</p>
                 <p class="cl-blue">触达率200%</p>
             </div>
             <p class="fs-12">本次邀请将扣除1个邀请点数</p>
@@ -851,43 +863,53 @@ getInviteDrop();
             }
         }
     }
-    .dialog{
-        :deep(& > .el-dialog__body){
-            padding:40px;
+
+    .dialog {
+        :deep(& > .el-dialog__body) {
+            padding: 40px;
         }
-        & .msg-wrap{
-            padding:20px;
-            background:#f9f9f9;
-            &>.top,&>.btm{
-                display:flex;
-                align-items:center;
+
+        & .msg-wrap {
+            padding: 20px;
+            background: #f9f9f9;
+
+            &>.top,
+            &>.btm {
+                display: flex;
+                align-items: center;
             }
-            &>.btm{
-                padding:10px 0;
+
+            &>.btm {
+                padding: 10px 0;
             }
-            &>.top{
-                &>.btn{
-                    padding:5px;
-                    background:#e5ebf9;
+
+            &>.top {
+                &>.btn {
+                    padding: 5px;
+                    background: #e5ebf9;
                 }
             }
         }
-        & .post-tips{
-            padding:14px 0;
+
+        & .post-tips {
+            padding: 14px 0;
         }
-        & .invitation-method{
-            padding:20px 0;
+
+        & .invitation-method {
+            padding: 20px 0;
         }
-        & .invitation{
-            display:flex;
-            padding:10px 0;
-            align-items:center;
+
+        & .invitation {
+            display: flex;
+            padding: 10px 0;
+            align-items: center;
         }
-        & .invitation-btn{
-            background-color:#356ffa;
-            padding:10px 0;
-            color:#fff;
-            text-align:center;
+
+        & .invitation-btn {
+            background-color: #356ffa;
+            padding: 10px 0;
+            color: #fff;
+            text-align: center;
         }
     }
 
@@ -984,8 +1006,8 @@ getInviteDrop();
         height: 18px;
     }
 
-    .fs-26{
-        font-size:26px;
+    .fs-26 {
+        font-size: 26px;
     }
 
     .ml-28 {
@@ -996,8 +1018,8 @@ getInviteDrop();
         margin-top: 12px;
     }
 
-    .fs-12{
-        font-size:12px;
+    .fs-12 {
+        font-size: 12px;
     }
 
     .mt-48 {
@@ -1011,8 +1033,9 @@ getInviteDrop();
     .mt-50 {
         margin-top: 50px;
     }
-    .cl-black{
-        color:#000;
+
+    .cl-black {
+        color: #000;
     }
 }
 </style>
