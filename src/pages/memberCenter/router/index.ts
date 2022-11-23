@@ -1,4 +1,5 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -7,7 +8,16 @@ const router = createRouter({
       name: 'MemberCenter',
       component: () => import('@/pages/memberCenter/view/MemberCenter.vue')
     },
-    ]
+  ]
+})
+
+router.beforeEach((to,from)=>{
+  const token = sessionStorage.getItem('token');
+  console.log(token);
+  if( !token ){
+  //  router.push({name:'login.html'})
+  return true
+  }
 })
 
 export default router;
