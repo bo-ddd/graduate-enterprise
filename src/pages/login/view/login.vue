@@ -338,7 +338,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
                     sessionStorage.setItem('token',res.data )
-                    // window.location.href = `/`;
+                    window.location.href = `/`;
                     console.log(res);
                 }
             }
