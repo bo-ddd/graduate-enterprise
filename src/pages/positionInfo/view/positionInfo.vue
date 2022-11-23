@@ -269,7 +269,6 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
-import { ElMessage, ElMessageBox, ElForm, ElRadio } from "element-plus";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -619,7 +618,6 @@ const addPosition = async function (params: any) {
     positionTypeLeft: positionTypeArr[0],
     positionTypeRight: positionTypeArr[1], //职位类别
     positionStatus: "",
-    userId: "10000",
     positionId: "", //职位id
   };
   let res = await use.addPosition(form);

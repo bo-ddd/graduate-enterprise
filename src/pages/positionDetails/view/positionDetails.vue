@@ -4,26 +4,26 @@
     <div class="head-tip">
       <div
         class="tip-box"
-        :class="{success:positionStatus==2,warning:positionStatus==1,error:positionStatus==3}"
+        :class="{success:positionStatus2==1,warning:positionStatus2==0,error:positionStatus2==1}"
       >
-        <el-icon v-if="positionStatus==2" size="28px" color="#19be6b">
+        <el-icon v-if="positionStatus2==1" size="28px" color="#19be6b">
           <CircleCheck />
         </el-icon>
-        <el-icon v-if="positionStatus==1" size="28px" color="#f90">
+        <el-icon v-if="positionStatus2==0" size="28px" color="#f90">
           <Warning />
         </el-icon>
-        <el-icon v-if="positionStatus==3" size="28px" color="#ed4014">
+        <el-icon v-if="positionStatus2==1" size="28px" color="#ed4014">
           <CircleClose />
         </el-icon>
-        <div v-if="positionStatus==1">
+        <div v-if="positionStatus2==1">
           <div class="title">审核状态：审核中</div>
           <div class="text">您的信息已提交，平台将在当天完成审核，请注意刷新页面。关注最新动态，反馈招聘需求和问题，请扫右方二位码入群或添加下方小助理微信。</div>
         </div>
-        <div v-if="positionStatus==2">
+        <div v-if="positionStatus2==1">
           <div class="title">审核状态：已通过</div>
           <div class="text">该职位已通过审核，该职业会在招聘会上展示。</div>
         </div>
-        <div v-if="positionStatus==3">
+        <div v-if="positionStatus2==0">
           <div class="title">审核状态：未通过</div>
           <div class="text">该职位未通过审核，不会在招聘会上展示，建议修改后重新提交审核。未通过原因：职位信息不正确，驳回。</div>
         </div>
@@ -72,8 +72,7 @@
               border
               disabled
             >全职</el-radio>
-            <el-radio v-else
-             class="select-btn" label="1" size="large" border disabled>实习</el-radio>
+            <el-radio v-else class="select-btn" label="1" size="large" border disabled>实习</el-radio>
           </el-radio-group>
         </el-form-item>
 
@@ -287,8 +286,7 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
-import { ElMessage } from "element-plus";
-import { Delete,CircleCheck,Warning } from "@element-plus/icons-vue";
+import { Delete, CircleCheck, Warning } from "@element-plus/icons-vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, computed, reactive, ref, inject } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -300,40 +298,13 @@ const router = useRouter();
 const route = useRoute();
 const positionId = ref(0);
 onMounted(async () => {
+  await positionDetail();
   await getData();
-  let res = await use.getPositionDetail({
-    positionId: route.query.positionId,
-  });
-  if (res.code == 200) {
-    positionStatus.value = res.data.positionStatus;
-    positionId.value = res.data.positionId;
-    ruleForm.data.positionNature = res.data.positionNature; //工作性质
-    ruleForm.data.positionName = res.data.positionName; //职位名称
-    ruleForm.data.positionPositive = res.data.positionPositive; //是否转正
-    ruleForm.data.salaryStart1 = res.data.positionMoney.split(",")[0]; //薪资始
-    ruleForm.data.salaryStart2 = res.data.positionDayMoney.split(",")[0]; //薪资始
-    ruleForm.data.salaryEnd1 = res.data.positionMoney.split(",")[1]; //薪资末
-    ruleForm.data.salaryEnd2 = res.data.positionDayMoney.split(",")[1]; //薪资末
-    ruleForm.data.positionTypeArr = [
-      res.data.positionTypeLeft,
-      res.data.positionTypeRight,
-    ];
-    ruleForm.data.positionEducation = Number(res.data.positionEducationId); //学历
-    ruleForm.data.positionProfessional = res.data.positionProfessional
-      ? res.data.positionProfessional.split(",")
-      : []; //专业
-    ruleForm.data.positionDetailedAddr = res.data.positionDetailedAddr; //详细地址
-    ruleForm.data.positionDes = res.data.positionDes; //职位描述
-    ruleForm.data.positionSize = res.data.positionSize; //招聘人数
-    ruleForm.data.internshipDay = res.data.positionDay; //每周天数
-    ruleForm.data.internshipMonth = res.data.positionMonth; //实习月数
-    ruleForm.data.positionAddr = res.data.positionAddr.split(","); //工作地点
-  }
 });
 interface Res {
   code: number;
 }
-const propsRole:any = {
+const propsRole: any = {
   expandTrigger: "hover",
 };
 const value = ref("");
@@ -341,18 +312,18 @@ const activeNum = ref(-1);
 const activeNum2 = ref(-1);
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
-const educationArr:any  = ref([]);
-const industryArr:any  = ref([]);
-const professionalArr:any  = ref([]);
-const moneyLeftArr1:any  = ref([]);
-const moneyRightArr1:any  = ref([]);
-const moneyLeftArr2:any  = ref([]);
-const moneyRightArr2:any  = ref([]);
-const dayArr:any  = ref([]);
-const monthArr:any  = ref([]);
+const educationArr: any = ref([]);
+const industryArr: any = ref([]);
+const professionalArr: any = ref([]);
+const moneyLeftArr1: any = ref([]);
+const moneyRightArr1: any = ref([]);
+const moneyLeftArr2: any = ref([]);
+const moneyRightArr2: any = ref([]);
+const dayArr: any = ref([]);
+const monthArr: any = ref([]);
 const ruleForm: any = reactive({
   data: {
-    positionNature: '', //工作性质
+    positionNature: "", //工作性质
     positionName: "", //职位名称
     positionPositive: "", //是否转正
     salaryStart1: "", //薪资始
@@ -372,6 +343,7 @@ const ruleForm: any = reactive({
 });
 const radio1 = ref("1");
 const radio2 = ref("0");
+//下拉列表
 const getData = async function () {
   const res = await use.getEducation({}); //学历
   const res2 = await use.getCompanyIndustry({}); //行业
@@ -410,6 +382,37 @@ const getData = async function () {
   if (res6.code == 200) {
     moneyLeftArr2.value = res6.data.wishMoenyLeftList;
     moneyRightArr2.value = res6.data.wishMoenyRightList;
+  }
+};
+//获取职位数据
+const positionDetail = async function () {
+  let res = await use.getPositionDetail({
+    positionId: route.query.positionId,
+  });
+  if (res.code == 200) {
+    positionStatus.value = res.data.positionStatus;
+    positionId.value = res.data.positionId;
+    ruleForm.data.positionNature = res.data.positionNature; //工作性质
+    ruleForm.data.positionName = res.data.positionName; //职位名称
+    ruleForm.data.positionPositive = res.data.positionPositive; //是否转正
+    ruleForm.data.salaryStart1 = res.data.positionMoney.split(",")[0]; //薪资始
+    ruleForm.data.salaryStart2 = res.data.positionDayMoney.split(",")[0]; //薪资始
+    ruleForm.data.salaryEnd1 = res.data.positionMoney.split(",")[1]; //薪资末
+    ruleForm.data.salaryEnd2 = res.data.positionDayMoney.split(",")[1]; //薪资末
+    ruleForm.data.positionTypeArr = [
+      res.data.positionTypeLeft,
+      res.data.positionTypeRight,
+    ];
+    ruleForm.data.positionEducation = Number(res.data.positionEducationId); //学历
+    ruleForm.data.positionProfessional = res.data.positionProfessional
+      ? res.data.positionProfessional.split(",")
+      : []; //专业
+    ruleForm.data.positionDetailedAddr = res.data.positionDetailedAddr; //详细地址
+    ruleForm.data.positionDes = res.data.positionDes; //职位描述
+    ruleForm.data.positionSize = res.data.positionSize; //招聘人数
+    ruleForm.data.internshipDay = res.data.positionDay; //每周天数
+    ruleForm.data.internshipMonth = res.data.positionMonth; //实习月数
+    ruleForm.data.positionAddr = res.data.positionAddr.split(","); //工作地点
   }
 };
 const salaryStart1 = function (rule: any, value: any, callback: any) {
@@ -487,6 +490,7 @@ const positiveChange = function (rule: any, value: any, callback: any) {
     callback();
   }
 };
+//校验表单
 const rules = reactive<FormRules>({
   positionName: [
     { required: true, message: "请填写职位名称", trigger: "blur" },
@@ -596,19 +600,20 @@ const select2 = function (index: number) {
   ruleForm.data.positionPositive = (activeNum.value == 1 &&
     activeNum2.value == 0) as any;
 };
-
+//校验
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields: any) => {
-    if(valid){
+    if (valid) {
       setPositon(ruleForm.data);
-    }else{
+    } else {
       ElMessage.error((Object as any).values(fields)[0][0].message);
     }
   });
 };
+//修改
 const setPositon = async function (params: any) {
-  const{
+  const {
     positionEducation,
     positionNature,
     positionName,
@@ -625,11 +630,11 @@ const setPositon = async function (params: any) {
     salaryEnd2,
     salaryStart1,
     salaryEnd1,
-  }=params;
+  } = params;
   let internshipMoney = [salaryStart2, salaryEnd2];
   let positionMoney = [salaryStart1, salaryEnd1];
   let form = {
-    positionEducation:Number(positionEducation), //学历id
+    positionEducation: Number(positionEducation), //学历id
     positionNature: Number(positionNature), //工作性质
     positionName, //职位名称
     positionPositive: false, //是否转正
@@ -645,7 +650,6 @@ const setPositon = async function (params: any) {
     positionTypeLeft: positionTypeArr[0],
     positionTypeRight: positionTypeArr[1], //职位类别
     positionStatus: Number(positionStatus.value),
-    userId: 10000,
     positionId: positionId.value, //职位id
   };
   let res = await use.updatePosition(form);
