@@ -27,7 +27,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import card from "@/components/card/index";
 import footerBar from "@/components/footer/footerBar.vue";
 import { useEnterpriseStore } from "@/stores/enterprise"
@@ -36,7 +35,6 @@ let resumeList:any = ref([]);
 
 let getResume = async () => {
     let res:any = await enterprise.getResume({
-        userId: 10000,
         companyId: 10000,
         deliveryStatus: 6,
     });
@@ -61,7 +59,6 @@ getResume();
         interviewTime: item.interviewTime,
         positionId: item.positionId,
         statusId: 2,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({

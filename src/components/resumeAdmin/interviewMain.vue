@@ -54,14 +54,13 @@ const tableData = ref([])
 let allPositionDrop: any = ref([]);
 let positionDropValue = ref();
 let getPositionDrop = async () => {
-    let res = await enterprise.getPositionDrop({ userId: 10000 });
+    let res = await enterprise.getPositionDrop();
     allPositionDrop.value = res.data;
 }
 getPositionDrop();
 
 let getResume = async () => {
     let res = await enterprise.getResume({
-        userId: 10000,
         companyId:10000,
         deliveryStatus: 4,
     });
@@ -71,7 +70,6 @@ getResume();
 
 let fuzzyQuery = async () => {
     let res = await enterprise.getResume({
-        userId: 10000,
         companyId: 10000,
         deliveryStatus: 4,
         positionId:positionDropValue.value,
