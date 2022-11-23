@@ -152,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-// import Layout from "@/pages/layout/view/Layout.vue"
+import Layout from "@/pages/layout/view/Layout.vue"
 import { useVipStore } from "@/stores/vip";
 import { reactive, } from "vue";
 import { useRouter } from 'vue-router';
