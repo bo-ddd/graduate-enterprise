@@ -48,8 +48,8 @@
               <div class="job-title fs-18">
                 <div class="mb-15 align-center">
                   <span>{{item.positionName}}</span>
-                  <span v-if="item.positionStatus==1" class="tip-span">审核中</span>
-                  <span v-if="item.positionStatus==4" class="tip-span warning">审核未通过</span>
+                  <span v-if="item.positionStatus2==1" class="tip-span">审核中</span>
+                  <span v-if="item.positionStatus2==0" class="tip-span warning">审核未通过</span>
                 </div>
                 <div class="info-list align-center">
                   <div class="money-num mr-15">10-15k</div>
@@ -75,9 +75,9 @@
                 </div>
               </div>
               <div class="refresh-info align-center">
-                <el-button v-if="item.positionStatus==0" color="#a8abb2" plain disabled>自动刷新</el-button>
+                <el-button v-if="item.positionStatus2==0" color="#a8abb2" plain disabled>自动刷新</el-button>
                 <el-button v-else color="#356ffa" plain @click="autoRefrensh(item.positionId)">自动刷新</el-button>
-                <el-button v-if="item.positionStatus==0" color="#a8abb2" plain disabled>刷新</el-button>
+                <el-button v-if="item.positionStatus2==0" color="#a8abb2" plain disabled>刷新</el-button>
                 <el-button @click="refresh(item.positionId)" v-else color="#356ffa">刷新</el-button>
               </div>
             </div>
@@ -93,7 +93,7 @@
               <div class="align-center">
                 <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
                 <div class="bor"></div>
-                <div class="cur-po" @click="setPositionStatus(item.positionId,3)">停止招聘</div>
+                <div class="cur-po" @click="setPositionStatus(item.positionId,item.positionStatus)">停止招聘</div>
                 <div class="bor"></div>
                 <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
               </div>
@@ -134,8 +134,8 @@
                 <div class="job-title fs-18">
                   <div class="mb-15 align-center">
                     <span>{{item.positionName}}</span>
-                    <span v-if="item.positionStatus==1" class="tip-span">审核中</span>
-                    <span v-if="item.positionStatus==4" class="tip-span warning">审核未通过</span>
+                    <span v-if="item.positionStatus2==0" class="tip-span">审核中</span>
+                    <span v-if="item.positionStatus2==1" class="tip-span warning">审核未通过</span>
                   </div>
                   <div class="info-list align-center">
                     <div class="money-num mr-15">10-15k</div>
@@ -163,7 +163,7 @@
                 <div class="refresh-info align-center">
                   <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
                   <div class="bor"></div>
-                  <div class="cur-po" @click="setPositionStatus(item.positionId,1)">开始招聘</div>
+                  <div class="cur-po" @click="setPositionStatus(item.positionId,item.positionStatus)">开始招聘</div>
                   <div class="bor"></div>
                   <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
                 </div>
@@ -241,7 +241,6 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
-import { ElMessage, ElMessageBox } from "element-plus";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
 import FooterBar from "@/components/footer/footerBar.vue";
@@ -281,7 +280,6 @@ const refresh = function (positionId: any) {
     ).then(async () => {
       let res = await use.refreshPosition({
         positionId,
-        userId: 10000,
       });
       if (res.code == 200) {
         ElMessage({
@@ -301,11 +299,12 @@ const refresh = function (positionId: any) {
     centerDialogVisible2.value = true;
   }
 };
+//停止招聘
 const setPositionStatus = async function (
   positionId: any,
   setStatusNum: number
 ) {
-  if (setStatusNum == 3) {
+  if (setStatusNum == 2) {
     ElMessageBox.confirm("是否确认停止该职业的招聘该职位?", "", {
       confirmButtonText: "确认",
       cancelButtonText: "取消",
@@ -313,8 +312,7 @@ const setPositionStatus = async function (
     }).then(async () => {
       let res = await use.updatePositionStatus({
         positionId,
-        positionStatus: setStatusNum,
-        userId: 10000,
+        positionStatus: 3,
       });
       if (res.code == 200) {
         ElMessage({
@@ -330,11 +328,10 @@ const setPositionStatus = async function (
         });
       }
     });
-  } else if (setStatusNum == 1) {
+  } else if (setStatusNum == 3) {
     let res = await use.updatePositionStatus({
       positionId,
-      positionStatus: setStatusNum,
-      userId: 10000,
+      positionStatus: 2,
     });
     if (res.code == 200) {
       ElMessage({
@@ -360,29 +357,25 @@ const handleCurrentChange2 = async (val: number) => {
 let getPositionList = async function () {
   let res = await use.getPosition({
     pageIndex: pageNum.value,
-    userId: 10000,
     pageSize: pageSize.value,
-    positionStatus: 1,
+    positionStatus: 2,
   });
-  let res2 = await getEnterprise({
-    userId: 10000,
-  });
+  let res2 = await getEnterprise({});
 
   if (res.code == 200) {
     positionList.value = res.data ? res.data.data : [];
     recruitNum.value = res.data ? res.data.maxCount : 0;
   }
   if (res2.data.sevenRefreshPositionCount) {
-    orderNum.value = res2.data ? res2.data.sevenRefreshPositionCount : 0;
+    orderNum.value = res2.data ? res2.data.refreshPositionCount : 0;
   }
 };
 //获取下线分页数据
 const getDownList = async function () {
   let res = await use.getPosition({
-    pageIndex: 0,
-    userId: 10000,
+    pageIndex: pageNum2.value,
     pageSize: pageSize2.value,
-    positionStatus: 2,
+    positionStatus: 3,
   });
   if (res.code == 200) {
     downNum.value = res.data ? res.data.maxCount : 0;
@@ -401,8 +394,7 @@ const deleteClick = function (positionId: any, positionStatus: any) {
     .then(async () => {
       let res1 = await deletePosition({
         positionId,
-        userId: 10000,
-        positionStatus,
+        positionStatus:Number(positionStatus),
       });
       if (res1.code == 200) {
         ElMessage({
