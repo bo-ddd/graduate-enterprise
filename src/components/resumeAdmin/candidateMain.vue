@@ -62,7 +62,8 @@
                     }">
                         <template #btn>
                             <el-button @click="inappropriate($event, item)">不合适</el-button>
-                            <el-button v-show="item.deliveryStatus != '通过初筛' && item.deliveryStatus != '面试' && item.deliveryStatus != '拟录用'"
+                            <el-button
+                                v-show="item.deliveryStatus != '通过初筛' && item.deliveryStatus != '面试' && item.deliveryStatus != '拟录用'"
                                 @click="byFilter($event, item)" type="primary">通过初筛</el-button>
                             <el-button v-show="item.deliveryStatus == '通过初筛' || item.deliveryStatus == '面试'"
                                 @click="dialog($event, item)" type="primary" plain>邀约面试</el-button>
@@ -130,6 +131,8 @@
             </template>
         </el-dialog>
 
+        <el-button text @click="open">Click to open the Message Box</el-button>
+
         <footerBar></footerBar>
     </div>
 </template>
@@ -144,33 +147,80 @@ let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
 
+
+const open = () => {
+    ElMessageBox.confirm(
+        '你确定要改变状态嘛？',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(() => {
+            ElMessage({
+                type: 'success',
+                message: 'success',
+            })
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消修改',
+            })
+        })
+}
+
+
+
 /**
  * 拟录用
  * 
  */
 let employment = async (event: Event, item: any) => {
     event.stopPropagation();
-    let res: any = await enterprise.modifyResume({
-        deliveryId: item.deliveryId,
-        interviewAddr: item.interviewAddr,
-        interviewName: item.interviewName,
-        interviewNote: item.interviewNote,
-        interviewPhone: item.interviewPhone,
-        interviewTime: item.interviewTime,
-        positionId: item.positionId,
-        statusId: 5,
-    });
-    console.log(res.code);
-    if (res.code == 200) {
-        ElMessage({
-            message: 'success',
-            type: 'success',
-        }) 
-        getResume();
-        resumeBtn.value = false;
-    } else {
-        ElMessage.error('this is a error message.')
-    }
+
+    ElMessageBox.confirm(
+        '你确定要拟录用嘛?',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            let res: any = await enterprise.modifyResume({
+                deliveryId: item.deliveryId,
+                interviewAddr: item.interviewAddr,
+                interviewName: item.interviewName,
+                interviewNote: item.interviewNote,
+                interviewPhone: item.interviewPhone,
+                interviewTime: item.interviewTime,
+                positionId: item.positionId,
+                statusId: 5,
+            });
+            if (res.code == 200) {
+                ElMessage({
+                    message: '拟录用成功',
+                    type: 'success',
+                })
+                getResume();
+                resumeBtn.value = false;
+            } else {
+                ElMessage.error('this is a error message.')
+            }
+        })
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消修改',
+            })
+        })
+
+
+
 
 }
 
@@ -181,7 +231,6 @@ let name = ref();
 let deliveryId = ref();
 const dialogVisible = ref(false);
 let dialog = (event: Event, item: any) => {
-    console.log(item);
     name.value = item.userName;
     deliveryId.value = item.deliveryId;
     event.stopPropagation();
@@ -242,102 +291,165 @@ let getUserInfo = async (item: any) => {
 /***
  * 批量不合适
  */
-let batchInappropriate = async () => {
-    console.log(checkedCities.value);
+let batchInappropriate = () => {
     let deliveryId = checkedCities.value.toString();
-    let res: any = await enterprise.modifyResumeStatus({
-        deliveryId,
-        statusId: 6,
-    })
-    if (res.code == 200) {
-        ElMessage({
-            message: 'success',
-            type: 'success',
+    ElMessageBox.confirm(
+        '你确定要批量修改为不合适嘛?',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            let res: any = await enterprise.modifyResumeStatus({
+                deliveryId,
+                statusId: 6,
+            })
+            if (res.code == 200) {
+                ElMessage({
+                    message: 'success',
+                    type: 'success',
+                })
+                getResume();
+                checkedCities.value = [];
+                checkAll.value = false;
+            } else {
+                ElMessage.error('this is a error message.')
+            }
         })
-        getResume();
-        checkedCities.value = [];
-        checkAll.value = false;
-    } else {
-        ElMessage.error('this is a error message.')
-    }
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消修改',
+            })
+        })
 }
 
 /***
  * 批量通过初筛
  */
-let batchbyFilter = async () => {
-    console.log(checkedCities.value);
+let batchbyFilter = () => {
     let deliveryId = checkedCities.value.toString();
-    let res: any = await enterprise.modifyResumeStatus({
-        deliveryId,
-        statusId: 3,
-    })
-    if (res.code == 200) {
-        ElMessage({
-            message: 'success',
-            type: 'success',
+    ElMessageBox.confirm(
+        '你确定要批量通过初筛嘛？',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(async () => {
+            let res: any = await enterprise.modifyResumeStatus({
+                deliveryId,
+                statusId: 3,
+            })
+            if (res.code == 200) {
+                ElMessage({
+                    message: 'success',
+                    type: 'success',
+                })
+                getResume();
+                checkedCities.value = [];
+                checkAll.value = false;
+            } else {
+                ElMessage.error('this is a error message.')
+            }
         })
-        getResume();
-        checkedCities.value = [];
-        checkAll.value = false;
-    } else {
-        ElMessage.error('this is a error message.')
-    }
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消修改',
+            })
+        })
 }
 
 
 /**\
  * 不合适
  */
-let inappropriate = async (event: Event, item: any) => {
+let inappropriate = (event: Event, item: any) => {
     event.stopPropagation();
-    let res: any = await enterprise.modifyResume({
-        deliveryId: item.deliveryId,
-        interviewAddr: item.interviewAddr,
-        interviewName: item.interviewName,
-        interviewNote: item.interviewNote,
-        interviewPhone: item.interviewPhone,
-        interviewTime: item.interviewTime,
-        positionId: item.positionId,
-        statusId: 6,
-    })
-    if (res.code == 200) {
-        ElMessage({
-            message: 'success',
-            type: 'success',
+    ElMessageBox.confirm(
+        '你确定要修改为不合适嘛',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    ).then(async () => {
+        let res: any = await enterprise.modifyResume({
+            deliveryId: item.deliveryId,
+            interviewAddr: item.interviewAddr,
+            interviewName: item.interviewName,
+            interviewNote: item.interviewNote,
+            interviewPhone: item.interviewPhone,
+            interviewTime: item.interviewTime,
+            positionId: item.positionId,
+            statusId: 6,
         })
-        getResume();
-        resumeBtn.value = true;
-    } else {
-        ElMessage.error('this is a error message.')
-    }
+        if (res.code == 200) {
+            ElMessage({
+                message: '修改成功',
+                type: 'success',
+            })
+            getResume();
+            resumeBtn.value = true;
+        } else {
+            ElMessage.error('this is a error message.')
+        }
+    }).catch(() => {
+        ElMessage({
+            type: 'info',
+            message: '取消修改',
+        })
+    })
 }
 
 /***
  * 通过初筛
  */
-let byFilter = async (event: Event, item: any) => {
+let byFilter = (event: Event, item: any) => {
     event.stopPropagation();
-    let res: any = await enterprise.modifyResume({
-        deliveryId: item.deliveryId,
-        interviewAddr: item.interviewAddr,
-        interviewName: item.interviewName,
-        interviewNote: item.interviewNote,
-        interviewPhone: item.interviewPhone,
-        interviewTime: item.interviewTime,
-        positionId: item.positionId,
-        statusId: 3,
-    })
-    if (res.code == 200) {
-        ElMessage({
-            message: 'success',
-            type: 'success',
+    ElMessageBox.confirm(
+        '你确定要通过初筛嘛？',
+        '确定修改嘛',
+        {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+        }
+    )
+        .then(async () => {
+            let res: any = await enterprise.modifyResume({
+                deliveryId: item.deliveryId,
+                interviewAddr: item.interviewAddr,
+                interviewName: item.interviewName,
+                interviewNote: item.interviewNote,
+                interviewPhone: item.interviewPhone,
+                interviewTime: item.interviewTime,
+                positionId: item.positionId,
+                statusId: 3,
+            })
+            if (res.code == 200) {
+                ElMessage({
+                    message: '通过初筛',
+                    type: 'success',
+                })
+                getResume();
+                resumeBtn.value = false;
+            } else {
+                ElMessage.error('this is a error message.')
+            }
         })
-        getResume();
-        resumeBtn.value = false;
-    } else {
-        ElMessage.error('this is a error message.')
-    }
+        .catch(() => {
+            ElMessage({
+                type: 'info',
+                message: '取消修改',
+            })
+        })
 }
 
 /**
