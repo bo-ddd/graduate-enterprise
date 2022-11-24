@@ -135,7 +135,7 @@
                   <div class="mb-15 align-center">
                     <span>{{item.positionName}}</span>
                     <span v-if="item.positionStatus2==0" class="tip-span">审核中</span>
-                    <span v-if="item.positionStatus2==1" class="tip-span warning">审核未通过</span>
+                    <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
                   </div>
                   <div class="info-list align-center">
                     <div class="money-num mr-15">10-15k</div>

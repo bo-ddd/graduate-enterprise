@@ -2,20 +2,20 @@
   <Layout></Layout>
   <div class="position-info position-wrap">
     <div class="head-tip">
-      <div
+      <!-- <div
         class="tip-box"
-        :class="{success:positionStatus2==1,warning:positionStatus2==0,error:positionStatus2==1}"
+        :class="{success:positionStatus2==1,warning:positionStatus2==0,error:positionStatus2==2}"
       >
         <el-icon v-if="positionStatus2==1" size="28px" color="#19be6b">
           <CircleCheck />
         </el-icon>
-        <el-icon v-if="positionStatus2==0" size="28px" color="#f90">
+        <el-icon v-if="positionStatus2==2" size="28px" color="#f90">
           <Warning />
         </el-icon>
-        <el-icon v-if="positionStatus2==1" size="28px" color="#ed4014">
+        <el-icon v-if="positionStatus2==0" size="28px" color="#ed4014">
           <CircleClose />
         </el-icon>
-        <div v-if="positionStatus2==1">
+        <div v-if="positionStatus2==0">
           <div class="title">审核状态：审核中</div>
           <div class="text">您的信息已提交，平台将在当天完成审核，请注意刷新页面。关注最新动态，反馈招聘需求和问题，请扫右方二位码入群或添加下方小助理微信。</div>
         </div>
@@ -23,11 +23,11 @@
           <div class="title">审核状态：已通过</div>
           <div class="text">该职位已通过审核，该职业会在招聘会上展示。</div>
         </div>
-        <div v-if="positionStatus2==0">
+        <div v-if="positionStatus2==2">
           <div class="title">审核状态：未通过</div>
           <div class="text">该职位未通过审核，不会在招聘会上展示，建议修改后重新提交审核。未通过原因：职位信息不正确，驳回。</div>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="title mb-40 mt-65">职位信息</div>
     <el-form
@@ -312,6 +312,7 @@ const activeNum = ref(-1);
 const activeNum2 = ref(-1);
 const ruleFormRef = ref<FormInstance>();
 const positionStatus = ref(0);
+const positionStatus2 = ref(0);
 const educationArr: any = ref([]);
 const industryArr: any = ref([]);
 const professionalArr: any = ref([]);
@@ -391,6 +392,7 @@ const positionDetail = async function () {
   });
   if (res.code == 200) {
     positionStatus.value = res.data.positionStatus;
+    positionStatus2.value = res.data.positionStatus2;
     positionId.value = res.data.positionId;
     ruleForm.data.positionNature = res.data.positionNature; //工作性质
     ruleForm.data.positionName = res.data.positionName; //职位名称
