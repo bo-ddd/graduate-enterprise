@@ -12,21 +12,21 @@ export const usePersonStore = defineStore('person', () => {
   function getSexList(params?:any){
     return Api.getSexList(params);
   }
-  function getPositionList(params:any|null){
+  function getPositionList(params?:any|null){
     return Api.getPositionDrop(params);
   }
   function getWishMoney(params?:any){
     return Api.getWishMoney(params);
   }
-  function getTalentList(params:any){
+  function getTalentList(params?:any){
     return Api.getTalentList(params);
   }
   //获取人才列表
-  function getInviteList(params:any){
+  function getInviteList(params?:any){
     return Api.getInvite(params);
   }
   //邀请人才
-  function inviteTalent(params:any|null){
+  function inviteTalent(params?:any|null){
     return Api.inviteTalent(params);
   }
   //获取职位类别
@@ -34,8 +34,8 @@ export const usePersonStore = defineStore('person', () => {
     return Api.getPosition(params);
   }
    //邀请人才下拉框
-   function getInviteDrop(){
-    return Api.getInviteDrop({});
+   function getInviteDrop(params?:any){
+    return Api.getInviteDrop(params);
   }
   return { count , getEducation, getMajorList,getSexList,getPositionList,getWishMoney,getTalentList,getInviteList,inviteTalent,getPosition,getInviteDrop}
 })
