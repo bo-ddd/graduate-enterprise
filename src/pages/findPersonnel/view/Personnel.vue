@@ -28,6 +28,10 @@ interface Form {
     wishMoneyLeft?: any,
     wishMoneyRight?: any,
 }
+interface InvitationForm{
+    status:any;
+    positionId:any;
+}
 let form: Form = reactive({
     sex: null,//性别
     education: null,//学历
@@ -37,12 +41,12 @@ let form: Form = reactive({
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
 
-let invitationForm = reactive<{
+let invitationForm:InvitationForm = reactive<{
     status: any;
-    professional: any;
+    positionId: any;
 }>({
     status: null,
-    professional: null,
+    positionId: null,
 });
 let inviationNumber = ref(0);//这个是当日邀请次数
 
@@ -69,6 +73,9 @@ const dialogFormVisible = ref(false);//弹出弹层
 watch(paging, () => {
     //监听页数更改直接调用获取人才列表的接口
     getTalentList();
+})
+watch(pagingInvite,()=>{
+    inviteTalentList();
 })
 
 let showGuid = ref(false);//展示导航
@@ -114,9 +121,7 @@ getEducationList();//调用获取学历列表
 
 //这个是获取邀请次数的方法
 const getInvationsNumber = async () => {
-    const res: Res | any = await HomeStore.getEnterprise({
-        userId: 10000,
-    })
+    const res: Res | any = await HomeStore.getEnterprise({});
     if (res.code != 200) return;
     inviationNumber.value = res.data.invitationTalentCount;
 }
@@ -141,9 +146,7 @@ getSexList();
 
 //这个是获取职位列表的方法
 const getPositionList = async () => {
-    const res: Res | any = await PersonStore.getPositionList({
-        userId: 10000,
-    });
+    const res: Res | any = await PersonStore.getPositionList({});
     positionArr.push(...(res.data))
 }
 getPositionList();
@@ -184,7 +187,6 @@ getTalentList();
 const inviteTalent = async () => {
     const res: Res | any = await PersonStore.inviteTalent({
         inviteUserId: invitationUserId.value,
-        userId: 10000,
         positionId: checkPosition.value,
     });
     dialogFormVisible.value = false;
@@ -195,11 +197,20 @@ const inviteTalent = async () => {
 
 //获取邀请人才列表
 const inviteTalentList = async () => {
-    const res: Res | any = await PersonStore.getInviteList({
-        userId: 10000,
-    })
+    let obj: any = {};
+    let key:keyof InvitationForm;
+    obj['pageIndex'] = pagingInvite.pageIndex;
+    obj['pageSize'] = pagingInvite.pageSize;
+    for (key in invitationForm) {
+       if(invitationForm[key]){
+            obj[key] = invitationForm[key];
+       }
+    }
+    const res: Res | any = await PersonStore.getInviteList(obj);
     if (res.code !== 200) return;
     invitationList.length = 0;
+    console.log('-------------------邀请人才列表----------------');
+    console.log(res);
     invitationList.push(...(res.data.talentList));
     console.log(invitationList);
     pagingInvite.total = res.data.totalCount;
@@ -218,7 +229,7 @@ const invitationPost = async (userId: number) => {
 
 //获取职位类别
 const getPositionCategory = async () => {
-    const res: Res | any = await PersonStore.getPosition();
+    const res: Res | any = await PersonStore.getPosition({});
     if (res.code !== 200) return;
     // positionDownList: (2) [{…}, {…}]
     // positionTypeId: "1"
@@ -360,14 +371,12 @@ getInviteDrop();
                         <p class="titlest fs-12 ml-28">求职意向</p>
                         <div class="occupation-item mt-16">
                             <img src="@/assets/images/icon-dingwei.png" class="icon">
-                            <p class="description fs-14 ml-12">{{ item.wishAddr ? item.wishPosition :
-                                    '辽宁省-大连市、辽宁省-沈阳市、吉林省-长春市'
-                            }}</p>
+                            <p class="description fs-14 ml-12">{{item.wishAddr ? item.wishAddr : '无'}}</p>
                         </div>
                         <div class="occupation-item mt-12">
                             <img src="@/assets/images/icon-bangong.png" class="icon">
-                            <p class="description fs-14 ml-12">{{ item.wishPosition ? item.wishAddr :
-                                    '审计专员/助理、物流专员/经理、人事专员/助理、市场营销、行政专员/助理'
+                            <p class="description fs-14 ml-12">{{ item.wishPosition ? item.wishPosition :
+                                    '无'
                             }}</p>
                         </div>
                         <div class="occupation-item mt-16">
@@ -414,12 +423,12 @@ getInviteDrop();
                         <el-option v-for="item in statusList" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
-                    <el-select v-model="invitationForm.professional" clearable class="m-2 check-position mr-30"
+                    <el-select v-model="invitationForm.positionId" clearable class="m-2 check-position mr-30"
                         placeholder="意向职位选择" size="large">
                         <el-option v-for="item in positionArr" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
-                    <el-button type="primary" class="btn">确定</el-button>
+                    <el-button type="primary" class="btn" @click="inviteTalentList">确定</el-button>
                 </div>
 
                 <!--邀请的列表-->
@@ -475,17 +484,15 @@ getInviteDrop();
                                 <p class="titlest fs-12 ml-28">求职意向</p>
                                 <div class="occupation-item mt-16">
                                     <img src="@/assets/images/icon-dingwei.png" class="icon">
-                                    <p class="description fs-14 ml-12">{{ '辽宁省-大连市、辽宁省-沈阳市、吉林省-长春市' }}</p>
+                                    <p class="description fs-14 ml-12">{{ item.wishAddr ? item.wishAddr : '无' }}</p>
                                 </div>
                                 <div class="occupation-item mt-12">
                                     <img src="@/assets/images/icon-bangong.png" class="icon">
-                                    <p class="description fs-14 ml-12">{{ item.wishPosition ? item.wishPosition :
-                                            '审计专员/助理、物流专员/经理、人事专员/助理、市场营销、行政专员/助理'
-                                    }}</p>
+                                    <p class="description fs-14 ml-12">{{  item.wishPosition ? item.wishPosition : '无' }}</p>
                                 </div>
                                 <div class="occupation-item mt-16">
                                     <img src="@/assets/images/icon-qianbi.png" class="icon">
-                                    <p class="description fs-14 ml-12">{{ getMoney(item.wishMoney) }}</p>
+                                    <p class="description fs-14 ml-12">{{item.wishMoney ? getMoney(item.wishMoney) : '无' }}</p>
                                 </div>
                             </div>
 
@@ -728,19 +735,6 @@ getInviteDrop();
                 display: flex;
                 justify-content: center;
                 padding-bottom: 64px;
-                // :deep(.number) {
-                //     background: #fff;
-                //     border: 1px solid #ccc;
-                //     color: #515a6e;
-                // }
-                // :deep(.btn-quicknext){
-                //     background: #fff;
-                //     color: #515a6e;
-                // }
-                // :deep(.is-active){
-                //     border-color: #356ffa;
-                //     color: #356ffa;
-                // }
             }
         }
     }

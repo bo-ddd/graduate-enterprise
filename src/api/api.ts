@@ -7,7 +7,6 @@ import { postConfig,getConfig, uploadConfig } from './config'
 axios.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么,一般配置一些请求头的公共信息；
     (config as any).headers.token = sessionStorage.getItem('token');
-    console.log(config)
     return config;
 })
 
