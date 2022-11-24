@@ -37,8 +37,8 @@ let list = reactive([
 let route = useRoute();
 let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
-    if(window.location.href == window.location.origin + key.url) return;
-    window.location.href = window.location.origin + key.url;
+  if(route.path == key.url) return;
+  window.location.href = key.url;
 }
 const dialogFormVisible = ref(false)
 </script>

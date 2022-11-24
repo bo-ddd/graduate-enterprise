@@ -62,10 +62,12 @@
                     }">
                         <template #btn>
                             <el-button @click="inappropriate($event, item)">不合适</el-button>
-                            <el-button v-show="item.deliveryStatus == '不合适'" @click="byFilter($event, item)"
-                                type="primary">通过初筛</el-button>
-                            <el-button v-show="item.deliveryStatus == '通过初筛'" @click="dialog($event, item)"
-                                type="primary" plain>邀约面试</el-button>
+                            <el-button v-show="item.deliveryStatus != '通过初筛' && item.deliveryStatus != '面试' && item.deliveryStatus != '拟录用'"
+                                @click="byFilter($event, item)" type="primary">通过初筛</el-button>
+                            <el-button v-show="item.deliveryStatus == '通过初筛' || item.deliveryStatus == '面试'"
+                                @click="dialog($event, item)" type="primary" plain>邀约面试</el-button>
+                            <el-button v-show="item.deliveryStatus == '面试'" type="primary"
+                                @click="employment($event, item)">拟录用</el-button>
                         </template>
                     </card.cardItem>
                 </template>
@@ -92,8 +94,8 @@
 
                 <div>
                     面试时间：
-                    <el-date-picker v-model="inviteFrom.interviewTime " type="datetime" placeholder="请选择时间" format="YYYY/MM/DD hh:mm:ss"
-                        value-format="YYYY-MM-DD h:m:s a" />
+                    <el-date-picker v-model="inviteFrom.interviewTime" type="datetime" placeholder="请选择时间"
+                        format="YYYY/MM/DD hh:mm:ss" value-format="YYYY-MM-DD h:m:s a" />
                 </div>
 
                 <div>
@@ -105,7 +107,7 @@
                     联系人：
                     <el-input v-model="inviteFrom.interviewName" class="input-width ml-15" placeholder="联系人" />
                 </div>
-                
+
 
 
                 <div>
@@ -115,7 +117,8 @@
 
                 <div>
                     备注信息：
-                    <el-input v-model="inviteFrom.interviewNote" class="input-text" axlength="200" placeholder="请填写备注事项" show-word-limit type="textarea" />
+                    <el-input v-model="inviteFrom.interviewNote" class="input-text" axlength="200" placeholder="请填写备注事项"
+                        show-word-limit type="textarea" />
                 </div>
             </div>
 
@@ -133,7 +136,6 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
 import card from "@/components/card/index";
 import footerBar from "@/components/footer/footerBar.vue"
 import { useEnterpriseStore } from "@/stores/enterprise"
@@ -142,30 +144,63 @@ let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
 
+/**
+ * 拟录用
+ * 
+ */
+let employment = async (event: Event, item: any) => {
+    event.stopPropagation();
+    let res: any = await enterprise.modifyResume({
+        deliveryId: item.deliveryId,
+        interviewAddr: item.interviewAddr,
+        interviewName: item.interviewName,
+        interviewNote: item.interviewNote,
+        interviewPhone: item.interviewPhone,
+        interviewTime: item.interviewTime,
+        positionId: item.positionId,
+        statusId: 5,
+    });
+    console.log(res.code);
+    if (res.code == 200) {
+        ElMessage({
+            message: 'success',
+            type: 'success',
+        }) 
+        getResume();
+        resumeBtn.value = false;
+    } else {
+        ElMessage.error('this is a error message.')
+    }
+
+}
+
 /***
  * 邀约面试  
  */
 let name = ref();
+let deliveryId = ref();
 const dialogVisible = ref(false);
 let dialog = (event: Event, item: any) => {
+    console.log(item);
     name.value = item.userName;
+    deliveryId.value = item.deliveryId;
     event.stopPropagation();
     dialogVisible.value = true;
 }
 
-let inviteFrom:any = reactive({});
-let inviteInterview =async ()=>{
+let inviteFrom: any = reactive({
+    statusId: 4,
+});
+let inviteInterview = async () => {
+    inviteFrom.deliveryId = deliveryId.value;
     dialogVisible.value = false;
-    let res:any = await enterprise.modifyResume(inviteFrom);
+    let res: any = await enterprise.modifyResume(inviteFrom);
     if (res.code == 200) {
         ElMessage({
-
-            
             message: 'success',
             type: 'success',
         })
         getResume();
-        resumeBtn.value = false;
     } else {
         ElMessage.error('this is a error message.')
     }
@@ -198,7 +233,6 @@ let getUserInfo = async (item: any) => {
     resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
-        userId: item.userId
     })
     if (res.code == 200) {
         console.log(res);
@@ -214,7 +248,6 @@ let batchInappropriate = async () => {
     let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 6,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -238,7 +271,6 @@ let batchbyFilter = async () => {
     let res: any = await enterprise.modifyResumeStatus({
         deliveryId,
         statusId: 3,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -268,7 +300,6 @@ let inappropriate = async (event: Event, item: any) => {
         interviewTime: item.interviewTime,
         positionId: item.positionId,
         statusId: 6,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -296,7 +327,6 @@ let byFilter = async (event: Event, item: any) => {
         interviewTime: item.interviewTime,
         positionId: item.positionId,
         statusId: 3,
-        userId: 10000
     })
     if (res.code == 200) {
         ElMessage({
@@ -349,7 +379,7 @@ getStage();
 let allPositions: any = ref([]);
 let positionDropValue = ref();
 let getPositionDrop = async () => {
-    let res: any = await enterprise.getPositionDrop({ userId: 10000 });
+    let res: any = await enterprise.getPositionDrop();
     if (res.code == 200) {
         allPositions.value = res.data;
     } else {
@@ -385,7 +415,6 @@ let getResume = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        userId: 10000,
         companyId: 10000,
     });
     if (res.code == 200) {
@@ -407,7 +436,6 @@ let fuzzyQuery = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        userId: 10000,
         companyId: 10000,
         deliveryStatus: stageValue.value,
         educationId: educationValue.value,
@@ -435,16 +463,17 @@ let fuzzyQuery = async () => {
     padding: 12px;
     padding-bottom: 0;
 }
+
 :deep(.el-dialog) {
-          border-radius:6px;
-        }
+    border-radius: 6px;
+}
 
 .input-width {
     width: 200px;
 }
 
 .input-text {
-    width:400px;
+    width: 400px;
 }
 
 .candidate {
