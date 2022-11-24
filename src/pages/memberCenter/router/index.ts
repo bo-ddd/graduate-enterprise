@@ -11,13 +11,12 @@ const router = createRouter({
   ]
 })
 
-router.beforeEach((to,from)=>{
+router.beforeEach((to,from,next)=>{
   const token = sessionStorage.getItem('token');
-  console.log(token);
-  if( !token ){
-  //  router.push({name:'login.html'})
-  return true
+  if(!token){
+    window.location.href = 'login.html';
+  }else{
+    next();
   }
-})
-
+})   
 export default router;
