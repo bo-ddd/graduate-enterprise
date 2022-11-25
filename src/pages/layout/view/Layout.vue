@@ -37,8 +37,11 @@ let list = reactive([
 let route = useRoute();
 let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
+  if(route.path == key.url) return;
   window.location.href = key.url;
-  sessionStorage.removeItem('token');
+  if(key.url == "/login.html"){
+    sessionStorage.removeItem('token');
+  }
 }
 const dialogFormVisible = ref(false)
 </script>
