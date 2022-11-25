@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import {  useRoute } from 'vue-router'
+import { useHomeStore } from '@/stores/home';
+const use = useHomeStore();
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -39,8 +41,21 @@ let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
   if(route.path == key.url) return;
   window.location.href = key.url;
+  if(key.url == "/login.html"){
+    sessionStorage.removeItem('token');
+  }
 }
-const dialogFormVisible = ref(false)
+const dialogFormVisible = ref(false);
+
+let enterpriseInfo = <any>ref({});
+const getEnterpriseInfo = async () => {
+    const res:any = await use.getEnterprise();
+     if(res.code == 200){
+      enterpriseInfo.value = res.data;
+     }
+      
+}
+getEnterpriseInfo()
 </script>
 
 <template>
@@ -57,10 +72,10 @@ const dialogFormVisible = ref(false)
         </el-menu>
       </div>
       <div class="user align-center">
-        <p class="fs-14">Hi,中谷百科</p>
+        <p class="fs-14">Hi,</p>{{enterpriseInfo.companyFullName}}
         <el-dropdown>
           <span class="el-dropdown-link">
-            <img class="avator" src="@/assets/images/avator.png" alt="">
+            <img class="avator" :src="enterpriseInfo.companyLogoUrl" alt="">
             <el-icon class="el-icon--right">
               <!-- <arrow-down /> -->
             </el-icon>

@@ -56,7 +56,8 @@
 
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
-                        <el-cascader placeholder="请输入" class="el-input_240" :options="cityJson" :props="{ 'label': 'name', 'value': 'code' }" clearable />
+                        <el-cascader placeholder="请输入" class="el-input_240" :options="cityJson"
+                            :props="{ 'label': 'name', 'value': 'code' }" clearable />
                     </el-form-item>
 
                     <!-- 详细注册地址 -->
@@ -478,7 +479,7 @@
             </div>
             <template #footer>
                 <el-button @click="centerDialogVisible2 = false">取消</el-button>
-                <el-button type="primary" @click="nav('/')">确定并退出登录</el-button>
+                <el-button type="primary" @click="navLogin">确定并退出登录</el-button>
             </template>
         </el-dialog>
     </div>
@@ -491,6 +492,11 @@ import { ref } from 'vue';
 import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
+interface Res {
+    code: number | string,
+    data: any,
+    msg: string
+}
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否
@@ -501,18 +507,10 @@ const centerDialogVisible2 = ref(false);
 const nav = (name: string) => {
     window.location.href = `${name}.html`;
 };
-const RegisteredArea = [
-    {
-        value: 'value',
-        label: 'label',
-        children: [
-            {
-                value: 'childrenvalue',
-                label: 'childrenlabel',
-            }
-        ]
-    }
-];
+const navLogin = () => {
+    sessionStorage.setItem('token', '');
+    window.location.href = '/login.html';
+}
 // form 表单数据
 const form = reactive({
     companyFullName: '',// 企业全称
@@ -548,10 +546,12 @@ const enterpriseLabelVal = ref('请选择');
 const forbidden = ref('请选择');
 const forbiddenData: any | [] = ref([]);
 const handleChange = () => { };
-// 调用 获取所属行业下拉框接口 报错
+// 调用 获取所属行业下拉框接口 
 const getIndustryList = async function () {
-    const res = await use.getIndustryList();
-    Object.assign(forbiddenData.value, res.data);
+    const res: Res | any = await use.getIndustryList();
+    if (res.code == 200) {
+        Object.assign(forbiddenData.value, res.data);
+    }
 };
 getIndustryList();
 // 上传企业LOGO的逻辑
@@ -566,8 +566,10 @@ const handleDownload = () => { };
 let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
 const getEnterpriseNatureList = async function () {
-    const res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature, res.data);
+    const res: Res | any = await use.getEnterpriseNatureList();
+    if (res.code == 200) {
+        Object.assign(enterpriseNature.value, res.data);
+    }
 };
 getEnterpriseNatureList();
 // 企业规模
@@ -580,8 +582,10 @@ interface EnterpriseScale {
 let enterpriseScale: any | EnterpriseScale = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
-    const res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale, res.data);
+    const res: Res | any = await use.getEnterpriseSizeList();
+    if (res.code == 200) {
+        Object.assign(enterpriseScale.value, res.data);
+    }
 };
 getEnterpriseSizeList();
 // 企业标签
@@ -594,8 +598,10 @@ interface EnterpriseLabel {
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
-    const res = await use.getEnterpriseTagList();
-    Object.assign(enterpriseLabel, res.data);
+    const res: Res | any = await use.getEnterpriseTagList();
+    if (res.code == 200) {
+        Object.assign(enterpriseLabel.value, res.data);
+    }
 };
 getEnterpriseTagList();
 const schoolListVal = ref([]);
