@@ -12,8 +12,8 @@
             <br><span>{{ userinfo.education }}</span>
         </div>
         <div></div>
-        <div class="c-5151 fs-14 deliveryStatus">
-            <span :class="userinfo.deliveryStatus == '通过初筛'  ? 'active' : userinfo.deliveryStatus == '面试' ? 'active1' : '' ">{{userinfo.deliveryStatus}}</span>
+        <div class="c-5151 fs-14 deliveryStatus"> 
+            <span :class="userinfo.deliveryStatus == '通过初筛'  ? 'active' : userinfo.deliveryStatus == '面试' ? 'active1' : userinfo.deliveryStatus == '拟录用' ? 'active2': '' ">{{userinfo.deliveryStatus}}</span>
         </div>
         <div class="btn">
             <slot name="btn"></slot>
@@ -52,6 +52,9 @@ let { userinfo } = toRefs(props);
     }
     .active1{
         color: rgb(32, 107, 226);
+    }
+    .active2{
+        color: rgb(50, 16, 219)
     }
     display: flex;
     justify-content: space-between;

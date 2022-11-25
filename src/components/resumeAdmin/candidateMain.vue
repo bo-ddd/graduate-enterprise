@@ -130,9 +130,6 @@
                 </span>
             </template>
         </el-dialog>
-
-        <el-button text @click="open">Click to open the Message Box</el-button>
-
         <footerBar></footerBar>
     </div>
 </template>
@@ -147,42 +144,14 @@ let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
 
-
-const open = () => {
-    ElMessageBox.confirm(
-        '你确定要改变状态嘛？',
-        '确定修改嘛',
-        {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-        }
-    )
-        .then(() => {
-            ElMessage({
-                type: 'success',
-                message: 'success',
-            })
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '取消修改',
-            })
-        })
-}
-
-
-
 /**
  * 拟录用
  * 
  */
 let employment = async (event: Event, item: any) => {
     event.stopPropagation();
-
     ElMessageBox.confirm(
-        '你确定要拟录用嘛?',
+        '确定测试简历已通过所有考核，即将录用他？',
         '确定修改嘛',
         {
             confirmButtonText: '确定',
@@ -372,7 +341,7 @@ let batchbyFilter = () => {
 let inappropriate = (event: Event, item: any) => {
     event.stopPropagation();
     ElMessageBox.confirm(
-        '你确定要修改为不合适嘛',
+        `确定该简历不符合录用标准，将其标记为不合适？`,
         '确定修改嘛',
         {
             confirmButtonText: '确定',
