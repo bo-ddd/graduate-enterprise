@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import {  useRoute } from 'vue-router'
+import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/user';
+const user = useUserStore();
+
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -35,15 +38,120 @@ let list = reactive([
 ])
 
 let route = useRoute();
-let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
-const handleSelect = (key: any) => {  
-  if(route.path == key.url) return;
+let acitveIndex: any = ref(list.find(item => item.url == route.path)?.id);
+const handleSelect = (key: any) => {
+  if (route.path == key.url) return;
   window.location.href = key.url;
-  if(key.url == "/login.html"){
+  if (key.url == "/login.html") {
     sessionStorage.removeItem('token');
   }
 }
-const dialogFormVisible = ref(false)
+const dialogFormVisible = ref(false);
+
+// 修改密码
+const changePassword = () => {
+  dialogFormVisible.value = true;
+  active.value = 0;
+  isNext.value = true
+}
+
+// 步骤条
+const active = ref(0);
+let isNext = ref(true);
+const next = () => {
+  if (active.value++ > 2) active.value = 0;
+  isNext.value = false
+}
+
+//忘记密码
+const ruleFormForgotPwRef = ref<FormInstance>()
+const ruleFormForgotPw = reactive({
+  phone: '',
+  validate: '',
+  countDown: 60,
+  isCountDown: true
+})
+
+const rulesForgotPw = reactive<FormRules>({
+  // phone: [
+  //     { required: true, message: '请输入手机号', trigger: 'blur' },
+  //     { validator: validatePhone, }
+  // ],
+  // validate: [
+  //     { required: true, message: '请输入验证码', trigger: 'blur' },
+  //     { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
+  // ],
+})
+
+const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      localStorage.setItem('phone', ruleFormForgotPw.phone)
+      localStorage.setItem('smsCode', ruleFormForgotPw.validate)
+      next();
+    } else {
+    }
+  })
+}
+
+//重置密码
+const ruleFormResetPwRef = ref<FormInstance>()
+const ruleFormResetPw = reactive({
+  password: '',
+  checkPass: '',
+})
+const validatePass = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入新的密码'))
+  } else {
+    if (ruleFormResetPw.checkPass !== '') {
+      if (!ruleFormResetPwRef.value) return
+      ruleFormResetPwRef.value.validateField('checkPass', () => null)
+    }
+    callback()
+  }
+}
+const validatePass2 = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== ruleFormResetPw.password) {
+    callback(new Error("两次输入的密码不一致"))
+  } else {
+    callback()
+  }
+}
+const rulesResetPw = reactive<FormRules>({
+  password: [{ validator: validatePass, trigger: 'blur' }],
+  checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+})
+
+const submitFormResetPw = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      //重置密码
+      let register = async (options: any) => {
+        const res: any | Res = await user.login(options);
+        if (res.code == 200) {
+          ElMessage({
+            message: '重置成功，请登录',
+            type: 'success',
+          });
+        }
+      }
+      register({
+        phone: localStorage.getItem('phone'),
+        password: ruleFormResetPw.password,
+        smsCode: localStorage.getItem('smsCode'),
+        loginType: 3,
+        inviteCode: 0,
+      })
+
+    } else {
+    }
+  })
+}
 </script>
 
 <template>
@@ -56,7 +164,8 @@ const dialogFormVisible = ref(false)
         </div>
         <!-- 菜单 -->
         <el-menu :ellipsis="false" :default-active="acitveIndex" class="el-menu-demo" mode="horizontal">
-          <el-menu-item v-for="item,index in list" :key="`${index}`" :index="`${index}`" @click="handleSelect(item)">{{item.title}}</el-menu-item>
+          <el-menu-item v-for="item, index in list" :key="`${index}`" :index="`${index}`" @click="handleSelect(item)">
+            {{ item.title }}</el-menu-item>
         </el-menu>
       </div>
       <div class="user align-center">
@@ -70,53 +179,89 @@ const dialogFormVisible = ref(false)
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="dialogFormVisible = true">修改密码</el-dropdown-item>
+              <el-dropdown-item @click="changePassword">修改密码</el-dropdown-item>
               <el-dropdown-item>联系客服</el-dropdown-item>
               <el-dropdown-item @click="handleSelect({
-                url:'/login.html'
+                url: '/login.html'
               })">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
       </div>
 
-      <el-dialog width="400px" v-model="dialogFormVisible" title="修改密码" align-center>
-        <el-form>
-          <el-steps :active="1" align-center>
-            <el-step title="验证手机号" />
-            <el-step title="重置密码" />
-          </el-steps>
-
-
-
-        </el-form>
-        <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">
-              Confirm
+      <el-dialog width="400px" v-model="dialogFormVisible" align-center>
+        <div class="c-000000 just-center mt-40 mb-40">
+          <h3 class="fs-18">忘记密码</h3>
+        </div>
+        <el-steps :active="active" finish-status="success" align-center>
+          <el-step title="验证手机号" />
+          <el-step title="重置密码" />
+        </el-steps>
+        <!-- 第一步 -->
+        <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right" :model="ruleFormForgotPw"
+          :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" size="default">
+          <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="phone">
+            <!-- 手机号 -->
+            <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
+          </el-form-item>
+          <el-form-item class="mt-22 item-input validate" label="" label-width="0px" prop="validate">
+            <!-- 验证码 -->
+            <div class="just-between validate-flex">
+              <el-input class="input" v-model="ruleFormForgotPw.validate" placeholder="请输入短信验证码" autocomplete="off" />
+              <el-button v-show="ruleFormForgotPw.isCountDown" style="width:102px"
+                :disabled="ruleFormForgotPw.phone.length == 11 ? false : true"
+                :color="ruleFormForgotPw.phone.length == 11 ? '#356ffa' : '#ececec'"
+                :class="'btn-validate ' + (ruleFormForgotPw.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
+                @click="getvalidate($event, ruleFormForgotPw)">
+                获取验证码</el-button>
+              <el-button v-show="!ruleFormForgotPw.isCountDown" style="width:102px" disabled color='#ececec'
+                class="btn-validate c-b9b9b9">
+                {{ `${ruleFormForgotPw.countDown}秒后重试` }}</el-button>
+            </div>
+          </el-form-item>
+          <el-form-item class="m-0">
+            <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
+              @click="submitFormForgotPw(ruleFormForgotPwRef)">找回密码
             </el-button>
-          </span>
-        </template>
+          </el-form-item>
+        </el-form>
+        <!-- 第二步 -->
+        <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right" :model="ruleFormResetPw"
+          :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" size="default">
+          <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="password">
+            <!-- 重置密码 -->
+            <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码" type="password" />
+          </el-form-item>
+          <el-form-item class="mt-22 item-input " label="" label-width="0px" prop="checkPass">
+            <!-- 再次输入密码 -->
+            <el-input class="input" v-model="ruleFormResetPw.checkPass" placeholder="请再次输入密码" type="password"
+              autocomplete="off" />
+          </el-form-item>
+          <el-form-item class="m-0">
+            <el-button class=" btn fs-16 mt-15 " color="#2d8cf0" type="primary"
+              @click="submitFormResetPw(ruleFormResetPwRef)">修改密码
+            </el-button>
+          </el-form-item>
+        </el-form>
       </el-dialog>
     </div>
   </header>
   <div class="container">
-      <div :class="['consulting-service', 'absolute-wrap', showGuid ? 'close-animate' : 'show-animate']">
-        <div class="top">
-          <img src="@/assets/images/company_fanjia_3.png" class="or-code">
-          <p class="tip fs-12">如有任何疑问请咨询</p>
-        </div>
-        <img src="@/assets/images/icon-close.png" @click="handleGuideChange(true)">
+    <div :class="['consulting-service', 'absolute-wrap', showGuid ? 'close-animate' : 'show-animate']">
+      <div class="top">
+        <img src="@/assets/images/company_fanjia_3.png" class="or-code">
+        <p class="tip fs-12">如有任何疑问请咨询</p>
       </div>
-
-      <!-- 这个是点击弹出咨询的容器 -->
-      <div class="seek-advice absolute-wrap box-shadow" v-show="showGuid" @click="handleGuideChange(false)">
-        <img src="@/assets/images/icon-kefu.png">
-      </div>
+      <img src="@/assets/images/icon-close.png" @click="handleGuideChange(true)">
     </div>
 
-    <!-- 这个是疑问咨询的图片 -->
+    <!-- 这个是点击弹出咨询的容器 -->
+    <div class="seek-advice absolute-wrap box-shadow" v-show="showGuid" @click="handleGuideChange(false)">
+      <img src="@/assets/images/icon-kefu.png">
+    </div>
+  </div>
+
+  <!-- 这个是疑问咨询的图片 -->
 </template>
 
 
@@ -160,11 +305,65 @@ const dialogFormVisible = ref(false)
 :deep(.el-dropdown-link .el-icon) {
   display: none;
 }
+:deep(.el-form-item__content) {
+    margin: 0 !important;
+}
+
+:deep(.el-input__wrapper) {
+  padding: 0 !important;
+  border-radius: 5px;
+  background-color: #f6f7f9;
+  box-shadow: 0 0 0 0 !important;
+}
+
+:deep(.el-input__inner) {
+  height: 42px;
+  margin-left: 7px;
+}
+
+:deep(.el-form-item__error) {
+  padding: 6px;
+}
+
+:deep(.el-step__line) {
+  width: 200% !important;
+  left: 0 !important;
+  height: 0 !important;
+  background-color: rgb(232, 232, 232);
+  border: 1px dashed rgb(255, 255, 255);
+}
+
+:deep(.el-step__title) {
+  font-weight: 500 !important;
+  font-size: 14px;
+}
+
+:deep(.el-step__icon-inner) {
+  font-weight: 500 !important;
+  font-size: 14px;
+}
+
+:deep(.el-step__head.is-process>.el-step__icon.is-text) {
+  background-color: #2d8cf0;
+}
+
+:deep(.el-step__icon) {
+  background-color: #1fbe4c;
+}
+
+:deep(.el-step__icon.is-text) {
+  --size: 22px;
+  color: #ffffff;
+  border: 0;
+  width: var(--size);
+  height: var(--size);
+}
 
 .container {
 
   &>.consulting-service {
     text-align: center;
+
     &>.top {
       padding: 12px 12px 0;
       box-shadow: 2px 3px 0 rgb(215 214 214 / 50%);
@@ -277,5 +476,28 @@ const dialogFormVisible = ref(false)
   right: 20px;
   top: 90px;
   z-index: 2;
+}
+
+.wrap {
+  .validate {
+    background-color: #ffffff;
+
+    .input {
+      width: 198px;
+    }
+
+    .validate-flex {
+      width: 100%;
+    }
+
+    .btn-validate {
+      height: 42px;
+    }
+  }
+}
+.btn{
+  width: 100% !important;
+  height: 42px;
+  border-radius: 0;
 }
 </style>
