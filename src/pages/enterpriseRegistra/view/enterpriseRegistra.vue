@@ -21,7 +21,7 @@
                     <el-form-item label="企业logo">
                         <el-upload class="avatar-uploader" action="/api/company/uploadFile" :show-file-list="false"
                             :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+                            <img v-if="form.companyLogo" :src="form.companyLogo" class="avatar" />
                             <el-icon v-else class="avatar-uploader-icon">
                                 <Plus />
                             </el-icon>
@@ -83,13 +83,16 @@
                     <div class="align-center">
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
-                            <!--<el-upload class="avatar-uploader" :show-file-list="false"
-                                :before-upload="beforeAvatarUpload">
-                                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                                <el-icon v-else class="avatar-uploader-icon">
-                                    <Plus />
-                                </el-icon>
-                            </el-upload>-->
+                            <div class="yyzz">
+                                <el-upload class="avatar-uploader" action="/api/company/uploadFile"
+                                    :show-file-list="false" :on-success="handleAvatarSuccess1"
+                                    :before-upload="beforeAvatarUpload1">
+                                    <img v-if="form.companyLicense" :src="form.companyLicense" class="avatar" />
+                                    <el-icon v-else class="avatar-uploader-icon">
+                                        <Plus />
+                                    </el-icon>
+                                </el-upload>
+                            </div>
                             <div class="business-license_test mt-10">
                                 <p>
                                     请上传清晰的营业执照, 执照中的<b>社会信用代码、企业名称</b>需与上方填写的一致。
@@ -175,7 +178,6 @@ import { ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
-import { ElMessage } from 'element-plus';
 import type { UploadProps } from 'element-plus';
 const use = useHomeStore();
 // ajax
@@ -201,27 +203,6 @@ interface Form {
     companyWishSchool?: string,
     userId: number
 }
-// 上传
-const imageUrl = ref('')
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
-) => {
-    imageUrl.value = URL.createObjectURL(uploadFile.raw!)
-    console.log(imageUrl)
-}
-
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    if (rawFile.type !== 'image/jpeg') {
-        ElMessage.error('Avatar picture must be JPG format!')
-        return false
-    } else if (rawFile.size / 1024 / 1024 > 2) {
-        ElMessage.error('Avatar picture size can not exceed 2MB!')
-        return false
-    }
-    return true
-}
-
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
 // form 表单数据
@@ -248,6 +229,45 @@ const form: Form = reactive({
     userId: 10000,
 });
 
+// 上传logo
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+    response,
+    uploadFile
+) => {
+    form.companyLogo = URL.createObjectURL(uploadFile.raw!)
+    console.log('log ~ form.companyLogo', form.companyLogo);
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 2) {
+        ElMessage({
+            message: '图片大小不可超过2M!',
+            type: 'warning',
+        })
+        return false
+    }
+    return true
+}
+// 上传营业执照
+const handleAvatarSuccess1: UploadProps['onSuccess'] = (
+    response,
+    uploadFile
+) => {
+    form.companyLicense = URL.createObjectURL(uploadFile.raw!)
+    console.log('log ~ form.companyLicense', form.companyLicense);
+}
+
+const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 2) {
+        // alert("图片大小不可超过2M")
+        ElMessage({
+            message: '图片大小不可超过2M!',
+            type: 'warning',
+        })
+        return false
+    }
+    return true
+}
 // 点击提交按钮走的方法
 console.log('cityJson', cityJson)
 const onSubmit = async () => {
@@ -261,55 +281,56 @@ const onSubmit = async () => {
     }
     console.log('校验完要传给后端的', obj)
     console.log('所属行业选中的', companyIndustry.value);
-    // console.log('企业注册地区', form.companyRegisterAddr.join(','))
-    // const res: any | Res = await use.setModifyEnterpriseInfo({
-    //     companyContactEmail: form.companyContactEmail,
-    //     companyContactName: form.companyContactName,
-    //     companyContactPhone: form.companyContactPhone,
-    //     companyIntroducation: form.companyIntroducation,
-    //     // companyLicense: form.companyLicense,
-    //     companyLogo: form.companyLogo,
-    //     companyNature: form.companyNature,
-    //     companySocialCreditCode: form.companySocialCreditCode,
-    //     companyStatus: form.companyStatus,
-    //     companyTag: form.companyTag,
-    //     companyWebUrl: form.companyWebUrl,
-    //     companyWishSchool: form.companyWishSchool,
-    //     companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
-    //     companyFullName: form.companyFullName,
-    //     companyName: form.companyName,
-    //     companySize: form.companySize,
-    //     companyAddr: form.companyAddr,
-    //     companyIndustryLeft: companyIndustry.value[0],
-    //     companyIndustryRight: companyIndustry.value[1],
-    //     userId: form.userId,
-    // });
-    // if (res.code == 200) {
-    //     getEnterprise();
-    //     window.location.href ='/';
-    //     ElMessage({
-    //         message: '修改成功！',
-    //         type: 'success',
-    //     })
-    // };
+    console.log('企业注册地区', form.companyRegisterAddr.join(','))
+    const res: any | Res = await use.setModifyEnterpriseInfo({
+        companyContactEmail: form.companyContactEmail,
+        companyContactName: form.companyContactName,
+        companyContactPhone: form.companyContactPhone,
+        companyIntroducation: form.companyIntroducation,
+        // companyLicense: form.companyLicense,
+        companyLogo: form.companyLogo,
+        companyNature: form.companyNature,
+        companySocialCreditCode: form.companySocialCreditCode,
+        companyStatus: form.companyStatus,
+        companyTag: form.companyTag,
+        companyWebUrl: form.companyWebUrl,
+        companyWishSchool: form.companyWishSchool,
+        companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
+        companyFullName: form.companyFullName,
+        companyName: form.companyName,
+        companySize: form.companySize,
+        companyAddr: form.companyAddr,
+        companyIndustryLeft: companyIndustry.value[0],
+        companyIndustryRight: companyIndustry.value[1],
+        userId: form.userId,
+    });
+    if (res.code == 200) {
+        getEnterprise();
+        window.location.href = '/';
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+    };
 };
-// companyWebUrl
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
-    const res = await use.getEnterprise();
-    console.log(res.data)
-    Object.assign(form, res.data);
-    companyIndustry.value = res.data.companyIndustry.split(' - ');
-    forbiddenData.value.forEach((element: any) => {
-        if (companyIndustry.value[0] == element.label) {
-            companyIndustry.value[0] = element.value;
-            element.children.forEach((elementChildren: any) => {
-                if (companyIndustry.value[1] == elementChildren.label) {
-                    companyIndustry.value[1] = elementChildren.value
-                }
-            });
-        }
-    });
+    const res: Res | any = await use.getEnterprise();
+    if (res.code == 200) {
+        console.log(res.data)
+        Object.assign(form, res.data);
+        companyIndustry.value = res.data.companyIndustry.split(' - ');
+        forbiddenData.value.forEach((element: any) => {
+            if (companyIndustry.value[0] == element.label) {
+                companyIndustry.value[0] = element.value;
+                element.children.forEach((elementChildren: any) => {
+                    if (companyIndustry.value[1] == elementChildren.label) {
+                        companyIndustry.value[1] = elementChildren.value
+                    }
+                });
+            }
+        });
+    }
 };
 getEnterprise();
 
@@ -355,23 +376,21 @@ const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
 const forbiddenData: any = ref([]);
 const getIndustryList = async function () {
     const res: Res | any = await use.getIndustryList();
-    if (res.code == 200) {
-        Object.assign(forbiddenData.value, res.data);
-    }
+    if (res.code == 200) Object.assign(forbiddenData.value, res.data);
 };
 getIndustryList();
 // 企业性质
 let enterpriseNature: any = ref([]);
 const getEnterpriseNatureList = async function () {
-    const res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature.value, res.data);
+    const res: Res | any = await use.getEnterpriseNatureList();
+    if (res.code == 200) Object.assign(enterpriseNature.value, res.data);
 };
 getEnterpriseNatureList();
 let enterpriseScale: any = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
-    const res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale.value, res.data);
+    const res: Res | any = await use.getEnterpriseSizeList();
+    if (res.code == 200) Object.assign(enterpriseScale.value, res.data);
 };
 getEnterpriseSizeList();
 
@@ -385,12 +404,11 @@ interface EnterpriseLabel {
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
-    const res = await use.getEnterpriseTagList();
-    Object.assign(enterpriseLabel.value, res.data);
+    const res: Res | any = await use.getEnterpriseTagList();
+    if (res.code == 200) Object.assign(enterpriseLabel.value, res.data);
 };
 getEnterpriseTagList();
 
-const schoolListVal: any = ref([]);
 // 学校列表
 interface SchoolListType {
     schoolId: number,
@@ -399,8 +417,8 @@ interface SchoolListType {
 };
 const schoolList: any | SchoolListType = ref([]);
 const getSchoolList = async function () {
-    const res = await use.getSchoolList();
-    Object.assign(schoolList.value, res.data);
+    const res: Res | any = await use.getSchoolList();
+    if (res.code == 200) Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
 </script>
@@ -410,6 +428,14 @@ getSchoolList();
     width: 178px;
     height: 178px;
     display: block;
+}
+
+.yyzz {
+    width: 178px;
+}
+
+.avatar-uploader {
+    border: 1px solid #ccc;
 }
 
 .avatar-uploader .el-upload {
