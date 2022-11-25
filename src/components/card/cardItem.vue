@@ -1,7 +1,7 @@
 <template>
     <div class="card-item">
         <div class="candidate-item_avatorBox">
-            <img class="candidate-item_icon" src="@/assets/images/avator.png" alt="">
+            <img class="candidate-item_icon" :src="userinfo.userLogoUrl" alt="">
             <div class="fs-16">
                 <span class="fs-18 ">{{ userinfo.name }}</span>
                 <br><span class="c-5151">{{ userinfo.sex }}</span>
@@ -27,7 +27,8 @@ interface UserInfo {
     name:string,
     sex:string,
     education:string,
-    deliveryStatus:string
+    deliveryStatus:string,
+    userLogoUrl:string
 }
 let props = defineProps<{
     userinfo: UserInfo
