@@ -1,11 +1,10 @@
 import { defineStore } from "pinia";
 import Api from "@/api/api";
-import { UploadFilled } from "@element-plus/icons-vue";
 
 
 export const useHomeStore = defineStore("home", () => {
     // 获取企业详细信息接口
-    function getEnterprise(payload: {  }) {
+    function getEnterprise(payload: {}) {
         return Api.getEnterpriseInfo(payload);
     }
     // 修改企业详细信息接口
@@ -29,7 +28,6 @@ export const useHomeStore = defineStore("home", () => {
         companyTag?: number,
         companyWebUrl?: string,
         companyWishSchool?: string,
-        userId: number
     }) {
         return Api.setModifyEnterpriseInfo(payload);
     }
@@ -61,12 +59,10 @@ export const useHomeStore = defineStore("home", () => {
      * @describe 修改企业意向学校
      * @param companyOnlyWishSchool 企业仅向意向学校展示职位 
      * @param companyWishSchool 企业意向学校 多选格式1,2,3  
-     * @param userId 用户id  
      */
     function setEnterpriseSchoolOfIntention(payload:{
         companyOnlyWishSchool: boolean,// 企业仅向意向学校展示职位 
         companyWishSchool: string,// 企业意向学校 多选格式1,2,3 ,
-        userId:Number,// 用户id
     }) {
         return Api.setEnterpriseSchoolOfIntention(payload);
     }
@@ -75,13 +71,11 @@ export const useHomeStore = defineStore("home", () => {
         pageIndex: number,
         pageSize: number,
         positionStatus: number,
-        userId: number
     }) {
         return Api.getPositionData(payload);
     }
     /**
      * @returns 上传接口 入参如下：
-     * @param userId : integer | Nunber
      * @param userLogo : file
      * @param companyLicense : file
      */

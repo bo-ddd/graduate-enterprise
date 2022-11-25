@@ -236,7 +236,6 @@ interface Form {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
-    userId: number
 }
 
 // 所属行业 绑定的数据
@@ -262,7 +261,6 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    userId: 10000,
 });
 
 // 点击提交按钮走的方法
@@ -300,7 +298,6 @@ const onSubmit = async () => {
         // companyAddr: form.companyAddr,
         companyIndustryLeft: companyIndustry.value[0],
         companyIndustryRight: companyIndustry.value[1],
-        userId: form.userId,
     });
     if (res.code == 200) {
         ElMessage({
@@ -320,7 +317,7 @@ const onSubmit = async () => {
 // companyWebUrl
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
-    const res = await use.getEnterprise({ userId: 10000 });
+    const res = await use.getEnterprise({});
     console.log(res.data)
     Object.assign(form, res.data);
     companyIndustry.value = res.data.companyIndustry.split(' - ');
@@ -358,7 +355,6 @@ interface EnterpriseInfoType {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
-    userId: number
 };
 interface Res {
     code: number,
