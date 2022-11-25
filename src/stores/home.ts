@@ -3,7 +3,7 @@ import Api from "@/api/api";
 
 export const useHomeStore = defineStore("home", () => {
     // 获取企业详细信息接口
-    function getEnterprise(payload: { userId: Number, token : string }) {
+    function getEnterprise(payload={ }) {
         return Api.getEnterpriseInfo(payload);
     }
     // 修改企业详细信息接口
