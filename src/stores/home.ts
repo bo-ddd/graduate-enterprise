@@ -5,7 +5,7 @@ import { UploadFilled } from "@element-plus/icons-vue";
 
 export const useHomeStore = defineStore("home", () => {
     // 获取企业详细信息接口
-    function getEnterprise(payload: { userId: number }) {
+    function getEnterprise(payload: {  }) {
         return Api.getEnterpriseInfo(payload);
     }
     // 修改企业详细信息接口
