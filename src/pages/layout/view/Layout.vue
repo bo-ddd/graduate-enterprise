@@ -1,9 +1,15 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+<<<<<<< HEAD
 import { useRoute } from 'vue-router'
 import { useUserStore } from '@/stores/user';
 const user = useUserStore();
 
+=======
+import {  useRoute } from 'vue-router'
+import { useHomeStore } from '@/stores/home';
+const use = useHomeStore();
+>>>>>>> 18af14550c5b2fd3c9a29ee95fbaa8e925056822
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -48,6 +54,7 @@ const handleSelect = (key: any) => {
 }
 const dialogFormVisible = ref(false);
 
+<<<<<<< HEAD
 // 修改密码
 const changePassword = () => {
   dialogFormVisible.value = true;
@@ -152,6 +159,17 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     }
   })
 }
+=======
+let enterpriseInfo = <any>ref({});
+const getEnterpriseInfo = async () => {
+    const res:any = await use.getEnterprise();
+     if(res.code == 200){
+      enterpriseInfo.value = res.data;
+     }
+      
+}
+getEnterpriseInfo()
+>>>>>>> 18af14550c5b2fd3c9a29ee95fbaa8e925056822
 </script>
 
 <template>
@@ -169,10 +187,10 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
         </el-menu>
       </div>
       <div class="user align-center">
-        <p class="fs-14">Hi,中谷百科</p>
+        <p class="fs-14">Hi,</p>{{enterpriseInfo.companyFullName}}
         <el-dropdown>
           <span class="el-dropdown-link">
-            <img class="avator" src="@/assets/images/avator.png" alt="">
+            <img class="avator" :src="enterpriseInfo.companyLogoUrl" alt="">
             <el-icon class="el-icon--right">
               <!-- <arrow-down /> -->
             </el-icon>
