@@ -20,7 +20,7 @@
                         <p class="fs-14 mt-17">线下招聘会</p>
                     </div>
                 </div>
-                <div class="btm fs-12">©毕业申 备案号：沪ICP备17007916号-3</div>
+                <div class="btm fs-12">©榕树云 备案号：沪ICP备17007916号-3</div>
             </div>
             <div class="right">
                 <div class="contact">
