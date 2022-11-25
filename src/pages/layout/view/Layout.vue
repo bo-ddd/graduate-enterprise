@@ -47,8 +47,12 @@ const handleSelect = (key: any) => {
 }
 const dialogFormVisible = ref(false);
 
+let enterpriseInfo = <any>ref({});
 const getEnterpriseInfo = async () => {
-    const res = await use.getEnterprise({});
+    const res:any = await use.getEnterprise();
+     if(res.code == 200){
+      enterpriseInfo.value = res.data;
+     }
       
 }
 getEnterpriseInfo()
@@ -68,10 +72,10 @@ getEnterpriseInfo()
         </el-menu>
       </div>
       <div class="user align-center">
-        <p class="fs-14">Hi,中谷百科</p>
+        <p class="fs-14">Hi,</p>{{enterpriseInfo.companyFullName}}
         <el-dropdown>
           <span class="el-dropdown-link">
-            <img class="avator" src="@/assets/images/avator.png" alt="">
+            <img class="avator" :src="enterpriseInfo.companyLogoUrl" alt="">
             <el-icon class="el-icon--right">
               <!-- <arrow-down /> -->
             </el-icon>
