@@ -62,7 +62,7 @@ getResume();
     })
     if (res.code == 200) {
         ElMessage({
-            message: 'success',
+            message: '已将该简历恢复为通过初筛，请到候选人中查看',
             type: 'success',
         })
         getResume();

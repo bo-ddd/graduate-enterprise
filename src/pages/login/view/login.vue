@@ -230,7 +230,6 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import type { FormInstance, FormRules, } from 'element-plus'
-import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 
@@ -337,8 +336,9 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    sessionStorage.setItem('token',res.data )
+                    sessionStorage.setItem('token', res.data)
                     window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
@@ -347,6 +347,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 loginType: 0,
             })
         } else {
+
         }
     })
 }
@@ -379,8 +380,9 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    localStorage.setItem('smsCode', ruleFormValidate.validate)
-                    router.push({ path: '/layout.html' })
+                    sessionStorage.setItem('token', res.data)
+                    window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
@@ -389,6 +391,10 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 loginType: 1,
             })
         } else {
+            ElMessage({
+                message: '验证码错误或手机号不正确',
+                type: 'warning',
+            });
         }
     })
 }
@@ -675,9 +681,10 @@ $width100: 100%;
 }
 
 
-.wrap-w{
+.wrap-w {
     height: 90vh;
 }
+
 .wrap-login {
     height: 100vh;
     background-image: url(@/assets/images/bg_login.png);
