@@ -338,6 +338,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 if (res.code == 200) {
                     sessionStorage.setItem('token', res.data)
                     window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
@@ -381,6 +382,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 if (res.code == 200) {
                     sessionStorage.setItem('token', res.data)
                     window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
