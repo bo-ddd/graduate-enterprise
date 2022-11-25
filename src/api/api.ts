@@ -279,7 +279,7 @@ export default {
         /**
          * 
          */
-    uploadFile: (params: any) => { 
+        uploadFile: (params: any) => { 
         return axios.post('/company/uploadFile',params,uploadConfig)
     }
 }

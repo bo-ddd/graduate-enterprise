@@ -479,7 +479,7 @@
             </div>
             <template #footer>
                 <el-button @click="centerDialogVisible2 = false">取消</el-button>
-                <el-button type="primary" @click="nav('/login')">确定并退出登录</el-button>
+                <el-button type="primary" @click="navLogin">确定并退出登录</el-button>
             </template>
         </el-dialog>
     </div>
@@ -507,6 +507,10 @@ const centerDialogVisible2 = ref(false);
 const nav = (name: string) => {
     window.location.href = `${name}.html`;
 };
+const navLogin = () => {
+    sessionStorage.setItem('token', '');
+    window.location.href = '/login.html';
+}
 // form 表单数据
 const form = reactive({
     companyFullName: '',// 企业全称
