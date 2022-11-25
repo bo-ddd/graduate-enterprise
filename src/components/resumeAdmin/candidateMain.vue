@@ -58,7 +58,8 @@
                         sex: item.userSex,
                         name: item.userName,
                         deliveryStatus: item.deliveryStatus,
-                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`
+                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
+                        userLogoUrl:item.userLogoUrl
                     }">
                         <template #btn>
                             <el-button @click="inappropriate($event, item)">不合适</el-button>

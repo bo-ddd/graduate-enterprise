@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import {  useRoute } from 'vue-router'
+import { useHomeStore } from '@/stores/home';
+const use = useHomeStore();
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -43,7 +45,13 @@ const handleSelect = (key: any) => {
     sessionStorage.removeItem('token');
   }
 }
-const dialogFormVisible = ref(false)
+const dialogFormVisible = ref(false);
+
+const getEnterpriseInfo = async () => {
+    const res = await use.getEnterprise({});
+      
+}
+getEnterpriseInfo()
 </script>
 
 <template>
