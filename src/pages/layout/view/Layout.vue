@@ -48,20 +48,8 @@ const handleSelect = (key: any) => {
 const dialogFormVisible = ref(false);
 
 const getEnterpriseInfo = async () => {
-    const res = await use.getEnterprise({ userId: 10000, token });
-    Object.assign(EnterpriseInfo, res.data)
-    change.value = ''
-    schoolList.value.forEach((el: any) => {
-        EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
-            if (el.schoolId == element) {
-                change.value += el.schoolName + '、'
-            }
-        });
-    });
-    change.value = change.value.substring(0, change.value.length - 1)
-    if (change.value == '' || change.value == undefined) {
-        getEnterpriseInfo()
-    }
+    const res = await use.getEnterprise({});
+      
 }
 getEnterpriseInfo()
 </script>
