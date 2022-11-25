@@ -221,6 +221,7 @@ const use = useHomeStore();
 const nav = (name: string) => {
     window.location.href = `${name}.html`
 }
+const token: string | any = window.sessionStorage.getItem('token');
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
 // 意向学校 多选框选择的值
@@ -271,8 +272,8 @@ const setEnterpriseSchoolOfIntention = async function (payload: setEnterpriseSch
             message: '修改成功！',
             type: 'success',
         })
-        getEnterpriseInfo()
         centerDialogVisible.value = false;
+        getEnterpriseInfo()
     }
 }
 interface EnterpriseInfoType {
@@ -313,7 +314,7 @@ const EnterpriseInfo: EnterpriseInfoType = reactive({
 // 获取企业详细信息接口
 const change = ref<string>('')
 const getEnterpriseInfo = async () => {
-    const res = await use.getEnterprise({ userId: 10000 });
+    const res = await use.getEnterprise({ userId: 10000, token });
     Object.assign(EnterpriseInfo, res.data)
     change.value = ''
     schoolList.value.forEach((el: any) => {

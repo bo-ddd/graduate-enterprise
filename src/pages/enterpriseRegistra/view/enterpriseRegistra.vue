@@ -205,7 +205,7 @@ import { ElMessage } from 'element-plus'
 // import type { UploadProps } from 'element-plus'
 // const imageUrl = ref('');
 const use = useHomeStore();
-
+const token: string | any = window.sessionStorage.getItem('token');
 // const beforeAvatarUpload: UploadProps['beforeUpload'] =async (rawFile) => {
 //     console.log('--------上传图片之前---------');
 //     let formData = new FormData();
@@ -279,35 +279,35 @@ const onSubmit = async () => {
     console.log('校验完要传给后端的', obj)
     console.log('所属行业选中的', companyIndustry.value);
     // console.log('企业注册地区', form.companyRegisterAddr.join(','))
-    // companyContactEmail: form.companyContactEmail,
-    // companyContactName: form.companyContactName,
-    // companyContactPhone: form.companyContactPhone,
-
-    // companyIntroducation: form.companyIntroducation,
-    // companyLicense: form.companyLicense,
-    // companyLogo: form.companyLogo,
-    // companyNature: form.companyNature,
-    // companySocialCreditCode: form.companySocialCreditCode,
-    // companyStatus: form.companyStatus,
-    // companyTag: form.companyTag,
-    // companyWebUrl: form.companyWebUrl,
-    // companyWishSchool: form.companyWishSchool,
     const res: any | Res = await use.setModifyEnterpriseInfo({
-        // companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
-        // companyFullName: form.companyFullName,
-        // companyName: form.companyName,
-        // companySize: form.companySize,
-        // companyAddr: form.companyAddr,
+        companyContactEmail: form.companyContactEmail,
+        companyContactName: form.companyContactName,
+        companyContactPhone: form.companyContactPhone,
+        companyIntroducation: form.companyIntroducation,
+        // companyLicense: form.companyLicense,
+        companyLogo: form.companyLogo,
+        companyNature: form.companyNature,
+        companySocialCreditCode: form.companySocialCreditCode,
+        companyStatus: form.companyStatus,
+        companyTag: form.companyTag,
+        companyWebUrl: form.companyWebUrl,
+        companyWishSchool: form.companyWishSchool,
+        companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
+        companyFullName: form.companyFullName,
+        companyName: form.companyName,
+        companySize: form.companySize,
+        companyAddr: form.companyAddr,
         companyIndustryLeft: companyIndustry.value[0],
         companyIndustryRight: companyIndustry.value[1],
         userId: form.userId,
     });
     if (res.code == 200) {
+        getEnterprise();
+        window.location.href ='/';
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
-        getEnterprise();
     };
 
     // setModifyEnterpriseInfo({
@@ -320,7 +320,7 @@ const onSubmit = async () => {
 // companyWebUrl
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
-    const res = await use.getEnterprise({ userId: 10000 });
+    const res = await use.getEnterprise({ userId: 10000,token });
     console.log(res.data)
     Object.assign(form, res.data);
     companyIndustry.value = res.data.companyIndustry.split(' - ');
