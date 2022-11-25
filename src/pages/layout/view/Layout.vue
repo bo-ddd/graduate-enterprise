@@ -38,7 +38,7 @@ let route = useRoute();
 let acitveIndex:any = ref(list.find(item=>item.url == route.path)?.id);
 const handleSelect = (key: any) => {  
   window.location.href = key.url;
-  sessionStorage.removeItem('token')
+  sessionStorage.removeItem('token');
 }
 const dialogFormVisible = ref(false)
 </script>
