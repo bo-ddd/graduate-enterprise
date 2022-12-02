@@ -205,21 +205,24 @@ interface Form {
 }
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
+
+let companyLogo = ref('');
+let companyLicense = ref('');
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
-    companyLogo: '',// 企业Logo
+    companyLogo: companyLogo,// 企业Logo
     companyRegisterAddr: '',// 企业地址
     companyAddr: '',// 企业详细地址
-    companyIndustryLeft: '',// 企业所属行业
-    companyIndustryRight: '',// 企业所属行业
+    companyIndustryLeft: companyIndustry.value[0] ? companyIndustry.value[0] : '',// 企业所属行业
+    companyIndustryRight: companyIndustry.value[1] ? companyIndustry.value[1] : '',// 企业所属行业
     companyNature: 0,// 企业性质 integer
     companySize: 0,// 企业规模 integer
     companyTag: 0,// 企业标签 integer
     companySocialCreditCode: '',//企业社会信用代码
-    companyLicense: '',// 企业营业执照 file
+    companyLicense: companyLicense,// 企业营业执照 file
     companyContactName: '',// 企业联系人
     companyContactPhone: '',// 企业联系电话
     companyContactEmail: '',// 企业接收简历邮箱
@@ -229,12 +232,9 @@ const form: Form = reactive({
     userId: 10000,
 });
 
+// 校验的参数
 const dataBackup: Form | any = ref([]);
-// form 校验
-const formCheck = () => {
-    // 先获取上次获取到的信息
-    console.log('dataBackup.value', dataBackup.value);
-}
+
 
 // 上传logo
 const handleAvatarSuccess: UploadProps['onSuccess'] = (
@@ -275,58 +275,12 @@ const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
     }
     return true
 }
-// console.log('cityJson', cityJson)
-// 点击提交按钮走的方法
-const onSubmit = async () => {
-    console.log('form', form)
-    let obj: Form | any = {};
-    let key: keyof Form;
-    for (key in form) {
-        if (form[key]) {
-            obj[key] = form[key]
-        }
-    }
-    // 校验
-    formCheck()
-    // console.log('所属行业选中的', companyIndustry.value);
-    // console.log('企业注册地区', form.companyRegisterAddr.join(','))
-    // const res: any | Res = await use.setModifyEnterpriseInfo({
-    //     companyContactEmail: form.companyContactEmail,
-    //     companyContactName: form.companyContactName,
-    //     companyContactPhone: form.companyContactPhone,
-    //     companyIntroducation: form.companyIntroducation,
-    //     // companyLicense: form.companyLicense,
-    //     companyLogo: form.companyLogo,
-    //     companyNature: form.companyNature,
-    //     companySocialCreditCode: form.companySocialCreditCode,
-    //     companyStatus: form.companyStatus,
-    //     companyTag: form.companyTag,
-    //     companyWebUrl: form.companyWebUrl,
-    //     companyWishSchool: form.companyWishSchool,
-    //     companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
-    //     companyFullName: form.companyFullName,
-    //     companyName: form.companyName,
-    //     companySize: form.companySize,
-    //     companyAddr: form.companyAddr,
-    //     companyIndustryLeft: companyIndustry.value[0],
-    //     companyIndustryRight: companyIndustry.value[1],
-    //     userId: form.userId,
-    // });
-    // if (res.code == 200) {
-    //     getEnterprise();
-    //     window.location.href = '/';
-    //     ElMessage({
-    //         message: '修改成功！',
-    //         type: 'success',
-    //     })
-    // };
-};
+
+
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
     const res: Res | any = await use.getEnterprise();
     if (res.code == 200) {
-        Object.assign(form, res.data);
-        Object.assign(dataBackup.value, res.data);
         companyIndustry.value = res.data.companyIndustry.split(' - ');
         forbiddenData.value.forEach((element: any) => {
             if (companyIndustry.value[0] == element.label) {
@@ -338,6 +292,19 @@ const getEnterprise = async function () {
                 });
             }
         });
+        Object.assign(form, res.data);
+        console.log('log ~ res.data', res.data);
+        form.companyIndustryLeft = companyIndustry.value[0];
+        form.companyIndustryRight = companyIndustry.value[1];
+        form.companyLogo = res.data.companyLogoUrl;
+        companyLogo = res.data.companyLogoUrl;
+        form.companyLicense = res.data.companyLicenseUrl;
+        companyLicense = res.data.companyLicenseUrl;
+        Object.assign(dataBackup.value, res.data);
+        dataBackup.value.companyIndustryLeft = companyIndustry.value[0];
+        dataBackup.value.companyIndustryRight = companyIndustry.value[1];
+        dataBackup.value.companyLogo = res.data.companyLogoUrl;
+        dataBackup.value.companyLicense = res.data.companyLicenseUrl;
     }
 };
 getEnterprise();
@@ -429,6 +396,36 @@ const getSchoolList = async function () {
     if (res.code == 200) Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
+
+// form 校验
+const formCheck = () => {
+    let obj: any = {};
+    for (let key in form) {
+        if (form[key as keyof typeof form] == dataBackup.value[key]) {
+            return;
+        } else {
+            obj[key] = form[key as keyof typeof form];
+        }
+    }
+    return obj;
+}
+
+// 点击提交按钮走的方法
+const onSubmit = async () => {
+    // 校验
+    let formCheckData: any = formCheck()
+    console.log('log ~ formCheckData', formCheckData);
+    const res: any | Res = await use.setModifyEnterpriseInfo(formCheckData);
+    if (res.code == 200) {
+        getEnterprise();
+        // window.location.href = '/';
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+        getEnterprise();
+    };
+};
 </script>
 
 <style lang="scss" scoped>
