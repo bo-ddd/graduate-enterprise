@@ -21,7 +21,7 @@
                     <el-form-item label="企业logo">
                         <el-upload class="avatar-uploader" action="/api/company/uploadFile" :show-file-list="false"
                             :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                            <img v-if="form.companyLogo" :src="form.companyLogo" class="avatar" />
+                            <img v-if="form.companyLogoUrl" :src="form.companyLogoUrl" class="avatar" />
                             <el-icon v-else class="avatar-uploader-icon">
                                 <Plus />
                             </el-icon>
@@ -42,7 +42,7 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" v-model="companyIndustry" class="el-input_240"
+                        <el-cascader placeholder="请选择" disabled v-model="companyIndustry" class="el-input_240"
                             :options="forbiddenData">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
@@ -87,7 +87,7 @@
                                 <el-upload class="avatar-uploader" action="/api/company/uploadFile"
                                     :show-file-list="false" :on-success="handleAvatarSuccess1"
                                     :before-upload="beforeAvatarUpload1">
-                                    <img v-if="form.companyLicense" :src="form.companyLicense" class="avatar" />
+                                    <img v-if="form.companyLicenseUrl" :src="form.companyLicenseUrl" class="avatar" />
                                     <el-icon v-else class="avatar-uploader-icon">
                                         <Plus />
                                     </el-icon>
@@ -190,8 +190,8 @@ interface Form {
     companyIndustryLeft?: string,
     companyIndustryRight?: string,
     companyIntroducation?: string,
-    companyLicense?: string,
-    companyLogo?: any,
+    companyLicenseUrl?: string,
+    companyLogoUrl?: string,
     companyName?: string,
     companyNature?: number,
     companyRegisterAddr?: string | any,
@@ -213,7 +213,7 @@ const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
-    companyLogo: companyLogo,// 企业Logo
+    companyLogoUrl: companyLogo.value || '',// 企业Logo
     companyRegisterAddr: '',// 企业地址
     companyAddr: '',// 企业详细地址
     companyIndustryLeft: companyIndustry.value[0] ? companyIndustry.value[0] : '',// 企业所属行业
@@ -222,7 +222,7 @@ const form: Form = reactive({
     companySize: 0,// 企业规模 integer
     companyTag: 0,// 企业标签 integer
     companySocialCreditCode: '',//企业社会信用代码
-    companyLicense: companyLicense,// 企业营业执照 file
+    companyLicenseUrl: companyLicense.value,// 企业营业执照 file
     companyContactName: '',// 企业联系人
     companyContactPhone: '',// 企业联系电话
     companyContactEmail: '',// 企业接收简历邮箱
@@ -241,8 +241,12 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
     response,
     uploadFile
 ) => {
-    form.companyLogo = URL.createObjectURL(uploadFile.raw!)
-    console.log('log ~ form.companyLogo', form.companyLogo);
+    console.log('log  response', response);
+    console.log('log  uploadFile', uploadFile);
+    let url = ref('');
+    url.value = URL.createObjectURL(uploadFile.raw!)
+    form.companyLogoUrl = url.value.slice(5, url.value.length);
+    console.log('log ~ logo', form.companyLogoUrl);
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -260,8 +264,9 @@ const handleAvatarSuccess1: UploadProps['onSuccess'] = (
     response,
     uploadFile
 ) => {
-    form.companyLicense = URL.createObjectURL(uploadFile.raw!)
-    console.log('log ~ form.companyLicense', form.companyLicense);
+    form.companyLicenseUrl = URL.createObjectURL(uploadFile.raw!)
+
+    console.log('log ~ form.companyLicense', form.companyLicenseUrl);
 }
 
 const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
@@ -275,7 +280,6 @@ const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
     }
     return true
 }
-
 
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
@@ -293,18 +297,13 @@ const getEnterprise = async function () {
             }
         });
         Object.assign(form, res.data);
-        console.log('log ~ res.data', res.data);
         form.companyIndustryLeft = companyIndustry.value[0];
         form.companyIndustryRight = companyIndustry.value[1];
-        form.companyLogo = res.data.companyLogoUrl;
+        form.companyLogoUrl = res.data.companyLogoUrl;
         companyLogo = res.data.companyLogoUrl;
-        form.companyLicense = res.data.companyLicenseUrl;
+        form.companyLicenseUrl = res.data.companyLicenseUrl;
         companyLicense = res.data.companyLicenseUrl;
         Object.assign(dataBackup.value, res.data);
-        dataBackup.value.companyIndustryLeft = companyIndustry.value[0];
-        dataBackup.value.companyIndustryRight = companyIndustry.value[1];
-        dataBackup.value.companyLogo = res.data.companyLogoUrl;
-        dataBackup.value.companyLicense = res.data.companyLicenseUrl;
     }
 };
 getEnterprise();
@@ -398,26 +397,31 @@ const getSchoolList = async function () {
 getSchoolList();
 
 // form 校验
-const formCheck = () => {
+const formCheck = (form: Form) => {
     let obj: any = {};
-    for (let key in form) {
-        if (form[key as keyof typeof form] == dataBackup.value[key]) {
-            return;
-        } else {
-            obj[key] = form[key as keyof typeof form];
-        }
-    }
-    return obj;
+    console.log('校验 form', form);
+    console.log('校验 dataBackup', dataBackup.value);
+    // for (let key in form) {
+    //     if (form[key as keyof typeof form] == dataBackup.value[key]) {
+    //         return;
+    //     } else {
+    //         obj[key] = form[key as keyof typeof form];
+    //         return obj;
+    //     }
+    // }
+    return undefined;
 }
 
 // 点击提交按钮走的方法
 const onSubmit = async () => {
     // 校验
-    let formCheckData: any = formCheck()
-    console.log('log ~ formCheckData', formCheckData);
-    const res: any | Res = await use.setModifyEnterpriseInfo(formCheckData);
+    // let formCheckData: any = formCheck(form)
+    // console.log('log ~ 校验结果', formCheckData);
+    // if (formCheckData == undefined) return;
+    const res: any | Res = await use.setModifyEnterpriseInfo({
+        companyLogoUrl: form.companyLogoUrl,
+    });
     if (res.code == 200) {
-        getEnterprise();
         // window.location.href = '/';
         ElMessage({
             message: '修改成功！',
