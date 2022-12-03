@@ -107,6 +107,7 @@ const cancelCheck = () => {
     }
 }
 
+
 let educationArr = reactive<Check[]>([]);//学历的列表
 let majorArr = reactive<any[]>([]);//专业的列表
 let sexArr = reactive<any[]>([]);//性别的列表
@@ -207,13 +208,13 @@ const inviteTalent = async () => {
 const inviteTalentList = async () => {
     let obj: any = {};
     let key:keyof InvitationForm;
-    obj['pageIndex'] = pagingInvite.pageIndex;
-    obj['pageSize'] = pagingInvite.pageSize;
     for (key in invitationForm) {
        if(invitationForm[key]){
             obj[key] = invitationForm[key];
        }
     }
+    obj['pageIndex'] = pagingInvite.pageIndex;
+    obj['pageSize'] = pagingInvite.pageSize;
     const res: Res | any = await PersonStore.getInviteList(obj);
     if (res.code !== 200) return;
     invitationList.length = 0;
@@ -263,6 +264,18 @@ const getInviteDrop = async () => {
     statusList.push(...(res.data));
 }
 getInviteDrop();
+//确认人才列表
+const getTalent = ()=>{
+    paging.pageIndex = 1;
+    paging.pageSize = 3;
+    getTalentList();
+}
+//确定邀请人才列表
+const getInvitaion = ()=>{
+    pagingInvite.pageIndex = 1;
+    pagingInvite.pageSize = 3;
+    inviteTalentList();
+}
 </script>
 <template>
     <div class="personnel">
@@ -320,7 +333,7 @@ getInviteDrop();
                         </el-select>
                     </div>
                     <div class="operation">
-                        <el-button type="primary" plain @click="getTalentList()">确定</el-button>
+                        <el-button type="primary" plain @click="getTalent()">确定</el-button>
                         <el-button type="info" plain @click="cancelCheck()">清空</el-button>
                     </div>
                 </div>
@@ -363,7 +376,7 @@ getInviteDrop();
                             <div class="school-description fs-12 ml-16">
                                 <p>{{ child.professional }}</p>
                                 <div class="line"></div>
-                                <p>{{ child.educationId }}</p>
+                                <p>{{ child.education }}</p>
                             </div>
                         </template>
                     </div>
@@ -430,7 +443,7 @@ getInviteDrop();
                         <el-option v-for="item in positionArr" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
-                    <el-button type="primary" class="btn" @click="inviteTalentList">确定</el-button>
+                    <el-button type="primary" class="btn" @click="getInvitaion">确定</el-button>
                 </div>
 
                 <!--邀请的列表-->
@@ -476,7 +489,7 @@ getInviteDrop();
                                     <div class="school-description fs-12 ml-16">
                                         <p>{{ child.professional }}</p>
                                         <div class="line"></div>
-                                        <p>{{ child.educationId }}</p>
+                                        <p>{{ child.education }}</p>
                                     </div>
                                 </template>
                             </div>
