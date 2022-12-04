@@ -1,7 +1,7 @@
 <template>
     <div class="card-item">
         <div class="candidate-item_avatorBox">
-            <img class="candidate-item_icon" src="@/assets/images/avator.png" alt="">
+            <img class="candidate-item_icon" :src="userinfo.userLogoUrl" alt="">
             <div class="fs-16">
                 <span class="fs-18 ">{{ userinfo.name }}</span>
                 <br><span class="c-5151">{{ userinfo.sex }}</span>
@@ -12,8 +12,8 @@
             <br><span>{{ userinfo.education }}</span>
         </div>
         <div></div>
-        <div class="c-5151 fs-14 deliveryStatus">
-            <span :class="userinfo.deliveryStatus == '通过初筛'  ? 'active' : userinfo.deliveryStatus == '面试' ? 'active1' : '' ">{{userinfo.deliveryStatus}}</span>
+        <div class="c-5151 fs-14 deliveryStatus"> 
+            <span :class="userinfo.deliveryStatus == '通过初筛'  ? 'active' : userinfo.deliveryStatus == '面试' ? 'active1' : userinfo.deliveryStatus == '拟录用' ? 'active2': '' ">{{userinfo.deliveryStatus}}</span>
         </div>
         <div class="btn">
             <slot name="btn"></slot>
@@ -27,7 +27,8 @@ interface UserInfo {
     name:string,
     sex:string,
     education:string,
-    deliveryStatus:string
+    deliveryStatus:string,
+    userLogoUrl:string
 }
 let props = defineProps<{
     userinfo: UserInfo
@@ -52,6 +53,9 @@ let { userinfo } = toRefs(props);
     }
     .active1{
         color: rgb(32, 107, 226);
+    }
+    .active2{
+        color: rgb(50, 16, 219)
     }
     display: flex;
     justify-content: space-between;

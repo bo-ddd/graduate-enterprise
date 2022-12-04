@@ -11,7 +11,8 @@
                         sex: item.userSex,
                         name: item.userName,
                         deliveryStatus: item.deliveryStatus,
-                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`
+                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
+                        userLogoUrl:item.userLogoUrl
                     }">
                         <template #btn>
                             <el-button @click="recovery(item)" type="primary">恢复位候选人</el-button>
@@ -62,7 +63,7 @@ getResume();
     })
     if (res.code == 200) {
         ElMessage({
-            message: 'success',
+            message: '已将该简历恢复为通过初筛，请到候选人中查看',
             type: 'success',
         })
         getResume();

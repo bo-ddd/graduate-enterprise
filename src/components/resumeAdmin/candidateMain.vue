@@ -58,7 +58,8 @@
                         sex: item.userSex,
                         name: item.userName,
                         deliveryStatus: item.deliveryStatus,
-                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`
+                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
+                        userLogoUrl:item.userLogoUrl
                     }">
                         <template #btn>
                             <el-button @click="inappropriate($event, item)">不合适</el-button>
@@ -130,9 +131,6 @@
                 </span>
             </template>
         </el-dialog>
-
-        <el-button text @click="open">Click to open the Message Box</el-button>
-
         <footerBar></footerBar>
     </div>
 </template>
@@ -147,42 +145,14 @@ let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
 
-
-const open = () => {
-    ElMessageBox.confirm(
-        '你确定要改变状态嘛？',
-        '确定修改嘛',
-        {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-        }
-    )
-        .then(() => {
-            ElMessage({
-                type: 'success',
-                message: 'success',
-            })
-        })
-        .catch(() => {
-            ElMessage({
-                type: 'info',
-                message: '取消修改',
-            })
-        })
-}
-
-
-
 /**
  * 拟录用
  * 
  */
 let employment = async (event: Event, item: any) => {
     event.stopPropagation();
-
     ElMessageBox.confirm(
-        '你确定要拟录用嘛?',
+        '确定测试简历已通过所有考核，即将录用他？',
         '确定修改嘛',
         {
             confirmButtonText: '确定',
@@ -279,12 +249,11 @@ let getUserInfo = async (item: any) => {
     resumeBtn.value = true;
     if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
     showResumeImage.value = true;
-    resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
     })
     if (res.code == 200) {
-        console.log(res);
+        resumeUrl.value = res.data;
     }
 }
 
@@ -372,7 +341,7 @@ let batchbyFilter = () => {
 let inappropriate = (event: Event, item: any) => {
     event.stopPropagation();
     ElMessageBox.confirm(
-        '你确定要修改为不合适嘛',
+        `确定该简历不符合录用标准，将其标记为不合适？`,
         '确定修改嘛',
         {
             confirmButtonText: '确定',

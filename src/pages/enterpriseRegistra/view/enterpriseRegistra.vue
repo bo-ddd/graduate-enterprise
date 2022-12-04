@@ -19,38 +19,12 @@
 
                     <!-- 企业logo -->
                     <el-form-item label="企业logo">
-                        <el-upload action="#" list-type="picture-card" :auto-upload="false">
-                            <el-icon class="uplpoad-icon flex-column-center">
-                                <div>
-                                    <Plus />
-                                </div>
-                                <div class="fs-13">上传图片</div>
+                        <el-upload class="avatar-uploader" action="/api/company/uploadFile" :show-file-list="false"
+                            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                            <img v-if="form.companyLogoUrl" :src="form.companyLogoUrl" class="avatar" />
+                            <el-icon v-else class="avatar-uploader-icon">
+                                <Plus />
                             </el-icon>
-
-                            <template #file="{ file }">
-                                <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url" />
-                                    <span class="el-upload-list__item-actions">
-                                        <span class="el-upload-list__item-preview" @click="handlePictureCardPreview()">
-                                            <el-icon>
-                                                <zoom-in />
-                                            </el-icon>
-                                        </span>
-                                        <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleDownload()">
-                                            <el-icon>
-                                                <Download />
-                                            </el-icon>
-                                        </span>
-                                        <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleRemove()">
-                                            <el-icon>
-                                                <Delete />
-                                            </el-icon>
-                                        </span>
-                                    </span>
-                                </div>
-                            </template>
                         </el-upload>
                     </el-form-item>
 
@@ -68,7 +42,7 @@
 
                     <!-- 禁用状态的选择器 disabled -->
                     <el-form-item label="所属行业">
-                        <el-cascader placeholder="请选择" v-model="companyIndustry" class="el-input_240"
+                        <el-cascader placeholder="请选择" disabled v-model="companyIndustry" class="el-input_240"
                             :options="forbiddenData">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
@@ -109,13 +83,16 @@
                     <div class="align-center">
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
-                            <!--<el-upload class="avatar-uploader" :show-file-list="false"
-                                :before-upload="beforeAvatarUpload">
-                                <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-                                <el-icon v-else class="avatar-uploader-icon">
-                                    <Plus />
-                                </el-icon>
-                            </el-upload>-->
+                            <div class="yyzz">
+                                <el-upload class="avatar-uploader" action="/api/company/uploadFile"
+                                    :show-file-list="false" :on-success="handleAvatarSuccess1"
+                                    :before-upload="beforeAvatarUpload1">
+                                    <img v-if="form.companyLicenseUrl" :src="form.companyLicenseUrl" class="avatar" />
+                                    <el-icon v-else class="avatar-uploader-icon">
+                                        <Plus />
+                                    </el-icon>
+                                </el-upload>
+                            </div>
                             <div class="business-license_test mt-10">
                                 <p>
                                     请上传清晰的营业执照, 执照中的<b>社会信用代码、企业名称</b>需与上方填写的一致。
@@ -198,23 +175,11 @@
 import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
+import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
-import { ElMessage } from 'element-plus'
-// import type { UploadProps } from 'element-plus'
-// const imageUrl = ref('');
+import type { UploadProps } from 'element-plus';
 const use = useHomeStore();
-
-// const beforeAvatarUpload: UploadProps['beforeUpload'] =async (rawFile) => {
-//     console.log('--------上传图片之前---------');
-//     let formData = new FormData();
-//     formData.append('userId', 10000);
-//     formData.append('companyLicense', rawFile);
-//     const res = await use.UploadFilled(formData);
-//     console.log(res);
-//     console.log('log ~ rawFile', rawFile);
-// }
 // ajax
 interface Form {
     companyAddr?: string,
@@ -225,8 +190,8 @@ interface Form {
     companyIndustryLeft?: string,
     companyIndustryRight?: string,
     companyIntroducation?: string,
-    companyLicense?: string,
-    companyLogo?: any,
+    companyLicenseUrl?: string,
+    companyLogoUrl?: string,
     companyName?: string,
     companyNature?: number,
     companyRegisterAddr?: string | any,
@@ -236,104 +201,112 @@ interface Form {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
+    userId: number
 }
-
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
+
+let companyLogo = ref('');
+let companyLicense = ref('');
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
-    companyLogo: '',// 企业Logo
+    companyLogoUrl: companyLogo.value || '',// 企业Logo
     companyRegisterAddr: '',// 企业地址
     companyAddr: '',// 企业详细地址
-    companyIndustryLeft: '',// 企业所属行业
-    companyIndustryRight: '',// 企业所属行业
+    companyIndustryLeft: companyIndustry.value[0] ? companyIndustry.value[0] : '',// 企业所属行业
+    companyIndustryRight: companyIndustry.value[1] ? companyIndustry.value[1] : '',// 企业所属行业
     companyNature: 0,// 企业性质 integer
     companySize: 0,// 企业规模 integer
     companyTag: 0,// 企业标签 integer
     companySocialCreditCode: '',//企业社会信用代码
-    companyLicense: '',// 企业营业执照 file
+    companyLicenseUrl: companyLicense.value,// 企业营业执照 file
     companyContactName: '',// 企业联系人
     companyContactPhone: '',// 企业联系电话
     companyContactEmail: '',// 企业接收简历邮箱
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
+    userId: 10000,
 });
 
-// 点击提交按钮走的方法
-console.log('cityJson', cityJson)
-const onSubmit = async () => {
-    console.log('form', form)
-    let obj: Form | any = {};
-    let key: keyof Form;
-    for (key in form) {
-        if (form[key]) {
-            obj[key] = form[key]
-        }
-    }
-    console.log('校验完要传给后端的', obj)
-    console.log('所属行业选中的', companyIndustry.value);
-    // console.log('企业注册地区', form.companyRegisterAddr.join(','))
-    // companyContactEmail: form.companyContactEmail,
-    // companyContactName: form.companyContactName,
-    // companyContactPhone: form.companyContactPhone,
+// 校验的参数
+const dataBackup: Form | any = ref([]);
 
-    // companyIntroducation: form.companyIntroducation,
-    // companyLicense: form.companyLicense,
-    // companyLogo: form.companyLogo,
-    // companyNature: form.companyNature,
-    // companySocialCreditCode: form.companySocialCreditCode,
-    // companyStatus: form.companyStatus,
-    // companyTag: form.companyTag,
-    // companyWebUrl: form.companyWebUrl,
-    // companyWishSchool: form.companyWishSchool,
-    const res: any | Res = await use.setModifyEnterpriseInfo({
-        // companyRegisterAddr: (form.companyRegisterAddr as any).join(','),
-        // companyFullName: form.companyFullName,
-        // companyName: form.companyName,
-        // companySize: form.companySize,
-        // companyAddr: form.companyAddr,
-        companyIndustryLeft: companyIndustry.value[0],
-        companyIndustryRight: companyIndustry.value[1],
-    });
-    if (res.code == 200) {
+
+// 上传logo
+const handleAvatarSuccess: UploadProps['onSuccess'] = (
+    response,
+    uploadFile
+) => {
+    console.log('log  response', response);
+    console.log('log  uploadFile', uploadFile);
+    let url = ref('');
+    url.value = URL.createObjectURL(uploadFile.raw!)
+    form.companyLogoUrl = url.value.slice(5, url.value.length);
+    console.log('log ~ logo', form.companyLogoUrl);
+}
+
+const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 2) {
         ElMessage({
-            message: '修改成功！',
-            type: 'success',
+            message: '图片大小不可超过2M!',
+            type: 'warning',
         })
-        getEnterprise();
-    };
+        return false
+    }
+    return true
+}
+// 上传营业执照
+const handleAvatarSuccess1: UploadProps['onSuccess'] = (
+    response,
+    uploadFile
+) => {
+    form.companyLicenseUrl = URL.createObjectURL(uploadFile.raw!)
 
-    // setModifyEnterpriseInfo({
-    //     companyFullName: form.companyFullName,
-    //     companyName: form.companyName,
-    //     companySize: form.companySize,
-    //     userId: form.userId,
-    // });
-};
-// companyWebUrl
+    console.log('log ~ form.companyLicense', form.companyLicenseUrl);
+}
+
+const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
+    if (rawFile.size / 1024 / 1024 > 2) {
+        // alert("图片大小不可超过2M")
+        ElMessage({
+            message: '图片大小不可超过2M!',
+            type: 'warning',
+        })
+        return false
+    }
+    return true
+}
+
 // 调用 获取企业详细信息接口 
 const getEnterprise = async function () {
-    const res = await use.getEnterprise({});
-    console.log(res.data)
-    Object.assign(form, res.data);
-    companyIndustry.value = res.data.companyIndustry.split(' - ');
-    forbiddenData.value.forEach((element: any) => {
-        if (companyIndustry.value[0] == element.label) {
-            companyIndustry.value[0] = element.value;
-            element.children.forEach((elementChildren: any) => {
-                if (companyIndustry.value[1] == elementChildren.label) {
-                    companyIndustry.value[1] = elementChildren.value
-                }
-            });
-        }
-    });
+    const res: Res | any = await use.getEnterprise();
+    if (res.code == 200) {
+        companyIndustry.value = res.data.companyIndustry.split(' - ');
+        forbiddenData.value.forEach((element: any) => {
+            if (companyIndustry.value[0] == element.label) {
+                companyIndustry.value[0] = element.value;
+                element.children.forEach((elementChildren: any) => {
+                    if (companyIndustry.value[1] == elementChildren.label) {
+                        companyIndustry.value[1] = elementChildren.value
+                    }
+                });
+            }
+        });
+        Object.assign(form, res.data);
+        form.companyIndustryLeft = companyIndustry.value[0];
+        form.companyIndustryRight = companyIndustry.value[1];
+        form.companyLogoUrl = res.data.companyLogoUrl;
+        companyLogo = res.data.companyLogoUrl;
+        form.companyLicenseUrl = res.data.companyLicenseUrl;
+        companyLicense = res.data.companyLicenseUrl;
+        Object.assign(dataBackup.value, res.data);
+    }
 };
 getEnterprise();
-
 
 interface EnterpriseInfoType {
     companyAddr?: string,
@@ -355,6 +328,7 @@ interface EnterpriseInfoType {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
+    userId: number
 };
 interface Res {
     code: number,
@@ -375,26 +349,22 @@ const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
 // 所属行业
 const forbiddenData: any = ref([]);
 const getIndustryList = async function () {
-    const res = await use.getIndustryList();
-    Object.assign(forbiddenData.value, res.data);
+    const res: Res | any = await use.getIndustryList();
+    if (res.code == 200) Object.assign(forbiddenData.value, res.data);
 };
 getIndustryList();
-const dialogVisible = ref(false);
-const disabled = ref(false);
-const handleRemove = (): any | void => { };
-const handlePictureCardPreview = (): any | void => dialogVisible.value = true;
-const handleDownload = (): any | void => { };
+// 企业性质
 let enterpriseNature: any = ref([]);
 const getEnterpriseNatureList = async function () {
-    const res = await use.getEnterpriseNatureList();
-    Object.assign(enterpriseNature.value, res.data);
+    const res: Res | any = await use.getEnterpriseNatureList();
+    if (res.code == 200) Object.assign(enterpriseNature.value, res.data);
 };
 getEnterpriseNatureList();
 let enterpriseScale: any = ref([]);
 // 调用 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
-    const res = await use.getEnterpriseSizeList();
-    Object.assign(enterpriseScale.value, res.data);
+    const res: Res | any = await use.getEnterpriseSizeList();
+    if (res.code == 200) Object.assign(enterpriseScale.value, res.data);
 };
 getEnterpriseSizeList();
 
@@ -408,12 +378,11 @@ interface EnterpriseLabel {
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 调用 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
-    const res = await use.getEnterpriseTagList();
-    Object.assign(enterpriseLabel.value, res.data);
+    const res: Res | any = await use.getEnterpriseTagList();
+    if (res.code == 200) Object.assign(enterpriseLabel.value, res.data);
 };
 getEnterpriseTagList();
 
-const schoolListVal: any = ref([]);
 // 学校列表
 interface SchoolListType {
     schoolId: number,
@@ -422,13 +391,83 @@ interface SchoolListType {
 };
 const schoolList: any | SchoolListType = ref([]);
 const getSchoolList = async function () {
-    const res = await use.getSchoolList();
-    Object.assign(schoolList.value, res.data);
+    const res: Res | any = await use.getSchoolList();
+    if (res.code == 200) Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
+
+// form 校验
+const formCheck = (form: Form) => {
+    let obj: any = {};
+    console.log('校验 form', form);
+    console.log('校验 dataBackup', dataBackup.value);
+    // for (let key in form) {
+    //     if (form[key as keyof typeof form] == dataBackup.value[key]) {
+    //         return;
+    //     } else {
+    //         obj[key] = form[key as keyof typeof form];
+    //         return obj;
+    //     }
+    // }
+    return undefined;
+}
+
+// 点击提交按钮走的方法
+const onSubmit = async () => {
+    // 校验
+    // let formCheckData: any = formCheck(form)
+    // console.log('log ~ 校验结果', formCheckData);
+    // if (formCheckData == undefined) return;
+    const res: any | Res = await use.setModifyEnterpriseInfo({
+        companyLogoUrl: form.companyLogoUrl,
+    });
+    if (res.code == 200) {
+        // window.location.href = '/';
+        ElMessage({
+            message: '修改成功！',
+            type: 'success',
+        })
+        getEnterprise();
+    };
+};
 </script>
 
 <style lang="scss" scoped>
+.avatar-uploader .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+
+.yyzz {
+    width: 178px;
+}
+
+.avatar-uploader {
+    border: 1px solid #ccc;
+}
+
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
+}
+
 .flex-column-center {
     display: flex;
     flex-direction: column;

@@ -229,8 +229,6 @@
 
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import type { FormInstance, FormRules, } from 'element-plus'
-import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user';
 const router = useRouter();
 
@@ -310,7 +308,6 @@ let validatePhone = (rule: any, value: any, callback: any) => {
 
 
 // 密码登录
-// const formPassSize:string = 'default';
 const ruleFormPassRef = ref<FormInstance>()
 const ruleFormPass = reactive({
     phone: '',
@@ -337,8 +334,9 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    sessionStorage.setItem('token',res.data )
+                    sessionStorage.setItem('token', res.data)
                     window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
@@ -347,11 +345,11 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 loginType: 0,
             })
         } else {
+
         }
     })
 }
 //验证码登录
-// const formValidateSize:string = 'default';
 const ruleFormValidateRef = ref<FormInstance>()
 const ruleFormValidate = reactive({
     phone: '',
@@ -379,8 +377,9 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    localStorage.setItem('smsCode', ruleFormValidate.validate)
-                    router.push({ path: '/layout.html' })
+                    sessionStorage.setItem('token', res.data)
+                    // window.location.href = `/`;
+                    console.log(res)
                 }
             }
             login({
@@ -389,12 +388,15 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 loginType: 1,
             })
         } else {
+            ElMessage({
+                message: '验证码错误或手机号不正确',
+                type: 'warning',
+            });
         }
     })
 }
 
 //注冊
-// const formRegisterSize:string = 'default';
 const ruleFormRegisterRef = ref<FormInstance>()
 const ruleFormRegister = reactive({
     phone: '',
@@ -451,7 +453,6 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
     })
 }
 //忘记密码
-// const formForgotPwSize:string = 'default';
 const ruleFormForgotPwRef = ref<FormInstance>()
 const ruleFormForgotPw = reactive({
     phone: '',
@@ -483,7 +484,6 @@ const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     })
 }
 //重置密码
-// const formResetPwSize:string = 'default';
 const ruleFormResetPwRef = ref<FormInstance>()
 const ruleFormResetPw = reactive({
     password: '',
@@ -675,9 +675,10 @@ $width100: 100%;
 }
 
 
-.wrap-w{
+.wrap-w {
     height: 90vh;
 }
+
 .wrap-login {
     height: 100vh;
     background-image: url(@/assets/images/bg_login.png);
