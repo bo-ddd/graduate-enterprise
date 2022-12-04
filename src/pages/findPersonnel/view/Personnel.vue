@@ -68,6 +68,13 @@ let pagingInvite = reactive({
 
 const dialogFormVisible = ref(false);//弹出弹层
 
+const isVip = ref(false);
+
+const dialogShowVip = ref(false);
+
+const navigate = function(str:string){
+    window.location.href = str;
+}
 
 //这个是监听页数
 watch(paging, () => {
@@ -100,6 +107,7 @@ const cancelCheck = () => {
     }
 }
 
+
 let educationArr = reactive<Check[]>([]);//学历的列表
 let majorArr = reactive<any[]>([]);//专业的列表
 let sexArr = reactive<any[]>([]);//性别的列表
@@ -124,6 +132,7 @@ const getInvationsNumber = async () => {
     const res: Res | any = await HomeStore.getEnterprise({});
     if (res.code != 200) return;
     inviationNumber.value = res.data.invitationTalentCount;
+    isVip.value = res.data.isVip;
 }
 getInvationsNumber();
 
@@ -199,13 +208,13 @@ const inviteTalent = async () => {
 const inviteTalentList = async () => {
     let obj: any = {};
     let key:keyof InvitationForm;
-    obj['pageIndex'] = pagingInvite.pageIndex;
-    obj['pageSize'] = pagingInvite.pageSize;
     for (key in invitationForm) {
        if(invitationForm[key]){
             obj[key] = invitationForm[key];
        }
     }
+    obj['pageIndex'] = pagingInvite.pageIndex;
+    obj['pageSize'] = pagingInvite.pageSize;
     const res: Res | any = await PersonStore.getInviteList(obj);
     if (res.code !== 200) return;
     invitationList.length = 0;
@@ -223,18 +232,12 @@ inviteTalentList();
 const invitationPost = async (userId: number) => {
     dialogFormVisible.value = true;
     invitationUserId.value = userId;
-    // 这个里面需要调用回显人才信息的接口
-    //再之后没有了
 }
 
 //获取职位类别
 const getPositionCategory = async () => {
     const res: Res | any = await PersonStore.getPosition({});
     if (res.code !== 200) return;
-    // positionDownList: (2) [{…}, {…}]
-    // positionTypeId: "1"
-    // positionTypeName: "互联网"
-    // sortId: 1
     interface Data {
         positionDownList: Array<any>;
         positionTypeId: "1";
@@ -261,6 +264,18 @@ const getInviteDrop = async () => {
     statusList.push(...(res.data));
 }
 getInviteDrop();
+//确认人才列表
+const getTalent = ()=>{
+    paging.pageIndex = 1;
+    paging.pageSize = 3;
+    getTalentList();
+}
+//确定邀请人才列表
+const getInvitaion = ()=>{
+    pagingInvite.pageIndex = 1;
+    pagingInvite.pageSize = 3;
+    inviteTalentList();
+}
 </script>
 <template>
     <div class="personnel">
@@ -318,7 +333,7 @@ getInviteDrop();
                         </el-select>
                     </div>
                     <div class="operation">
-                        <el-button type="primary" plain @click="getTalentList()">确定</el-button>
+                        <el-button type="primary" plain @click="getTalent()">确定</el-button>
                         <el-button type="info" plain @click="cancelCheck()">清空</el-button>
                     </div>
                 </div>
@@ -361,7 +376,7 @@ getInviteDrop();
                             <div class="school-description fs-12 ml-16">
                                 <p>{{ child.professional }}</p>
                                 <div class="line"></div>
-                                <p>{{ child.educationId }}</p>
+                                <p>{{ child.education }}</p>
                             </div>
                         </template>
                     </div>
@@ -428,7 +443,7 @@ getInviteDrop();
                         <el-option v-for="item in positionArr" :key="item.value" :label="item.label"
                             :value="item.value" />
                     </el-select>
-                    <el-button type="primary" class="btn" @click="inviteTalentList">确定</el-button>
+                    <el-button type="primary" class="btn" @click="getInvitaion">确定</el-button>
                 </div>
 
                 <!--邀请的列表-->
@@ -474,7 +489,7 @@ getInviteDrop();
                                     <div class="school-description fs-12 ml-16">
                                         <p>{{ child.professional }}</p>
                                         <div class="line"></div>
-                                        <p>{{ child.educationId }}</p>
+                                        <p>{{ child.education }}</p>
                                     </div>
                                 </template>
                             </div>
@@ -542,7 +557,7 @@ getInviteDrop();
                 <input type="checkbox" checked disabled>
                 <p class="ml-15">应用内邀请&微信推送</p>
             </div>
-            <div class="invitation">
+            <div class="invitation" @click="dialogShowVip = true">
                 <input type="checkbox">
                 <p class="ml-15">短信同步提醒</p>
                 <p class="cl-blue">触达率200%</p>
@@ -550,7 +565,16 @@ getInviteDrop();
             <p class="fs-12">本次邀请将扣除1个邀请点数</p>
             <div class="invitation-btn mt-30" @click="inviteTalent()">邀请投递</div>
         </el-dialog>
-
+        
+        <!-- 没有vip的弹窗 -->
+        <template v-if="!isVip">
+            <el-dialog v-model="dialogShowVip"  class="vip" width="500px">
+                <p class="cl-black fs-16">升级会员即可开通短信通知的权限</p>
+                <p class="cl-black fs-16">同时获得更多邀请点数</p>
+                <div class="btn fs-18" @click="navigate('/memberCenter.html')">查看会员权益</div>
+            </el-dialog>
+        </template>
+     
         <!-- 底部 -->
         <FooterBar></FooterBar>
     </div>
@@ -559,30 +583,35 @@ getInviteDrop();
 <style lang="scss" scoped>
 .personnel {
     position: relative;
-
+    & .vip{
+        & .btn{
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px 0;
+            background:linear-gradient(128deg,#fee8cd,#e2ae7e);
+        }
+        & .btn:hover{
+            cursor: pointer;
+        }
+    }
     &>.operation-wrap {
         background: #fff;
-
         &>.operation-container {
             display: flex;
             justify-content: center;
-
             &>.operation-item {
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-
                 &>p {
                     width: 220px;
                     text-align: center;
                     padding: 8px 16px;
                 }
-
                 &>.span-check {
                     font-weight: 800;
                 }
-
                 &>.btm-check {
                     display: inline-block;
                     border-radius: 2px;
@@ -591,7 +620,6 @@ getInviteDrop();
                     background: #356ffa;
                 }
             }
-
             &>.operation-item:hover {
                 cursor: pointer;
             }
@@ -602,15 +630,12 @@ getInviteDrop();
     &>.consulting-service {
         position: relative;
         text-align: center;
-
         &>.top {
             padding: 12px 12px 0;
             box-shadow: 2px 3px 0 rgb(215 214 214 / 50%);
-
             &>.or-code {
                 width: 88px;
             }
-
             &>.tip {
                 width: 72px;
                 margin: 0 auto;
@@ -620,21 +645,17 @@ getInviteDrop();
                 text-align: center;
             }
         }
-
         &>img:hover {
             cursor: pointer;
         }
     }
-
     //这个是弹出咨询
     &>.seek-advice {
         padding: 10px 10px 6px;
-
         &>img {
             width: 38px;
         }
     }
-
     &>.seek-advice:hover {
         cursor: pointer;
     }
@@ -650,15 +671,12 @@ getInviteDrop();
         &>.filter-wrap {
             padding: 32px 0;
             border-bottom: 1px solid #eef0f2;
-
             :deep(.check-sex) {
                 width: 110px;
             }
-
             :deep(.check-salary) {
                 width: 150px;
             }
-
             :deep(.el-input__inner) {
                 height: 40px;
             }
@@ -862,21 +880,17 @@ getInviteDrop();
         :deep(& > .el-dialog__body) {
             padding: 40px;
         }
-
         & .msg-wrap {
             padding: 20px;
             background: #f9f9f9;
-
             &>.top,
             &>.btm {
                 display: flex;
                 align-items: center;
             }
-
             &>.btm {
                 padding: 10px 0;
             }
-
             &>.top {
                 &>.btn {
                     padding: 5px;
@@ -892,13 +906,11 @@ getInviteDrop();
         & .invitation-method {
             padding: 20px 0;
         }
-
         & .invitation {
             display: flex;
             padding: 10px 0;
             align-items: center;
         }
-
         & .invitation-btn {
             background-color: #356ffa;
             padding: 10px 0;
@@ -999,7 +1011,6 @@ getInviteDrop();
         width: 18px;
         height: 18px;
     }
-
     .fs-26 {
         font-size: 26px;
     }
@@ -1030,6 +1041,9 @@ getInviteDrop();
 
     .cl-black {
         color: #000;
+    }
+    .icon-31{
+        width: 31px;
     }
 }
 </style>
