@@ -2,17 +2,17 @@
   <Layout></Layout>
   <div class="position-info position-wrap">
     <div class="head-tip">
-      <!-- <div
+      <div
         class="tip-box"
         :class="{success:positionStatus2==1,warning:positionStatus2==0,error:positionStatus2==2}"
       >
         <el-icon v-if="positionStatus2==1" size="28px" color="#19be6b">
           <CircleCheck />
         </el-icon>
-        <el-icon v-if="positionStatus2==2" size="28px" color="#f90">
+        <el-icon v-if="positionStatus2==0" size="28px" color="#f90">
           <Warning />
         </el-icon>
-        <el-icon v-if="positionStatus2==0" size="28px" color="#ed4014">
+        <el-icon v-if="positionStatus2==2" size="28px" color="red">
           <CircleClose />
         </el-icon>
         <div v-if="positionStatus2==0">
@@ -27,7 +27,7 @@
           <div class="title">审核状态：未通过</div>
           <div class="text">该职位未通过审核，不会在招聘会上展示，建议修改后重新提交审核。未通过原因：职位信息不正确，驳回。</div>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="title mb-40 mt-65">职位信息</div>
     <el-form
@@ -286,7 +286,7 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/pages/layout/view/Layout.vue";
-import { Delete, CircleCheck, Warning } from "@element-plus/icons-vue";
+import { CircleClose, CircleCheck, Warning } from "@element-plus/icons-vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, computed, reactive, ref, inject } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
