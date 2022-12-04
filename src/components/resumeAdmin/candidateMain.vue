@@ -249,12 +249,11 @@ let getUserInfo = async (item: any) => {
     resumeBtn.value = true;
     if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
     showResumeImage.value = true;
-    resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
     })
     if (res.code == 200) {
-        console.log(res);
+        resumeUrl.value = res.data;
     }
 }
 
