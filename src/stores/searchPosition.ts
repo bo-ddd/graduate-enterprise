@@ -1,11 +1,12 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
-import type { Ref } from 'vue'
-export const useSearchPosition = defineStore('position', () => {
-  const positionIdValue = ref<number|string>()
-
-  const setPositionId = (val: number) => {
-    positionIdValue.value = val;
-  }
-  return { positionIdValue, setPositionId }
-})
+import { defineStore } from "pinia";
+import Api from "@/api/api";
+import {ref} from 'vue'
+export const useSearchStore = defineStore("search", () => {
+    const searchPosition=ref<number>();
+    const setSearchPosition=(val:number)=>{
+      searchPosition.value=val
+    }
+    return {
+      searchPosition,setSearchPosition
+    };
+});
