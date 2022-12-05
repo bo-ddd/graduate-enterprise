@@ -385,7 +385,7 @@ getEnterpriseInfo();
 }
 
 :deep(.el-step__icon) {
-  background-color: #1fbe4c;
+  background-color: #ababab;
 }
 
 :deep(.el-step__icon.is-text) {
