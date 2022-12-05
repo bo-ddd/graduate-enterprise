@@ -374,7 +374,6 @@ let getPositionList = async function () {
   let res2 = await getEnterprise({});
 
   if (res.code == 200) {
-    // pageMax.value=res.data
     positionList.value = res.data ? res.data.data : [];
     recruitNum.value = res.data ? res.data.maxCount : 0;
   }
