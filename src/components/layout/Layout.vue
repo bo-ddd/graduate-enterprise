@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import {  useRoute } from 'vue-router'
-import { useHomeStore } from '../../stores/home';
-import { useUserStore } from '../../stores/user';
+import { useHomeStore } from '@/stores/home';
+import { useUserStore } from '@/stores/user';
 import type { FormRules } from 'element-plus/es/tokens/form';
 import type { FormInstance } from 'element-plus/es/components/form';
-import { ElMessage } from 'element-plus/es/components';
 
 interface Res {
     code: number,
