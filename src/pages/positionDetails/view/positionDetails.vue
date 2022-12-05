@@ -285,7 +285,7 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import { CircleClose, CircleCheck, Warning } from "@element-plus/icons-vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, computed, reactive, ref, inject } from "vue";

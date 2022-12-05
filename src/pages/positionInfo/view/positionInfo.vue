@@ -268,7 +268,7 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
