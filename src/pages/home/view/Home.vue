@@ -209,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import Layout from '@/pages/layout/view/Layout.vue'
+import Layout from '@/components/layout/Layout.vue'
 import { useHomeStore } from '@/stores/home';
 import { ref, reactive, computed } from 'vue'
 import type { Ref } from "vue";

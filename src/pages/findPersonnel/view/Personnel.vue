@@ -4,7 +4,7 @@ import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 
 
 interface Check {
@@ -453,7 +453,7 @@ const getInvitaion = ()=>{
                             <div class="left">
                                 <p>投递职位</p>
                                 <div class="line"></div>
-                                <p>Java开发工程师</p>
+                                <p>{{item.positionName}}</p>
                             </div>
                             <div class="right">
                                 <p>发送时间</p>

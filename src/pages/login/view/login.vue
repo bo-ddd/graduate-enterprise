@@ -230,6 +230,8 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user';
+import type { FormInstance } from 'element-plus/es/components/form';
+import type { FormRules } from 'element-plus/es/tokens/form';
 const router = useRouter();
 
 interface Res {
@@ -314,7 +316,7 @@ const ruleFormPass = reactive({
     password: '',
 })
 
-const rulesPass = reactive<FormRules>({
+const rulesPass = reactive<FormRules>({  
     // phone: [
     //     { required: true, message: '请输入手机号', trigger: 'blur' },
     //     { validator: validatePhone, }
@@ -328,7 +330,7 @@ const rulesPass = reactive<FormRules>({
 
 const submitFormPass = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid:boolean) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
@@ -371,7 +373,7 @@ const rulesValidate = reactive<FormRules>({
 
 const submitFormValidate = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid:boolean) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
@@ -423,7 +425,7 @@ const rulesRegister = reactive<FormRules>({
 
 const submitFormRegister = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid:boolean) => {
         if (valid) {
             // 注册接口
             let register = async (options: any) => {
@@ -474,7 +476,7 @@ const rulesForgotPw = reactive<FormRules>({
 
 const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid:boolean) => {
         if (valid) {
             localStorage.setItem('phone', ruleFormForgotPw.phone)
             localStorage.setItem('smsCode', ruleFormForgotPw.validate)
@@ -516,7 +518,7 @@ const rulesResetPw = reactive<FormRules>({
 
 const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid, fields) => {
+    await formEl.validate((valid:boolean) => {
         if (valid) {
             //重置密码
             let register = async (options: any) => {

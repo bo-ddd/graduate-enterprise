@@ -48,8 +48,8 @@
               <div class="job-title fs-18">
                 <div class="mb-15 align-center">
                   <span>{{item.positionName}}</span>
-                  <span v-if="item.positionStatus2==1" class="tip-span">审核中</span>
-                  <span v-if="item.positionStatus2==0" class="tip-span warning">审核未通过</span>
+                  <span v-if="item.positionStatus2==0" class="tip-span">审核中</span>
+                  <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
                 </div>
                 <div class="info-list align-center">
                   <div class="money-num mr-15">10-15k</div>
@@ -70,14 +70,14 @@
                   <div class="mt-10 fs-14">新简历</div>
                 </div>
                 <div class="resume-box cur-po">
-                  <div class="resume-num">0</div>
+                  <div class="resume-num">{{item.resumeCounti||0}}</div>
                   <div class="mt-10 fs-14">新简历</div>
                 </div>
               </div>
               <div class="refresh-info align-center">
-                <el-button v-if="item.positionStatus2==0" color="#a8abb2" plain disabled>自动刷新</el-button>
+                <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>自动刷新</el-button>
                 <el-button v-else color="#356ffa" plain @click="autoRefrensh(item.positionId)">自动刷新</el-button>
-                <el-button v-if="item.positionStatus2==0" color="#a8abb2" plain disabled>刷新</el-button>
+                <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>刷新</el-button>
                 <el-button @click="refresh(item.positionId)" v-else color="#356ffa">刷新</el-button>
               </div>
             </div>
@@ -240,7 +240,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
 import FooterBar from "@/components/footer/footerBar.vue";
@@ -255,9 +255,11 @@ const recruitNum = ref(0);
 const orderNum = ref(0);
 const downNum = ref(0);
 const pageNum = ref(1);
+const pageMax = ref(0);
 const pageSize = ref(10);
 const pageNum2 = ref(1);
 const pageSize2 = ref(10);
+const pageMax2 = ref(0);
 const positionList:any = ref([]);
 const downPositionList:any = ref([]);
 const autoRefrensh=function(positionId:any){
@@ -304,7 +306,7 @@ const setPositionStatus = async function (
   positionId: any,
   setStatusNum: number
 ) {
-  if (setStatusNum == 2) {
+  if (setStatusNum == 1) {
     ElMessageBox.confirm("是否确认停止该职业的招聘该职位?", "", {
       confirmButtonText: "确认",
       cancelButtonText: "取消",
@@ -312,13 +314,17 @@ const setPositionStatus = async function (
     }).then(async () => {
       let res = await use.updatePositionStatus({
         positionId,
-        positionStatus: 3,
+        positionStatus: 2,
       });
       if (res.code == 200) {
         ElMessage({
           type: "success",
           message: "已下线",
         });
+        recruitNum.value--;
+        if(pageNum.value!=1 && (recruitNum.value%pageSize.value==0)){
+          pageNum.value--;
+        }
         getPositionList();
         getDownList();
       } else {
@@ -328,16 +334,21 @@ const setPositionStatus = async function (
         });
       }
     });
-  } else if (setStatusNum == 3) {
+  } else if (setStatusNum == 2) {
     let res = await use.updatePositionStatus({
       positionId,
-      positionStatus: 2,
+      positionStatus: 1,
     });
     if (res.code == 200) {
       ElMessage({
         type: "success",
         message: "已上线",
       });
+      currentIndex.value=0;
+        downNum.value--;
+        if(pageNum2.value!=1 && (downNum.value%pageSize2.value==0)){
+          pageNum2.value--;
+        }
       getPositionList();
       getDownList();
     }
@@ -358,7 +369,7 @@ let getPositionList = async function () {
   let res = await use.getPosition({
     pageIndex: pageNum.value,
     pageSize: pageSize.value,
-    positionStatus: 2,
+    positionStatus: 1,
   });
   let res2 = await getEnterprise({});
 
@@ -375,7 +386,7 @@ const getDownList = async function () {
   let res = await use.getPosition({
     pageIndex: pageNum2.value,
     pageSize: pageSize2.value,
-    positionStatus: 3,
+    positionStatus: 2,
   });
   if (res.code == 200) {
     downNum.value = res.data ? res.data.maxCount : 0;

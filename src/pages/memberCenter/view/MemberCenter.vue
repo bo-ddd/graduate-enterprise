@@ -40,12 +40,11 @@
                     <ul class="">
                         <li class="flex-ja-center" v-for="item in ulList" :key="item.id">
                             {{ item.title }}
-                            <el-tooltip v-if="item.id==3" class="box-item ml-5" effect="light" 
-                                content="平台为会员企业不定期刷新其全部在招职位，不占用日常刷新点数和自动刷新卡。"
-                                placement="top-start">
-                                    <el-icon>
-                                        <Warning />
-                                    </el-icon>
+                            <el-tooltip v-if="item.id == 3" class="box-item ml-5" effect="light"
+                                content="平台为会员企业不定期刷新其全部在招职位，不占用日常刷新点数和自动刷新卡。" placement="top-start">
+                                <el-icon>
+                                    <Warning />
+                                </el-icon>
                             </el-tooltip>
                         </li>
                     </ul>
@@ -59,26 +58,26 @@
                     <ul class="">
                         <li class=" flex-ja-center fs-18">
                             <el-icon color="#356ffa" size="22px" v-show="vipList[0].downloadCount">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[0].downloadCount)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
                             <el-icon color="#356ffa" size="22px" v-show="vipList[0].refreshPosition">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[0].refreshPosition)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
                             <el-icon color="#356ffa" size="22px" v-show="vipList[0].smsInvitation">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[0].smsInvitation)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
@@ -109,26 +108,26 @@
                         <li class=" flex-ja-center fs-18">
                             <!-- {{ vipList[1].downloadCount? }} -->
                             <el-icon color="#356ffa" size="22px" v-show="vipList[1].downloadCount">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[1].downloadCount)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
                             <el-icon color="#356ffa" size="22px" v-show="vipList[1].refreshPosition">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[1].refreshPosition)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
                             <el-icon color="#356ffa" size="22px" v-show="vipList[1].smsInvitation">
-                                <CircleCheckFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-yes.png" alt="">
                             </el-icon>
                             <el-icon color="#cfd1d5" size="22px" v-show="!(vipList[1].smsInvitation)">
-                                <CircleCloseFilled />
+                                <img class="icon-wy" src="@/assets/images/icon-wrong.png" alt="">
                             </el-icon>
                         </li>
                         <li class=" flex-ja-center fs-18">
@@ -152,16 +151,19 @@
 </template>
 
 <script setup lang="ts">
-import Layout from "@/pages/layout/view/Layout.vue"
+import Layout from "@/components/layout/Layout.vue"
 import { useVipStore } from "@/stores/vip";
 import { reactive, } from "vue";
 import { useRouter } from 'vue-router';
 import FooterBar from '@/components/footer/footerBar.vue'
+import type {MemberTypeInfo} from '@/types/memberInterface'
+ 
 let router = useRouter();
-let vipList: any = reactive([]);
+let vipList: Array<MemberTypeInfo> = reactive([]);
 let useVip = useVipStore();
 let getVip = async () => {
-    const res:any = await useVip.getVip({});
+    const res: any = await useVip.getVip({});
+    console.log(res);
     vipList.push(...res.data);
 }
 (async function () {
@@ -199,9 +201,10 @@ let ulList = [
 ]
 
 let handle = function (index: number): void {
+    let key : keyof MemberTypeInfo;
     let params = '';
-    for (const key in vipList[index]) {
-      params += `${key}=${vipList[index][key]}&`
+    for (key in vipList[index]) {
+        params += `${key}=${vipList[index][key]}&`
     }
     window.location.href = `/MemberDetails.html?${params}`
 }
@@ -280,7 +283,7 @@ let handle = function (index: number): void {
     .vip-type {
         border-radius: 2px;
         background-color: #ffffff;
-        
+
         .vip-wrap {
             .cate {
                 width: 100%;
@@ -303,6 +306,10 @@ let handle = function (index: number): void {
                         height: $height;
                         line-height: $height;
                         border-top: 1px solid #ededed;
+
+                        .icon-wy {
+                            width: 22px;
+                        }
                     }
                 }
             }

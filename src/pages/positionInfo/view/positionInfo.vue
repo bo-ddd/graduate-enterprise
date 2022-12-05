@@ -268,7 +268,7 @@
   <FooterBar></FooterBar>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
@@ -582,13 +582,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
 };
 const addPosition = async function (params: any) {
   let {
-    positionEducation,
     positionNature,
-    positionName,
     positionPositive,
-    positionDetailedAddr,
-    positionDes,
-    positionSize,
     internshipDay,
     internshipMonth,
     positionTypeArr,
@@ -599,34 +594,27 @@ const addPosition = async function (params: any) {
     salaryStart1,
     salaryEnd1,
   } = params;
-  let internshipMoney = [salaryStart2, salaryEnd2];
-  let positionMoney = [salaryStart1, salaryEnd1];
-  let form = {
-    positionEducation, //学历id
-    positionNature, //工作性质
-    positionName, //职位名称
-    positionPositive: positionPositive ? true : false, //是否转正
-    positionDetailedAddr, //详细地址
-    positionDes, //职位描述
-    positionSize, //招聘人数
-    internshipDay: positionNature == 1 ? internshipDay : "", //每周天数
-    internshipMonth: positionNature == 1 ? internshipMonth : "", //实习月数
-    positionProfessional: positionProfessional.join(","), //专业
-    internshipMoney: positionNature == 1 ? salaryStart2 + "," + salaryEnd2 : "", //实习日薪范围id
-    positionMoney: positionNature == 0 ? salaryStart1 + "," + salaryEnd1 : "", //职业薪资范围id
-    positionAddr: positionAddr.join(","), //工作地点
-    positionTypeLeft: positionTypeArr[0],
-    positionTypeRight: positionTypeArr[1], //职位类别
-    positionStatus: "",
-    positionId: "", //职位id
-  };
+  params.positionPositive = positionPositive ? true : false;
+  params.internshipDay = positionNature == 1 ? internshipDay : "";
+  params.internshipMonth = positionNature == 1 ? internshipMonth : "";
+  params.positionProfessional = positionProfessional.join(",");
+  params.internshipMoney =
+    positionNature == 1 ? salaryStart2 + "," + salaryEnd2 : ""; //实习日薪范围id
+  params.positionMoney =
+    positionNature == 0 ? salaryStart1 + "," + salaryEnd1 : ""; //职业薪资范围id
+  params.positionAddr = positionAddr.join(","); //工作地点
+  params.positionTypeLeft = positionTypeArr[0];
+  params.positionTypeRight = positionTypeArr[1]; //职位类别
+  params.positionStatus = "";
+  params.positionId = ""; //职位id
+  let form = params;
   let res = await use.addPosition(form);
   if (res.code == 200) {
     ElMessage({
       type: "success",
       message: "保存成功",
     });
-    // to("/position");
+    to("/position");
   } else {
     ElMessage({
       type: "warning",

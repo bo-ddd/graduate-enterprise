@@ -21,7 +21,7 @@ import { ref } from 'vue'
 import candidateMain from "@/components/resumeAdmin/candidateMain.vue";
 import interviewMain from "@/components/resumeAdmin/interviewMain.vue";
 import inappropriate from "@/components/resumeAdmin/inappropriate.vue";
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 let activeName = ref("first");
 
 </script>
