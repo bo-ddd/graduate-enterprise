@@ -1,0 +1,15 @@
+export interface MemberTypeInfo {
+    'createTime': string,
+    'downloadCount': boolean,
+    'invitationTalentCount': number,
+    'modifyTime': string,
+    'positionCount': number,
+    'refreshPosition': boolean,
+    'refreshPositionCardCount': number,
+    'refreshPositionCount': number,
+    'smsInvitation': boolean,
+    'vipDiscountPrice': null,
+    'vipLevel': number,
+    'vipName': string,
+    'vipPrice': number,
+}
