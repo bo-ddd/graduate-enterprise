@@ -75,8 +75,8 @@
                 </template>
             </card.cardWrap>
 
-            <div class="pagination" v-show="cardList.length > 5">
-                <el-pagination :page-size="pageSize" v-model:current-page="currentPage" :pager-count="11"
+            <div class="pagination" >
+                <el-pagination v-show="(cardList.length>5)" :page-size="pageSize" v-model:current-page="currentPage" @current-change="getResume()" :pager-count="11"
                     layout="prev, pager, next" :total="total" />
             </div>
         </div>
