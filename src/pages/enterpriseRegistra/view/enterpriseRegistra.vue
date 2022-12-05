@@ -9,7 +9,7 @@
                     <h3>基本信息</h3>
                     <!-- 企业全称 -->
                     <el-form-item label="企业全称">
-                        <el-input class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
+                        <el-input disabled class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
                     </el-form-item>
 
                     <!-- 品牌全称 -->
