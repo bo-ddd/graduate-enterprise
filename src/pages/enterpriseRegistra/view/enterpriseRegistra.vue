@@ -19,8 +19,7 @@
 
                     <!-- 企业logo -->
                     <el-form-item label="企业logo">
-                        <el-upload class="avatar-uploader" action="/api/company/uploadFile" :show-file-list="false"
-                            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                        <el-upload class="avatar-uploader" :before-upload="UploadLOGO">
                             <img v-if="form.companyLogoUrl" :src="form.companyLogoUrl" class="avatar" />
                             <el-icon v-else class="avatar-uploader-icon">
                                 <Plus />
@@ -84,9 +83,8 @@
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
                             <div class="yyzz">
-                                <el-upload class="avatar-uploader" action="/api/company/uploadFile"
-                                    :show-file-list="false" :on-success="handleAvatarSuccess1"
-                                    :before-upload="beforeAvatarUpload1">
+                                <el-upload class="avatar-uploader" :before-upload="UploadCompanyLicense"
+                                    :show-file-list="false">
                                     <img v-if="form.companyLicenseUrl" :src="form.companyLicenseUrl" class="avatar" />
                                     <el-icon v-else class="avatar-uploader-icon">
                                         <Plus />
@@ -178,7 +176,11 @@ import { ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
-import type { UploadProps } from 'element-plus';
+interface Res {
+    code: number | string,
+    data: any,
+    msg: string
+}
 const use = useHomeStore();
 // ajax
 interface Form {
@@ -234,51 +236,42 @@ const form: Form = reactive({
 
 // 校验的参数
 const dataBackup: Form | any = ref([]);
-
-
 // 上传logo
-const handleAvatarSuccess: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
-) => {
-    console.log('log  response', response);
-    console.log('log  uploadFile', uploadFile);
-    let url = ref('');
-    url.value = URL.createObjectURL(uploadFile.raw!)
-    form.companyLogoUrl = url.value.slice(5, url.value.length);
-    console.log('log ~ logo', form.companyLogoUrl);
+const UploadLOGO = async (file: any) => {
+    if (file.size / 1024 / 1024 > 2) {
+        ElMessage.error('图片大小不可超过2M!');
+        return;
+    } else if (file.name.split('.')[1] == 'jpeg' || file.name.split('.')[1] == 'jpg' || file.name.split('.')[1] == 'png') {
+        const formData = new FormData();
+        formData.append('userLogo', file);
+        const res = await use.UploadFilled(formData);
+        if (res.data) {
+            form.companyLogoUrl = res.data;
+        }
+        return;
+    } else {
+        ElMessage.error('The image class line must be in JPEG/JPEG/PNG format!');
+        return;
+    }
 }
 
-const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
-    if (rawFile.size / 1024 / 1024 > 2) {
-        ElMessage({
-            message: '图片大小不可超过2M!',
-            type: 'warning',
-        })
-        return false
-    }
-    return true
-}
 // 上传营业执照
-const handleAvatarSuccess1: UploadProps['onSuccess'] = (
-    response,
-    uploadFile
-) => {
-    form.companyLicenseUrl = URL.createObjectURL(uploadFile.raw!)
-
-    console.log('log ~ form.companyLicense', form.companyLicenseUrl);
-}
-
-const beforeAvatarUpload1: UploadProps['beforeUpload'] = (rawFile) => {
-    if (rawFile.size / 1024 / 1024 > 2) {
-        // alert("图片大小不可超过2M")
-        ElMessage({
-            message: '图片大小不可超过2M!',
-            type: 'warning',
-        })
-        return false
+const UploadCompanyLicense = async (file: any) => {
+    if (file.size / 1024 / 1024 > 2) {
+        ElMessage.error('图片大小不可超过2M!');
+        return;
+    } else if (file.name.split('.')[1] == 'jpeg' || file.name.split('.')[1] == 'jpg' || file.name.split('.')[1] == 'png') {
+        const formData = new FormData();
+        formData.append('companyLicense', file);
+        const res = await use.UploadFilled(formData);
+        if (res.data) {
+            form.companyLicenseUrl = res.data;
+        }
+        return;
+    } else {
+        ElMessage.error('The image class line must be in JPEG/JPEG/PNG format!');
+        return;
     }
-    return true
 }
 
 // 调用 获取企业详细信息接口 
@@ -308,44 +301,6 @@ const getEnterprise = async function () {
 };
 getEnterprise();
 
-interface EnterpriseInfoType {
-    companyAddr?: string,
-    companyContactEmail?: string,
-    companyContactName?: string,
-    companyContactPhone?: string,
-    companyFullName?: string,
-    companyIndustryLeft?: string,
-    companyIndustryRight?: string,
-    companyIntroducation?: string,
-    companyLicense?: string,
-    companyLogo?: any,
-    companyName?: string,
-    companyNature?: number,
-    companyRegisterAddr?: string,
-    companySize?: number,
-    companySocialCreditCode?: string,
-    companyStatus?: number,
-    companyTag?: number,
-    companyWebUrl?: string,
-    companyWishSchool?: string,
-    userId: number
-};
-interface Res {
-    code: number,
-    data: string | [] | any,
-    msg: string,
-}
-// 修改企业详细信息接口
-const setModifyEnterpriseInfo = async function (payload: EnterpriseInfoType) {
-    const res: any | Res = await use.setModifyEnterpriseInfo(payload);
-    if (res.code == 200) {
-        ElMessage({
-            message: '修改成功！',
-            type: 'success',
-        })
-        getEnterprise();
-    };
-};
 // 所属行业
 const forbiddenData: any = ref([]);
 const getIndustryList = async function () {
@@ -396,38 +351,37 @@ const getSchoolList = async function () {
 };
 getSchoolList();
 
-// form 校验
-const formCheck = (form: Form) => {
-    let obj: any = {};
-    console.log('校验 form', form);
-    console.log('校验 dataBackup', dataBackup.value);
-    // for (let key in form) {
-    //     if (form[key as keyof typeof form] == dataBackup.value[key]) {
-    //         return;
-    //     } else {
-    //         obj[key] = form[key as keyof typeof form];
-    //         return obj;
-    //     }
-    // }
-    return undefined;
-}
-
 // 点击提交按钮走的方法
 const onSubmit = async () => {
-    // 校验
-    // let formCheckData: any = formCheck(form)
-    // console.log('log ~ 校验结果', formCheckData);
-    // if (formCheckData == undefined) return;
     const res: any | Res = await use.setModifyEnterpriseInfo({
-        companyLogoUrl: form.companyLogoUrl,
-    });
+        companyFullName: form.companyFullName ? form.companyFullName : dataBackup.value.companyFullName,
+        companyName: form.companyName ? form.companyName : dataBackup.value.companyName,
+        companyStatus: Number(form.companyStatus),
+        companyLogoUrl: form.companyLogoUrl ? form.companyLogoUrl : dataBackup.value.companyLogoUrl,
+        companyRegisterAddr: form.companyRegisterAddr,
+        companyAddr: form.companyAddr ? form.companyAddr : dataBackup.value.companyAddr,
+        companyIndustryLeft: form.companyIndustryLeft ? form.companyIndustryLeft : dataBackup.value.companyIndustryLeft,
+        companyIndustryRight: form.companyIndustryRight ? form.companyIndustryRight : dataBackup.value.companyIndustryRight,
+        companyNature: Number(form.companyNature),
+        companySize: Number(form.companySize),
+        companyTag: Number(form.companyTag),
+        companySocialCreditCode: form.companySocialCreditCode ? form.companySocialCreditCode : dataBackup.value.companySocialCreditCode,
+        companyLicenseUrl: form.companyLicenseUrl ? form.companyLicenseUrl : dataBackup.value.companyLicenseUrl,
+        companyContactName: form.companyContactName ? form.companyContactName : dataBackup.value.companyContactName,
+        companyContactPhone: form.companyContactPhone ? form.companyContactPhone : dataBackup.value.companyContactPhone,
+        companyContactEmail: form.companyContactEmail ? form.companyContactEmail : dataBackup.value.companyContactEmail,
+        companyIntroducation: form.companyIntroducation ? form.companyIntroducation : dataBackup.value.companyIntroducation,
+        companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
+        companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
+        userId: form.userId ? form.userId : dataBackup.value.userId,
+    } as Form);
     if (res.code == 200) {
-        // window.location.href = '/';
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
         getEnterprise();
+        window.location.href = '/';
     };
 };
 </script>
@@ -458,6 +412,11 @@ const onSubmit = async () => {
 
 .avatar-uploader .el-upload:hover {
     border-color: var(--el-color-primary);
+}
+
+:deep(.el-upload-list) {
+    height: 0 !important;
+    display: none !important;
 }
 
 .el-icon.avatar-uploader-icon {

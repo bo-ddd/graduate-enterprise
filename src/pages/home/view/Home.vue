@@ -317,7 +317,6 @@ const getEnterpriseInfo = async () => {
     const res: Ref | any = await use.getEnterprise();
     if (res.code == 200) {
         Object.assign(EnterpriseInfo, res.data)
-        console.log('log ~ EnterpriseInfo', EnterpriseInfo);
         change.value = ''
         schoolList.value.forEach((el: any) => {
             EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
