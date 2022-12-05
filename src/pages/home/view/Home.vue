@@ -314,19 +314,22 @@ const EnterpriseInfo: EnterpriseInfoType = reactive({
 // 获取企业详细信息接口
 const change = ref<string>('')
 const getEnterpriseInfo = async () => {
-    const res = await use.getEnterprise({ userId: 10000, token });
-    Object.assign(EnterpriseInfo, res.data)
-    change.value = ''
-    schoolList.value.forEach((el: any) => {
-        EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
-            if (el.schoolId == element) {
-                change.value += el.schoolName + '、'
-            }
+    const res: Ref | any = await use.getEnterprise();
+    if (res.code == 200) {
+        Object.assign(EnterpriseInfo, res.data)
+        console.log('log ~ EnterpriseInfo', EnterpriseInfo);
+        change.value = ''
+        schoolList.value.forEach((el: any) => {
+            EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
+                if (el.schoolId == element) {
+                    change.value += el.schoolName + '、'
+                }
+            });
         });
-    });
-    change.value = change.value.substring(0, change.value.length - 1)
-    if (change.value == '' || change.value == undefined) {
-        getEnterpriseInfo()
+        change.value = change.value.substring(0, change.value.length - 1)
+        if (change.value == '' || change.value == undefined) {
+            getEnterpriseInfo()
+        }
     }
 }
 getEnterpriseInfo()

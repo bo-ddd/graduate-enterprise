@@ -31,12 +31,28 @@ import { ref } from 'vue'
 import card from "@/components/card/index";
 import footerBar from "@/components/footer/footerBar.vue";
 import { useEnterpriseStore } from "@/stores/enterprise"
+import { useHomeStore } from '@/stores/home';
 let enterprise = useEnterpriseStore();
+const use = useHomeStore();
 let resumeList:any = ref([]);
+
+
+/****'
+ *  
+ *  获取企业信息
+ * 
+ * */
+ let companyId:any = ref()
+ const getEnterpriseInfo = async () => {
+    const res: any = await use.getEnterprise();
+    if (res.code == 200) {
+        companyId.value = res.data.companyId;
+    }
+}
 
 let getResume = async () => {
     let res:any = await enterprise.getResume({
-        companyId: 10000,
+        companyId: companyId.value,
         deliveryStatus: 6,
     });
     if (res.code == 200) {
@@ -45,7 +61,7 @@ let getResume = async () => {
         console.log("error");
     }
 }
-getResume();
+
 
 /**
  * 恢复为候选人
@@ -71,6 +87,11 @@ getResume();
         ElMessage.error('this is a error message.')
     }
 }
+
+(async function(){
+       await getEnterpriseInfo();
+       await getResume();
+    })();
 </script>
 
 <style lang="scss" scoped>

@@ -140,10 +140,23 @@ import { reactive, ref } from 'vue'
 import card from "@/components/card/index";
 import footerBar from "@/components/footer/footerBar.vue"
 import { useEnterpriseStore } from "@/stores/enterprise"
+import { useHomeStore } from '@/stores/home';
+const use = useHomeStore();
 let enterprise = useEnterpriseStore();
 let userName = ref("");
 let invitationStatus = ref(false);
 let itemObj = ref();
+
+
+//企业信息
+let companyId = ref()
+const getEnterpriseInfo = async () => {
+    const res:any = await use.getEnterprise();
+    if (res.code == 200) {
+        companyId.value = res.data.companyId;
+    }
+}
+ 
 
 /**
  * 拟录用
@@ -249,12 +262,11 @@ let getUserInfo = async (item: any) => {
     resumeBtn.value = true;
     if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
     showResumeImage.value = true;
-    resumeUrl.value = "https://ts4.cn.mm.bing.net/th?id=OIP-C.KINFoHoZsiRA4NGWZHv9vAHaLG&w=204&h=306&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2";
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
     })
     if (res.code == 200) {
-        console.log(res);
+        resumeUrl.value = res.data;
     }
 }
 
@@ -493,11 +505,11 @@ let cardList: any = ref([]);
 let pageSize = ref(10);
 let currentPage = ref(1);
 let total = ref();
-let getResume = async () => {
+let getResume = async () => { 
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        companyId: 10000,
+        companyId:companyId.value,
     });
     if (res.code == 200) {
         total.value = res.data.maxCount;
@@ -509,7 +521,11 @@ let getResume = async () => {
         ElMessage.error('this is a error message.')
     }
 }
-getResume();
+
+(async function(){
+       await getEnterpriseInfo();
+       await getResume();
+    })();
 
 /**
  * 模糊查询
@@ -518,7 +534,7 @@ let fuzzyQuery = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        companyId: 10000,
+        companyId: companyId.value,
         deliveryStatus: stageValue.value,
         educationId: educationValue.value,
         positionId: positionDropValue.value,

@@ -47,7 +47,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import footerBar from "@/components/footer/footerBar.vue";
-import { useEnterpriseStore } from "@/stores/enterprise"
+import { useEnterpriseStore } from "@/stores/enterprise";
+import { useHomeStore } from '@/stores/home';
+const use = useHomeStore();
+
 let enterprise = useEnterpriseStore();
 let userName = ref("")
 const tableData = ref([])
@@ -59,6 +62,19 @@ let getPositionDrop = async () => {
 }
 getPositionDrop();
 
+/****'
+ *  
+ *  获取企业信息
+ * 
+ * */
+ let companyId:any = ref()
+ const getEnterpriseInfo = async () => {
+    const res: any = await use.getEnterprise();
+    if (res.code == 200) {
+        companyId.value = res.data.companyId;
+    }
+}
+
 let getResume = async () => {
     let res = await enterprise.getResume({
         companyId:10000,
@@ -66,7 +82,6 @@ let getResume = async () => {
     });
      tableData.value = res.data.data;
 }
-getResume();
 
 let fuzzyQuery = async () => {
     let res = await enterprise.getResume({
@@ -77,6 +92,11 @@ let fuzzyQuery = async () => {
     });
     tableData.value = res.data.data;
 }
+
+(async function(){
+       await getEnterpriseInfo();
+       await getResume();
+    })();
 </script>
 
 <style lang="scss" scoped>

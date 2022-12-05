@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-<<<<<<< HEAD
-import { useRoute } from 'vue-router'
-import { useUserStore } from '@/stores/user';
-const user = useUserStore();
-
-=======
 import {  useRoute } from 'vue-router'
 import { useHomeStore } from '@/stores/home';
+import { useUserStore } from '@/stores/user';
+import type { FormRules } from 'element-plus/es/tokens/form';
+import type { FormInstance } from 'element-plus/es/components/form';
+
+interface Res {
+    code: number,
+    data: string | [],
+    msg: string,
+}
+let user = useUserStore();
 const use = useHomeStore();
->>>>>>> 18af14550c5b2fd3c9a29ee95fbaa8e925056822
 let showGuid = ref(false);//展示导航
 //是否展开导航
 let handleGuideChange = (bool: boolean) => {
@@ -54,7 +57,6 @@ const handleSelect = (key: any) => {
 }
 const dialogFormVisible = ref(false);
 
-<<<<<<< HEAD
 // 修改密码
 const changePassword = () => {
   dialogFormVisible.value = true;
@@ -71,7 +73,7 @@ const next = () => {
 }
 
 //忘记密码
-const ruleFormForgotPwRef = ref<FormInstance>()
+const ruleFormForgotPwRef:any = ref();
 const ruleFormForgotPw = reactive({
   phone: '',
   validate: '',
@@ -92,7 +94,7 @@ const rulesForgotPw = reactive<FormRules>({
 
 const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate((valid:boolean) => {
     if (valid) {
       localStorage.setItem('phone', ruleFormForgotPw.phone)
       localStorage.setItem('smsCode', ruleFormForgotPw.validate)
@@ -135,7 +137,7 @@ const rulesResetPw = reactive<FormRules>({
 
 const submitFormResetPw = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid, fields) => {
+  await formEl.validate((valid:boolean) => {
     if (valid) {
       //重置密码
       let register = async (options: any) => {
@@ -159,17 +161,14 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     }
   })
 }
-=======
-let enterpriseInfo = <any>ref({});
-const getEnterpriseInfo = async () => {
-    const res:any = await use.getEnterprise();
+let enterpriseInfo:any = ref({});
+const getEnterpriseInfo = async function() {
+    let res:any = await use.getEnterprise();
      if(res.code == 200){
-      enterpriseInfo.value = res.data;
+      enterpriseInfo.value = res.data
      }
-      
-}
-getEnterpriseInfo()
->>>>>>> 18af14550c5b2fd3c9a29ee95fbaa8e925056822
+};
+getEnterpriseInfo();
 </script>
 
 <template>
@@ -207,7 +206,7 @@ getEnterpriseInfo()
         </el-dropdown>
       </div>
 
-      <el-dialog width="400px" v-model="dialogFormVisible" align-center>
+      <!-- <el-dialog width="400px" v-model="dialogFormVisible" align-center>
         <div class="c-000000 just-center mt-40 mb-40">
           <h3 class="fs-18">忘记密码</h3>
         </div>
@@ -215,15 +214,15 @@ getEnterpriseInfo()
           <el-step title="验证手机号" />
           <el-step title="重置密码" />
         </el-steps>
-        <!-- 第一步 -->
+        第一步
         <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right" :model="ruleFormForgotPw"
           :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" size="default">
           <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="phone">
-            <!-- 手机号 -->
+            手机号
             <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
           </el-form-item>
           <el-form-item class="mt-22 item-input validate" label="" label-width="0px" prop="validate">
-            <!-- 验证码 -->
+            验证码
             <div class="just-between validate-flex">
               <el-input class="input" v-model="ruleFormForgotPw.validate" placeholder="请输入短信验证码" autocomplete="off" />
               <el-button v-show="ruleFormForgotPw.isCountDown" style="width:102px"
@@ -243,15 +242,15 @@ getEnterpriseInfo()
             </el-button>
           </el-form-item>
         </el-form>
-        <!-- 第二步 -->
+        第二步
         <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right" :model="ruleFormResetPw"
           :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" size="default">
           <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="password">
-            <!-- 重置密码 -->
+            重置密码
             <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码" type="password" />
           </el-form-item>
           <el-form-item class="mt-22 item-input " label="" label-width="0px" prop="checkPass">
-            <!-- 再次输入密码 -->
+            再次输入密码
             <el-input class="input" v-model="ruleFormResetPw.checkPass" placeholder="请再次输入密码" type="password"
               autocomplete="off" />
           </el-form-item>
@@ -261,7 +260,7 @@ getEnterpriseInfo()
             </el-button>
           </el-form-item>
         </el-form>
-      </el-dialog>
+      </el-dialog> -->
     </div>
   </header>
   <div class="container">
