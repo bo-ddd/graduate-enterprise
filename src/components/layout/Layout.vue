@@ -49,7 +49,7 @@ let list = reactive([
 ])
 
 let route = useRoute();
-let acitveIndex: Ref<number> = ref(list.find(item => item.url == route.path)?.id!);
+let acitveIndex:any = ref(list.find(item => item.url == route.path)?.id!);
 const handleSelect = (key: any) => {
   if (route.path == key.url) return;
   window.location.href = key.url;
