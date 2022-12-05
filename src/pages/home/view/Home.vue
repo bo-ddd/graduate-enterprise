@@ -209,7 +209,7 @@
 </template>
 
 <script setup lang="ts">
-import Layout from '@/pages/layout/view/Layout.vue'
+import Layout from '@/components/layout/Layout.vue'
 import { useHomeStore } from '@/stores/home';
 import { ref, reactive, computed } from 'vue'
 import type { Ref } from "vue";
@@ -317,7 +317,6 @@ const getEnterpriseInfo = async () => {
     const res: Ref | any = await use.getEnterprise();
     if (res.code == 200) {
         Object.assign(EnterpriseInfo, res.data)
-        console.log('log ~ EnterpriseInfo', EnterpriseInfo);
         change.value = ''
         schoolList.value.forEach((el: any) => {
             EnterpriseInfo.companyWishSchool.forEach((element: Number) => {

@@ -37,7 +37,7 @@
                         通过初筛
                     </div>
                     <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true, btnSpan = false">
-                        <img v-show="btnImg" src="@/assets/images/onload.png" alt="">
+                        <a :href="resumeUrl"><img v-show="btnImg" src="@/assets/images/onload.png" alt=""></a>
                         <span v-show="btnSpan">通过初筛后才能下载简历</span>
                     </div>
                     <div class="resume-btn" @click="inappropriate($event, itemObj)">不合适</div>
@@ -59,7 +59,7 @@
                         name: item.userName,
                         deliveryStatus: item.deliveryStatus,
                         education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
-                        userLogoUrl:item.userLogoUrl
+                        userLogoUrl: item.userLogoUrl
                     }">
                         <template #btn>
                             <el-button @click="inappropriate($event, item)">不合适</el-button>
@@ -75,8 +75,8 @@
                 </template>
             </card.cardWrap>
 
-            <div class="pagination" v-show="cardList.length > 5">
-                <el-pagination :page-size="pageSize" v-model:current-page="currentPage" :pager-count="11"
+            <div class="pagination" >
+                <el-pagination v-show="(cardList.length>5)" :page-size="pageSize" v-model:current-page="currentPage" @current-change="getResume()" :pager-count="11"
                     layout="prev, pager, next" :total="total" />
             </div>
         </div>
@@ -151,12 +151,12 @@ let itemObj = ref();
 //企业信息
 let companyId = ref()
 const getEnterpriseInfo = async () => {
-    const res:any = await use.getEnterprise();
+    const res: any = await use.getEnterprise();
     if (res.code == 200) {
         companyId.value = res.data.companyId;
     }
 }
- 
+
 
 /**
  * 拟录用
@@ -247,7 +247,7 @@ let btnSpan = ref(false);
 let isOnload = () => {
     if (resumeBtn.value) {
         btnImg.value = false;
-        btnSpan.value = true
+        btnSpan.value = true;
     }
 }
 
@@ -260,7 +260,10 @@ let resumeBtn = ref(true);
 let getUserInfo = async (item: any) => {
     itemObj.value = item;
     resumeBtn.value = true;
-    if (item.deliveryStatus == '通过初筛') { resumeBtn.value = false };
+    if (item.deliveryStatus == '通过初筛' || item.deliveryStatus == '面试' || item.deliveryStatus == '拟录用') {
+        resumeBtn.value = false
+
+    };
     showResumeImage.value = true;
     let res: any = await enterprise.getResumeUrl({
         resumeId: item.resumeId,
@@ -323,22 +326,22 @@ let batchbyFilter = () => {
             type: 'warning',
         }
     ).then(async () => {
-            let res: any = await enterprise.modifyResumeStatus({
-                deliveryId,
-                statusId: 3,
-            })
-            if (res.code == 200) {
-                ElMessage({
-                    message: 'success',
-                    type: 'success',
-                })
-                getResume();
-                checkedCities.value = [];
-                checkAll.value = false;
-            } else {
-                ElMessage.error('this is a error message.')
-            }
+        let res: any = await enterprise.modifyResumeStatus({
+            deliveryId,
+            statusId: 3,
         })
+        if (res.code == 200) {
+            ElMessage({
+                message: 'success',
+                type: 'success',
+            })
+            getResume();
+            checkedCities.value = [];
+            checkAll.value = false;
+        } else {
+            ElMessage.error('this is a error message.')
+        }
+    })
         .catch(() => {
             ElMessage({
                 type: 'info',
@@ -505,11 +508,11 @@ let cardList: any = ref([]);
 let pageSize = ref(10);
 let currentPage = ref(1);
 let total = ref();
-let getResume = async () => { 
+let getResume = async () => {
     let res: any = await enterprise.getResume({
         pageIndex: currentPage.value,
         pageSize: pageSize.value,
-        companyId:companyId.value,
+        companyId: companyId.value,
     });
     if (res.code == 200) {
         total.value = res.data.maxCount;
@@ -522,10 +525,10 @@ let getResume = async () => {
     }
 }
 
-(async function(){
-       await getEnterpriseInfo();
-       await getResume();
-    })();
+(async function () {
+    await getEnterpriseInfo();
+    await getResume();
+})();
 
 /**
  * 模糊查询

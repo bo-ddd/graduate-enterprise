@@ -74,22 +74,16 @@ let route = useRoute();
 let selectVip = ref(1);
 
 let isVipActive = function (name: number): void {
-    selectVip.value = name
+    selectVip.value = name;
 }
 // 支付
 let selectPayment = ref(1);
 
 let isPaymentActive = function (name: number): void {
+    console.log(name,'name')
     selectPayment.value = name
 }
 let data = route.query as any;
-let order = {
-    orderPrice: selectPayment.value * data.vipPrice,
-    vipName: data.vipName,
-    vipCount: selectPayment.value,
-    vipLevel: Number(data.vipLevel)
-}
-// let params =ref('');
 function toPay(params:any) {
     let div = document.createElement("div");
     div.innerHTML = params;
@@ -101,6 +95,7 @@ function toPay(params:any) {
 let toPayment = function () {
     let usePayment = async(options:any)=>{
         const res:any = await payment.payment(options);
+        console.log(selectVip.value);
         if (res.code == 200) {
             toPay(res.data);
         }
@@ -108,7 +103,7 @@ let toPayment = function () {
     usePayment({
         userId: 10000,
         companyId: 10000,
-        month: selectPayment.value,
+        month: selectVip.value,
         vipId: Number(data.vipLevel)
     })
 }

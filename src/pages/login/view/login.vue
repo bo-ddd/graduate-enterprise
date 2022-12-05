@@ -207,7 +207,8 @@
                         </div>
                     </main>
                     <!-- 右侧背景图 -->
-                    <img class="schools" src="@/assets/images/schools_login.png" alt="">
+                    <img class="schools" src="https://rongshuyun.oss-cn-hangzhou.aliyuncs.com/image/20221205135140.png"
+                        alt="">
                 </div>
                 <!-- ------------- -->
                 <!-- 页脚------ -->
@@ -316,39 +317,39 @@ const ruleFormPass = reactive({
     password: '',
 })
 
-const rulesPass = reactive<FormRules>({  
-    // phone: [
-    //     { required: true, message: '请输入手机号', trigger: 'blur' },
-    //     { validator: validatePhone, }
-    // ],
-    // password: [
-    //     { required: true, message: '请输入密码', trigger: 'blur' },
-    //     { min: 6, max: 20, message: '6-20位之间', trigger: 'blur' },
-    // ],
+const rulesPass = reactive<FormRules>({
+    phone: [
+        { required: true, message: '请输入手机号', trigger: 'blur' },
+        { validator: validatePhone, }
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 20, message: '6-20位之间', trigger: 'blur' },
+    ],
 })
 
 
 const submitFormPass = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid:boolean) => {
-        if (valid) {
-            // 登录
-            let login = async (options: any) => {
-                const res: any | Res = await user.login(options);
-                if (res.code == 200) {
-                    sessionStorage.setItem('token', res.data)
-                    window.location.href = `/`;
-                    console.log(res)
-                }
+    await formEl.validate((valid: boolean) => {
+        let login = async (options: any) => {
+            const res: any | Res = await user.login(options);
+            if (res.code == 200) {
+                sessionStorage.setItem('token', res.data)
+                window.location.href = `/`;
+            } else {
+                ElMessage({
+                    message: '手机号或密码错误',
+                    type: 'warning',
+                });
             }
-            login({
-                phone: ruleFormPass.phone,
-                password: ruleFormPass.password,
-                loginType: 0,
-            })
-        } else {
-
         }
+        login({
+            phone: ruleFormPass.phone,
+            password: ruleFormPass.password,
+            loginType: 0,
+        })
+        
     })
 }
 //验证码登录
@@ -361,10 +362,10 @@ const ruleFormValidate = reactive({
 })
 
 const rulesValidate = reactive<FormRules>({
-    // phone: [
-    //     { required: true, message: '请输入手机号', trigger: 'blur' },
-    //     { validator: validatePhone, }
-    // ],
+    phone: [
+        { required: true, message: '请输入手机号', trigger: 'blur' },
+        { validator: validatePhone, }
+    ],
     // validate: [
     //     { required: true, message: '请输入验证码', trigger: 'blur' },
     //     { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
@@ -373,15 +374,19 @@ const rulesValidate = reactive<FormRules>({
 
 const submitFormValidate = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid:boolean) => {
+    await formEl.validate((valid: boolean) => {
         if (valid) {
             // 登录
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
                     sessionStorage.setItem('token', res.data)
-                    // window.location.href = `/`;
-                    console.log(res)
+                    window.location.href = `/`;
+                } else if (res.code == 500) {
+                    ElMessage({
+                        message: '验证码错误或手机号不正确',
+                        type: 'warning',
+                    });
                 }
             }
             login({
@@ -390,10 +395,7 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
                 loginType: 1,
             })
         } else {
-            ElMessage({
-                message: '验证码错误或手机号不正确',
-                type: 'warning',
-            });
+
         }
     })
 }
@@ -409,34 +411,36 @@ const ruleFormRegister = reactive({
 })
 
 const rulesRegister = reactive<FormRules>({
-    // phone: [
-    //     { required: true, message: '请输入手机号', trigger: 'blur' },
-    //     { validator: validatePhone, }
-    // ],
-    // validate: [
-    //     { required: true, message: '请输入验证码', trigger: 'blur' },
-    //     { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
-    // ],
-    // password: [
-    //     { required: true, message: '请输入密码', trigger: 'blur' },
-    //     { min: 6, max: 20, message: '6-20位之间', trigger: 'blur' },
-    // ],
+    phone: [
+        { required: true, message: '请输入手机号', trigger: 'blur' },
+        { validator: validatePhone, }
+    ],
+    validate: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
+    ],
+    password: [
+        { required: true, message: '请输入密码', trigger: 'blur' },
+        { min: 6, max: 20, message: '6-20位之间', trigger: 'blur' },
+    ],
 })
 
 const submitFormRegister = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid:boolean) => {
+    await formEl.validate((valid: boolean) => {
         if (valid) {
             // 注册接口
             let register = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    ElMessage({
-                        message: '注册成功，请登录',
-                        type: 'success',
-                    });
-                    isOpen.value = 1;
-                } else {
+                    // ElMessage({
+                    //     message: '注册成功，请登录',
+                    //     type: 'success',
+                    // });
+                    // isOpen.value = 1;
+                    sessionStorage.setItem('token', res.data);
+                    window.location.href = '/setEnterpriseInfo.html'
+                } else if (res.code == 500) {
                     ElMessage({
                         message: '账号已存在，请登录',
                         type: 'warning',
@@ -464,19 +468,19 @@ const ruleFormForgotPw = reactive({
 })
 
 const rulesForgotPw = reactive<FormRules>({
-    // phone: [
-    //     { required: true, message: '请输入手机号', trigger: 'blur' },
-    //     { validator: validatePhone, }
-    // ],
-    // validate: [
-    //     { required: true, message: '请输入验证码', trigger: 'blur' },
-    //     { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
-    // ],
+    phone: [
+        { required: true, message: '请输入手机号', trigger: 'blur' },
+        { validator: validatePhone, }
+    ],
+    validate: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
+    ],
 })
 
 const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid:boolean) => {
+    await formEl.validate((valid: boolean) => {
         if (valid) {
             localStorage.setItem('phone', ruleFormForgotPw.phone)
             localStorage.setItem('smsCode', ruleFormForgotPw.validate)
@@ -518,8 +522,7 @@ const rulesResetPw = reactive<FormRules>({
 
 const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
-    await formEl.validate((valid:boolean) => {
-        if (valid) {
+    await formEl.validate((valid: boolean) => {
             //重置密码
             let register = async (options: any) => {
                 const res: any | Res = await user.login(options);
@@ -529,6 +532,12 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
                         type: 'success',
                     });
                     isOpen.value = 1;
+                }else {
+                    ElMessage({
+                        message: '重置失败',
+                        type: 'warning',
+                    });
+
                 }
             }
             register({
@@ -539,8 +548,7 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
                 inviteCode: 0,
             })
 
-        } else {
-        }
+        
     })
 }
 

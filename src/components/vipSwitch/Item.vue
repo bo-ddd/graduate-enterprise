@@ -50,6 +50,7 @@ let handleTabClick = inject('handleTabClick') as (name: number) => void;
 
 let handleTabItemClick = function () {
     handleTabClick(name.value);
+    // console.log(name.value)
 }
 </script>
 

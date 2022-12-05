@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ref, reactive, type Ref, watch } from "vue";
+import { ref, reactive,watch } from "vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 
 
 interface Check {
@@ -101,7 +101,7 @@ const handleGuideChange = (bool: boolean) => {
 
 //清空选择的方法
 const cancelCheck = () => {
-    let key:  Form;
+    let key: keyof Form;
     for (key in form) {
         form[key] = null;
     }

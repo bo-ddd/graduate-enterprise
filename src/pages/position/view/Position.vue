@@ -240,7 +240,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
 import { useSearchPosition } from "@/stores/searchPosition";
