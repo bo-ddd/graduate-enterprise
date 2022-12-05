@@ -101,7 +101,7 @@ const handleGuideChange = (bool: boolean) => {
 
 //清空选择的方法
 const cancelCheck = () => {
-    let key:  Form;
+    let key: keyof Form;
     for (key in form) {
         form[key] = null;
     }
