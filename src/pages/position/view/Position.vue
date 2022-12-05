@@ -151,13 +151,13 @@
                   </div>
                 </div>
                 <div class="resume-info flex-ja-center">
-                  <div class="resume-box cur-po">
-                    <div class="resume-num">0</div>
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.newResumeCount}}</div>
                     <div class="mt-10 fs-14">新简历</div>
                   </div>
-                  <div class="resume-box cur-po">
-                    <div class="resume-num">0</div>
-                    <div class="mt-10 fs-14">新简历</div>
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.resumeCount}}</div>
+                    <div class="mt-10 fs-14">总简历</div>
                   </div>
                 </div>
                 <div class="refresh-info align-center">
@@ -243,12 +243,14 @@
 import Layout from "@/pages/layout/view/Layout.vue";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
+import { useSearchPosition } from "@/stores/searchPosition";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, ref, provide } from "vue";
 import { useRouter } from "vue-router";
 import { Position } from "@element-plus/icons-vue";
 let use = usePositionStore();
 let { getEnterprise } = useHomeStore();
+let { setPositionId } = useSearchPosition();
 const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
 const recruitNum = ref(0);
@@ -269,6 +271,10 @@ onMounted(() => {
   getPositionList();
   getDownList();
 });
+const toSearchPositon=(id:number)=>{
+
+  window.location.href='resume.html'
+}
 const refresh = function (positionId: any) {
   if (orderNum.value > 0) {
     ElMessageBox.confirm(
