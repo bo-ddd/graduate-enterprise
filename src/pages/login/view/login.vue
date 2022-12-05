@@ -207,7 +207,7 @@
                         </div>
                     </main>
                     <!-- 右侧背景图 -->
-                    <img class="schools" src="@/assets/images/schools_login.png" alt="">
+                    <img class="schools" src="https://rongshuyun.oss-cn-hangzhou.aliyuncs.com/image/20221205135140.png" alt="">
                 </div>
                 <!-- ------------- -->
                 <!-- 页脚------ -->
@@ -232,6 +232,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user';
 import type { FormInstance } from 'element-plus/es/components/form';
 import type { FormRules } from 'element-plus/es/tokens/form';
+import { ElMessage } from 'element-plus';
 const router = useRouter();
 
 interface Res {
@@ -331,6 +332,9 @@ const rulesPass = reactive<FormRules>({
 const submitFormPass = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid:boolean) => {
+        console.log(valid)
+        console.log(ruleFormPass)
+        // if(ruleFormPass)
         if (valid) {
             // 登录
             let login = async (options: any) => {
@@ -347,7 +351,10 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
                 loginType: 0,
             })
         } else {
-
+            ElMessage({
+                message: '手机号或密码错误',
+                type: 'warning',
+            });
         }
     })
 }
