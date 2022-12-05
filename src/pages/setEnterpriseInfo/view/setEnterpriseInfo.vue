@@ -436,7 +436,7 @@
 import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
+import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
 interface Res {
@@ -458,8 +458,30 @@ const navLogin = () => {
     sessionStorage.setItem('token', '');
     window.location.href = '/login.html';
 }
+interface Form {
+    companyAddr?: string,
+    companyContactEmail?: string,
+    companyContactName?: string,
+    companyContactPhone?: string,
+    companyFullName?: string,
+    companyIndustryLeft?: string,
+    companyIndustryRight?: string,
+    companyIntroducation?: string,
+    companyLicenseUrl?: string,
+    companyLogoUrl?: string,
+    companyName?: string,
+    companyNature?: number,
+    companyRegisterAddr?: string | any,
+    companySize?: number,
+    companySocialCreditCode?: string,
+    companyStatus?: number,
+    companyTag?: number,
+    companyWebUrl?: string,
+    companyWishSchool?: string,
+    userId: number
+}
 // form 表单数据
-const form = reactive({
+const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
@@ -480,9 +502,9 @@ const form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
+    userId: 10000,
 });
-// 点击提交按钮走的方法
-const onSubmit = () => { };
+
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
@@ -540,14 +562,6 @@ const UploadCompanyLicense = async (file: any) => {
     }
 }
 
-
-
-const dialogVisible = ref(false);
-const handleRemove = () => { };
-const handlePictureCardPreview = () => {
-    dialogVisible.value = true;
-};
-const handleDownload = () => { };
 // 企业性质
 let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
@@ -600,9 +614,41 @@ interface SchoolList {
 const schoolList: any | SchoolList = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
-    Object.assign(schoolList, res.data);
+    Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
+// 调用 获取企业详细信息接口 
+const getEnterprise = async function () {
+    const res: Res | any = await use.getEnterprise();
+    if (res.code == 200) {
+        console.log('log  res', res.data);
+        form.userId = res.data.userId;
+    }
+};
+getEnterprise();
+
+// 注册企业信息接口
+const registerCompany = async (params: any) => {
+    const res: any | Res = await use.registerCompanyApi(params);
+    if (res.code == 200) {
+        console.log(res.data);
+        ElMessage.success('注册成功');
+    } else {
+        ElMessage.error('注册失败');
+    }
+}
+// 点击提交按钮走的方法
+const onSubmit = () => {
+    form.companyIndustryLeft = forbidden.value[0];
+    form.companyIndustryRight = forbidden.value[1];
+    console.log(sessionStorage.getItem('token'));
+    console.log(form);
+    registerCompany({
+        token: sessionStorage.getItem('token'),
+        companyOnlyWishSchool: true,
+        ...form,
+    });
+};
 </script>
 
 <style lang="scss" scoped>
