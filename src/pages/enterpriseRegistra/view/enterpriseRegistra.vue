@@ -418,17 +418,17 @@ const onSubmit = async () => {
     // let formCheckData: any = formCheck(form)
     // console.log('log ~ 校验结果', formCheckData);
     // if (formCheckData == undefined) return;
-    const res: any | Res = await use.setModifyEnterpriseInfo({
-        companyLogoUrl: form.companyLogoUrl,
-    });
-    if (res.code == 200) {
-        // window.location.href = '/';
-        ElMessage({
-            message: '修改成功！',
-            type: 'success',
-        })
-        getEnterprise();
-    };
+    // const res: any | Res = await use.setModifyEnterpriseInfo({
+    //     companyLogoUrl: form.companyLogoUrl,
+    // });
+    // if (res.code == 200) {
+    //     // window.location.href = '/';
+    //     ElMessage({
+    //         message: '修改成功！',
+    //         type: 'success',
+    //     })
+    //     getEnterprise();
+    // };
 };
 </script>
 

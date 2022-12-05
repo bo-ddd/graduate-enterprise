@@ -453,7 +453,7 @@ const getInvitaion = ()=>{
                             <div class="left">
                                 <p>投递职位</p>
                                 <div class="line"></div>
-                                <p>Java开发工程师</p>
+                                <p>{{item.positionName}}</p>
                             </div>
                             <div class="right">
                                 <p>发送时间</p>
