@@ -273,10 +273,10 @@ onMounted(() => {
   getDownList();
 });
 const toSearchPositon=function(id:number){
-  let {setSearchPosition}=useSearchStore();
-  console.log(id);
-  
-  setSearchPosition(id);
+  // let {setSearchPosition}=useSearchStore();
+  // console.log(id);
+  sessionStorage.setItem('positionTypeId',String(id))
+  // setSearchPosition(id);
   window.location.href='resume.html'
 }
 const refresh = function (positionId: any) {

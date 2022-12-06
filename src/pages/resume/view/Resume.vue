@@ -17,17 +17,12 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useSearchPosition } from "@/stores/searchPosition";
+import { useSearchStore } from "@/stores/searchPosition";
 import candidateMain from "@/components/resumeAdmin/candidateMain.vue";
 import interviewMain from "@/components/resumeAdmin/interviewMain.vue";
 import inappropriate from "@/components/resumeAdmin/inappropriate.vue";
 import Layout from "@/components/layout/Layout.vue";
 let activeName = ref("first");
-let { positionIdValue } = useSearchPosition();
-if (positionIdValue) {
-    console.log(positionIdValue);
-    
-}
 </script>
 
 <style lang="scss" scoped>
