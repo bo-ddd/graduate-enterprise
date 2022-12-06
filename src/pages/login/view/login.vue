@@ -1,7 +1,7 @@
 <template>
-    <div class="wrap-login">
+    <div class="wrap-login ">
         <!-- 头部logo -->
-        <header>
+        <header class="align-center">
             <img class="logo" src="@/assets/images/logo.png" alt="">
         </header>
         <!-- --------- -->
@@ -35,7 +35,7 @@
                                                 type="password" autocomplete="off" />
                                         </el-form-item>
                                         <el-form-item class="" label="" label-width="105px">
-                                            <p class="fs-14 c-575757 forget-pass flex" @click="isOpen = 3">忘记密码</p>
+                                            <p class="fs-14 c-575757 forget-pass flex cursor-p" @click="isOpen = 3">忘记密码</p>
                                         </el-form-item>
                                         <el-form-item class="m-0">
                                             <el-button class=" btn fs-16 " color="#2d8cf0" type="primary"
@@ -130,7 +130,7 @@
                                     </el-button>
                                 </el-form-item>
                                 <el-form-item class="mt-5">
-                                    <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span class="to-login"
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span class="to-login cursor-p"
                                             @click="isOpen = 1">去登录</span></p>
                                 </el-form-item>
                             </el-form>
@@ -138,7 +138,7 @@
                     </main>
                     <main v-show="isOpen == 3">
                         <div class="header just-center mt-40 mb-40">
-                            <h3 class="fs-18">忘记密码</h3>
+                            <h3 class="fs-18 cursor-p">忘记密码</h3>
                         </div>
                         <div class="main ">
                             <el-steps :active="active" finish-status="success" align-center>
@@ -684,6 +684,9 @@ $width100: 100%;
     height: var(--size);
 }
 
+.cursor-p{
+    cursor: pointer;
+}
 
 .wrap-w {
     height: 90vh;
@@ -695,11 +698,15 @@ $width100: 100%;
     background-size: 100%;
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden; 
 
     // 头部
     header {
+
         font-size: 0;
         width: 64%;
+        min-width: 64%;
+        // min-height: 56px;
         margin: $margin-auto;
         padding-top: 16px;
 
