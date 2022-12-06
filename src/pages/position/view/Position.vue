@@ -66,7 +66,7 @@
               </div>
               <div class="resume-info flex-ja-center">
                 <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
-                  <div class="resume-num">{{item.newResumeCount||0}}</div>
+                  <div class="resume-num">{{item.newResumeCount}}</div>
                   <div class="mt-10 fs-14">新简历</div>
                 </div>
                 <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
