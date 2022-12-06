@@ -243,8 +243,6 @@
 import Layout from "@/components/layout/Layout.vue";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
-import { useSearchStore }  from "@/stores/searchPosition";
-import {storeToRefs} from 'pinia'
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, ref, provide } from "vue";
 import { useRouter } from "vue-router";
@@ -258,11 +256,9 @@ const recruitNum = ref(0);
 const orderNum = ref(0);
 const downNum = ref(0);
 const pageNum = ref(1);
-const pageMax = ref(0);
 const pageSize = ref(10);
 const pageNum2 = ref(1);
 const pageSize2 = ref(10);
-const pageMax2 = ref(0);
 const positionList:any = ref([]);
 const downPositionList:any = ref([]);
 const autoRefrensh=function(positionId:any){
@@ -273,10 +269,7 @@ onMounted(() => {
   getDownList();
 });
 const toSearchPositon=function(id:number){
-  // let {setSearchPosition}=useSearchStore();
-  // console.log(id);
   sessionStorage.setItem('positionTypeId',String(id))
-  // setSearchPosition(id);
   window.location.href='resume.html'
 }
 const refresh = function (positionId: any) {
