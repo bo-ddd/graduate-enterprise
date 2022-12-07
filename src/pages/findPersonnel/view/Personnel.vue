@@ -5,7 +5,19 @@ import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
 import Layout from "@/pages/layout/view/Layout.vue";
-
+interface School{
+    userId:number;
+    userEducationId:number;
+    school:string;
+    professional:string;
+    education:string;
+}
+interface UserInfo{
+    school:string;
+    userEducation:string;
+    userName: string;
+    userProfessional: string;
+}
 
 interface Check {
     id: number,
@@ -41,6 +53,7 @@ let form: Form = reactive({
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
 
+let invitationMsg = reactive({}) as UserInfo;
 let invitationForm:InvitationForm = reactive<{
     status: any;
     positionId: any;
@@ -229,9 +242,13 @@ inviteTalentList();
 //这个是邀请投递的弹层
 
 //邀请的哪个人才
-const invitationPost = async (userId: number) => {
+const invitationPost = async (item: any) => {
     dialogFormVisible.value = true;
-    invitationUserId.value = userId;
+    invitationMsg.userName = item.userName;
+    invitationMsg.userEducation = item.userEducation;
+    invitationMsg.userProfessional = item.userProfessional;
+    invitationMsg.school = item.userEducationList[item.userEducationList.length-1].school;
+    invitationUserId.value = item.userId;
 }
 
 //获取职位类别
@@ -404,7 +421,7 @@ const getInvitaion = ()=>{
                     <!-- 活跃时间 -->
                     <div class="cbleft5">
                         <p class="titlest fs-12 cl-ccc">{{ item.lastLoginTime }}活跃</p>
-                        <el-button type="primary" class="mt-50" @click="invitationPost(item.userId)">邀请投递</el-button>
+                        <el-button type="primary" class="mt-50" @click="invitationPost(item)">邀请投递</el-button>
                     </div>
                 </div>
             </div>
@@ -513,7 +530,7 @@ const getInvitaion = ()=>{
 
                             <!-- 活跃时间 -->
                             <div class="cbleft5">
-                                <p class="mt-40 fs-18">{{ '被查看' }}</p>
+                                <p class="mt-40 fs-18">{{ item.inviteStatus }}</p>
                             </div>
                         </div>
                     </div>
@@ -537,13 +554,13 @@ const getInvitaion = ()=>{
             <!-- 用户信息 -->
             <div class="msg-wrap mt-20">
                 <div class="top">
-                    <p class="name">王小姐</p>
-                    <div class="btn fs-12 ml-15">本科</div>
+                    <p class="name">{{invitationMsg.userName}}</p>
+                    <div class="btn fs-12 ml-15">{{invitationMsg.userEducation}}</div>
                 </div>
                 <div class="btm">
-                    <p>南开大学滨海学院</p>
+                    <p>{{invitationMsg.school}}</p>
                     <div class="line"></div>
-                    <p>环境工程</p>
+                    <p>{{invitationMsg.userProfessional}}</p>
                 </div>
             </div>
             <p class="fs-12 mt-10 post-tips">投递岗位</p>
