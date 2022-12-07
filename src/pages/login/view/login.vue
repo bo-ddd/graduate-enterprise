@@ -176,7 +176,7 @@
                                     </el-button>
                                 </el-form-item>
                                 <el-form-item class="mt-5">
-                                    <p class="existing-account fs-14 c-8d9ea7 mt-10"><span class="to-login"
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10 cursor-p"><span class="to-login"
                                             @click="isOpen = 1">返回登录</span></p>
                                 </el-form-item>
                             </el-form>
