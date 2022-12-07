@@ -65,7 +65,7 @@
         <el-form-item prop="positionNature">
           <el-radio-group :v-model="1">
             <el-radio
-              v-if="ruleForm.data.positionNature===0"
+              v-if="ruleForm.data.positionNature==0"
               class="select-btn"
               label="0"
               size="large"
@@ -76,7 +76,8 @@
           </el-radio-group>
         </el-form-item>
 
-        <div v-if="ruleForm.data.positionNature==1" class="align-center ml-20">
+        <div v-if="ruleForm.data.positionNature==1" class="align-center ml-20"
+         :class="{'show':ruleForm.data.positionNature==1}">
           <span class="mr-10">转正机会</span>
 
           <el-form-item prop="positionPositive">
@@ -298,8 +299,8 @@ const router = useRouter();
 const route = useRoute();
 const positionId = ref(0);
 onMounted(async () => {
-  await positionDetail();
   await getData();
+  await positionDetail();
 });
 interface Res {
   code: number;
@@ -391,6 +392,7 @@ const positionDetail = async function () {
     positionId: route.query.positionId,
   });
   if (res.code == 200) {
+    activeNum2.value=res.data.positionPositive?0:1;
     positionStatus.value = res.data.positionStatus;
     positionStatus2.value = res.data.positionStatus2;
     positionId.value = res.data.positionId;
@@ -600,7 +602,7 @@ const select = function (index: number) {
 const select2 = function (index: number) {
   activeNum2.value = index;
   ruleForm.data.positionPositive = (activeNum.value == 1 &&
-    activeNum2.value == 0) as any;
+    activeNum2.value == 0) as boolean;
 };
 //校验
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -639,7 +641,7 @@ const setPositon = async function (params: any) {
     positionEducation: Number(positionEducation), //学历id
     positionNature: Number(positionNature), //工作性质
     positionName, //职位名称
-    positionPositive: false, //是否转正
+    positionPositive, //是否转正
     positionDetailedAddr, //详细地址
     positionDes, //职位描述
     positionSize: Number(positionSize), //招聘人数

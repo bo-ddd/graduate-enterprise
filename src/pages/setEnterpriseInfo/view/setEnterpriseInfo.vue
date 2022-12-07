@@ -29,8 +29,8 @@
 
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
-                        <el-cascader placeholder="请输入" class="el-input_240" :options="cityJson"
-                            :props="{ 'label': 'name', 'value': 'code' }" clearable />
+                        <el-cascader placeholder="请输入" class="el-input_240" v-model="form.companyRegisterAddr"
+                            :options="cityJson" :props="{ 'label': 'name', 'value': 'name' }" clearable />
                     </el-form-item>
 
                     <!-- 详细注册地址 -->
@@ -145,10 +145,10 @@
 
                         <div class="align-center">
                             <el-form-item label="学校">
-                                <el-select size="large" class="school-input" v-model="schoolListVal" multiple
+                                <el-select size="large" class="school-input" v-model="form.companyWishSchool" multiple
                                     placeholder="请输入">
                                     <el-option v-for="item in schoolList" :key="item.sortId" :label="item.schoolName"
-                                        :value="item.schoolId" />
+                                        :value="item.sortId" />
                                 </el-select>
                             </el-form-item>
                         </div>
@@ -452,11 +452,11 @@ const centerDialogVisible = ref(true);
 const centerDialogVisible2 = ref(false);
 // 跳转页面的方法
 const nav = (name: string) => {
-    window.location.href = `${name}.html`;
+    window.location.href = `/${name}.html`;
 };
 const navLogin = () => {
     sessionStorage.setItem('token', '');
-    window.location.href = '/login.html';
+    nav('login');
 }
 interface Form {
     companyAddr?: string,
@@ -477,8 +477,8 @@ interface Form {
     companyStatus?: number,
     companyTag?: number,
     companyWebUrl?: string,
-    companyWishSchool?: string,
-    userId: number
+    companyWishSchool?: any,
+    // userId?: number
 }
 // form 表单数据
 const form: Form = reactive({
@@ -502,8 +502,8 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    userId: 10000,
-});
+    // userId: 10000,
+} as Form);
 
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
@@ -604,7 +604,7 @@ const getEnterpriseTagList = async function () {
     }
 };
 getEnterpriseTagList();
-const schoolListVal = ref([]);
+
 // 学校列表
 interface SchoolList {
     schoolId: number,
@@ -614,18 +614,12 @@ interface SchoolList {
 const schoolList: any | SchoolList = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
-    Object.assign(schoolList.value, res.data);
-};
-getSchoolList();
-// 调用 获取企业详细信息接口 
-const getEnterprise = async function () {
-    const res: Res | any = await use.getEnterprise();
-    if (res.code == 200) {
-        console.log('log  res', res.data);
-        form.userId = res.data.userId;
+    if (res.data) {
+        Object.assign(schoolList.value, res.data);
+        console.log('log   res.data', res.data);
     }
 };
-getEnterprise();
+getSchoolList();
 
 // 注册企业信息接口
 const registerCompany = async (params: any) => {
@@ -634,6 +628,7 @@ const registerCompany = async (params: any) => {
         console.log(res.data);
         ElMessage.success('注册成功');
     } else {
+        console.log(res);
         ElMessage.error('注册失败');
     }
 }
@@ -641,13 +636,39 @@ const registerCompany = async (params: any) => {
 const onSubmit = () => {
     form.companyIndustryLeft = forbidden.value[0];
     form.companyIndustryRight = forbidden.value[1];
-    console.log(sessionStorage.getItem('token'));
-    console.log(form);
-    registerCompany({
-        token: sessionStorage.getItem('token'),
+    let companyWishSchoolvalue = [];
+    for (const key in form.companyWishSchool) {
+        companyWishSchoolvalue.push(form.companyWishSchool[key]);
+    }
+    let companyRegisterAddr = `${form.companyRegisterAddr[0]},${form.companyRegisterAddr[1]}`;
+    form.companyRegisterAddr = companyRegisterAddr;
+    // console.log(form);
+    let params = {
+        token: window.sessionStorage.getItem('token'),
+        companyFullName: form.companyFullName,
+        companyName: form.companyName,
+        // companyStatus: form.companyStatus,
+        // companyLogoUrl: form.companyLogoUrl,
+        companyRegisterAddr: form.companyRegisterAddr,
+        companyAddr: form.companyAddr,
+        companyIndustryLeft: form.companyIndustryLeft,
+        companyIndustryRight: form.companyIndustryRight,
+        companyNature: form.companyNature,
+        companySize: form.companySize,
+        companyTag: form.companyTag,
+        companySocialCreditCode: form.companySocialCreditCode,
+        // companyLicenseUrl: form.companyLicenseUrl,
+        companyContactName: form.companyContactName,
+        companyContactPhone: form.companyContactPhone,
+        companyContactEmail: form.companyContactEmail,
+        companyIntroducation: form.companyIntroducation,
+        companyWebUrl: form.companyWebUrl,
+        companyWishSchool: companyWishSchoolvalue,
         companyOnlyWishSchool: true,
-        ...form,
-    });
+    }
+    // console.log(params)
+    registerCompany(params);
+
 };
 </script>
 
