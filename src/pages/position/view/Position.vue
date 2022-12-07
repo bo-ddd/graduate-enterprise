@@ -93,7 +93,10 @@
               <div class="align-center">
                 <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
                 <div class="bor"></div>
-                <div class="cur-po" @click="setPositionStatus(item.positionId,item.positionStatus)">停止招聘</div>
+                <div
+                  class="cur-po"
+                  @click="setPositionStatus(item.positionId,item.positionStatus)"
+                >停止招聘</div>
                 <div class="bor"></div>
                 <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
               </div>
@@ -114,7 +117,7 @@
       <div class="tab2" v-show="currentIndex==1">
         <div class="void-box void-title flex-ja-center" v-show="downNum==0">
           <div class>
-            <img src="@/assets/images/img-no_position.png"   />
+            <img src="@/assets/images/img-no_position.png" />
             <div class="mt-15">暂无已下线职位</div>
           </div>
         </div>
@@ -163,7 +166,10 @@
                 <div class="refresh-info align-center">
                   <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
                   <div class="bor"></div>
-                  <div class="cur-po" @click="setPositionStatus(item.positionId,item.positionStatus)">开始招聘</div>
+                  <div
+                    class="cur-po"
+                    @click="setPositionStatus(item.positionId,item.positionStatus)"
+                  >开始招聘</div>
                   <div class="bor"></div>
                   <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
                 </div>
@@ -227,7 +233,7 @@
         </div>
         <div class="card">
           <div class="center">
-            <img src="@/assets/images/icon-tag1.png"  />
+            <img src="@/assets/images/icon-tag1.png" />
             自动刷新卡
           </div>
         </div>
@@ -259,19 +265,20 @@ const pageNum = ref(1);
 const pageSize = ref(10);
 const pageNum2 = ref(1);
 const pageSize2 = ref(10);
-const positionList:any = ref([]);
-const downPositionList:any = ref([]);
-const autoRefrensh=function(positionId:any){
-  centerDialogVisible.value = true
-}
+const positionList: any = ref([]);
+const downPositionList: any = ref([]);
+const autoRefrensh = function (positionId: any) {
+  centerDialogVisible.value = true;
+};
 onMounted(() => {
   getPositionList();
   getDownList();
-});
-const toSearchPositon=function(id:number){
-  sessionStorage.setItem('positionTypeId',String(id))
-  window.location.href='resume.html'
 }
+);
+const toSearchPositon = function (id: number) {
+  sessionStorage.setItem("positionTypeId", String(id));
+  window.location.href = "resume.html";
+};
 const refresh = function (positionId: any) {
   if (orderNum.value > 0) {
     ElMessageBox.confirm(
@@ -324,10 +331,7 @@ const setPositionStatus = async function (
           type: "success",
           message: "已下线",
         });
-        recruitNum.value--;
-        if(pageNum.value!=1 && (recruitNum.value%pageSize.value==0)){
-          pageNum.value--;
-        }
+        setPageNum();
         getPositionList();
         getDownList();
       } else {
@@ -347,13 +351,15 @@ const setPositionStatus = async function (
         type: "success",
         message: "已上线",
       });
-      currentIndex.value=0;
-        downNum.value--;
-        if(pageNum2.value!=1 && (downNum.value%pageSize2.value==0)){
-          pageNum2.value--;
-        }
+      currentIndex.value = 0;
+      setPageNum2();
       getPositionList();
       getDownList();
+    } else {
+      ElMessage({
+        type: "warning",
+        message: "操作失败",
+      });
     }
   }
 };
@@ -380,7 +386,7 @@ let getPositionList = async function () {
     positionList.value = res.data ? res.data.data : [];
     recruitNum.value = res.data ? res.data.maxCount : 0;
   }
-  if (res2.data.sevenRefreshPositionCount) {
+  if (res2.data) {
     orderNum.value = res2.data ? res2.data.refreshPositionCount : 0;
   }
 };
@@ -399,6 +405,18 @@ const getDownList = async function () {
 let deletePosition = function (params: any) {
   return use.deletePosition(params);
 };
+const setPageNum = () => {
+  recruitNum.value--;
+  if (pageNum.value != 1 && recruitNum.value % pageSize.value == 0) {
+    pageNum.value--;
+  }
+};
+const setPageNum2 = () => {
+  downNum.value--;
+  if (pageNum2.value != 1 && downNum.value % pageSize2.value == 0) {
+    pageNum2.value--;
+  }
+};
 const deleteClick = function (positionId: any, positionStatus: any) {
   ElMessageBox.confirm("删除后将无法恢复", "是否确认删除该职位?", {
     confirmButtonText: "确认删除",
@@ -408,13 +426,18 @@ const deleteClick = function (positionId: any, positionStatus: any) {
     .then(async () => {
       let res1 = await deletePosition({
         positionId,
-        positionStatus:Number(positionStatus),
+        positionStatus: Number(positionStatus),
       });
       if (res1.code == 200) {
         ElMessage({
           type: "success",
           message: "删除成功",
         });
+        if (positionStatus == 1) {
+          setPageNum();
+        } else {
+          setPageNum2();
+        }
         getPositionList();
         getDownList();
       } else {
@@ -437,10 +460,10 @@ const tab = function (num: number) {
   currentIndex.value = num;
 };
 const to = function (path: string) {
-  window.location.href=path+'.html'
+  window.location.href = path + ".html";
 };
 const setPosition = function (id: any) {
-  window.location.href=`positionDetails.html?positionId=${id}`
+  window.location.href = `positionDetails.html?positionId=${id}`;
 };
 </script>
 <style lang="scss" scoped>
@@ -470,7 +493,7 @@ const setPosition = function (id: any) {
       background: linear-gradient(143deg, #2d2d2d, #000);
       position: relative;
       color: rgb(255, 228, 203);
-      background-image: url('@/assets/images/icon-back1_img.png');
+      background-image: url("@/assets/images/icon-back1_img.png");
       background-repeat: no-repeat;
       background-size: 47px 40px;
       background-position: right top;
@@ -794,7 +817,7 @@ const setPosition = function (id: any) {
 .ml-10 {
   margin-left: 10px;
 }
-.mt-30{
-margin-top: 30px;
+.mt-30 {
+  margin-top: 30px;
 }
 </style>
