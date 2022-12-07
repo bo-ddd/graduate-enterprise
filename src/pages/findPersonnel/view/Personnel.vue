@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, reactive, type Ref, watch } from "vue";
+import { ref, reactive,watch } from "vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";

@@ -19,38 +19,11 @@
 
                     <!-- 企业logo -->
                     <el-form-item label="企业logo">
-                        <el-upload action="#" list-type="picture-card" :auto-upload="false">
-                            <el-icon class="uplpoad-icon flex-column-center">
-                                <div>
-                                    <Plus />
-                                </div>
-                                <div class="fs-13">上传图片</div>
+                        <el-upload class="avatar-uploader" :before-upload="UploadLOGO">
+                            <img v-if="form.companyLogoUrl" :src="form.companyLogoUrl" class="avatar" />
+                            <el-icon v-else class="avatar-uploader-icon">
+                                <Plus />
                             </el-icon>
-
-                            <template #file="{ file }">
-                                <div>
-                                    <img class="el-upload-list__item-thumbnail" :src="file.url" />
-                                    <span class="el-upload-list__item-actions">
-                                        <span class="el-upload-list__item-preview" @click="handlePictureCardPreview()">
-                                            <el-icon>
-                                                <zoom-in />
-                                            </el-icon>
-                                        </span>
-                                        <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleDownload()">
-                                            <el-icon>
-                                                <Download />
-                                            </el-icon>
-                                        </span>
-                                        <span v-if="!disabled" class="el-upload-list__item-delete"
-                                            @click="handleRemove()">
-                                            <el-icon>
-                                                <Delete />
-                                            </el-icon>
-                                        </span>
-                                    </span>
-                                </div>
-                            </template>
                         </el-upload>
                     </el-form-item>
 
@@ -110,40 +83,15 @@
                     <div class="align-center">
                         <el-form-item label="营业执照"></el-form-item>
                         <div>
-                            <el-upload action="#" list-type="picture-card" :auto-upload="false">
-                                <el-icon class="uplpoad-icon flex-column-center">
-                                    <div>
+                            <div class="yyzz">
+                                <el-upload class="avatar-uploader" :before-upload="UploadCompanyLicense"
+                                    :show-file-list="false">
+                                    <img v-if="form.companyLicenseUrl" :src="form.companyLicenseUrl" class="avatar" />
+                                    <el-icon v-else class="avatar-uploader-icon">
                                         <Plus />
-                                    </div>
-                                    <div class="fs-13">上传图片</div>
-                                </el-icon>
-
-                                <template #file="{ file }">
-                                    <div>
-                                        <img class="el-upload-list__item-thumbnail" :src="file.url" />
-                                        <span class="el-upload-list__item-actions">
-                                            <span class="el-upload-list__item-preview"
-                                                @click="handlePictureCardPreview()">
-                                                <el-icon>
-                                                    <zoom-in />
-                                                </el-icon>
-                                            </span>
-                                            <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @change="handleDownload()">
-                                                <el-icon>
-                                                    <Download />
-                                                </el-icon>
-                                            </span>
-                                            <span v-if="!disabled" class="el-upload-list__item-delete"
-                                                @click="handleRemove()">
-                                                <el-icon>
-                                                    <Delete />
-                                                </el-icon>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </template>
-                            </el-upload>
+                                    </el-icon>
+                                </el-upload>
+                            </div>
                             <div class="business-license_test mt-10">
                                 <p>
                                     请上传清晰的营业执照, 执照中的<b>社会信用代码、企业名称</b>需与上方填写的一致。
@@ -152,7 +100,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="horizontal-line"></div>
 
                     <div>
@@ -489,7 +436,7 @@
 import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
-import { Delete, Download, Plus, ZoomIn } from '@element-plus/icons-vue';
+import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
 interface Res {
@@ -511,12 +458,34 @@ const navLogin = () => {
     sessionStorage.setItem('token', '');
     window.location.href = '/login.html';
 }
+interface Form {
+    companyAddr?: string,
+    companyContactEmail?: string,
+    companyContactName?: string,
+    companyContactPhone?: string,
+    companyFullName?: string,
+    companyIndustryLeft?: string,
+    companyIndustryRight?: string,
+    companyIntroducation?: string,
+    companyLicenseUrl?: string,
+    companyLogoUrl?: string,
+    companyName?: string,
+    companyNature?: number,
+    companyRegisterAddr?: string | any,
+    companySize?: number,
+    companySocialCreditCode?: string,
+    companyStatus?: number,
+    companyTag?: number,
+    companyWebUrl?: string,
+    companyWishSchool?: string,
+    userId: number
+}
 // form 表单数据
-const form = reactive({
+const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
-    companyLogo: '',// 企业Logo
+    companyLogoUrl: '',// 企业Logo
     companyRegisterAddr: '',// 企业地址
     companyAddr: '',// 企业详细地址
     companyIndustryLeft: '',// 企业所属行业
@@ -533,9 +502,9 @@ const form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
+    userId: 10000,
 });
-// 点击提交按钮走的方法
-const onSubmit = () => { };
+
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
@@ -554,14 +523,45 @@ const getIndustryList = async function () {
     }
 };
 getIndustryList();
-// 上传企业LOGO的逻辑
-const dialogVisible = ref(false);
-const disabled = ref(false);
-const handleRemove = () => { };
-const handlePictureCardPreview = () => {
-    dialogVisible.value = true;
-};
-const handleDownload = () => { };
+
+// 上传logo
+const UploadLOGO = async (file: any) => {
+    if (file.size / 1024 / 1024 > 2) {
+        ElMessage.error('图片大小不可超过2M!');
+        return;
+    } else if (file.name.split('.')[1] == 'jpeg' || file.name.split('.')[1] == 'jpg' || file.name.split('.')[1] == 'png') {
+        const formData = new FormData();
+        formData.append('userLogo', file);
+        const res = await use.UploadFilled(formData);
+        if (res.data) {
+            form.companyLogoUrl = res.data;
+        }
+        return;
+    } else {
+        ElMessage.error('The image class line must be in JPEG/JPEG/PNG format!');
+        return;
+    }
+}
+
+// 上传营业执照
+const UploadCompanyLicense = async (file: any) => {
+    if (file.size / 1024 / 1024 > 2) {
+        ElMessage.error('图片大小不可超过2M!');
+        return;
+    } else if (file.name.split('.')[1] == 'jpeg' || file.name.split('.')[1] == 'jpg' || file.name.split('.')[1] == 'png') {
+        const formData = new FormData();
+        formData.append('companyLicense', file);
+        const res = await use.UploadFilled(formData);
+        if (res.data) {
+            form.companyLicenseUrl = res.data;
+        }
+        return;
+    } else {
+        ElMessage.error('The image class line must be in JPEG/JPEG/PNG format!');
+        return;
+    }
+}
+
 // 企业性质
 let enterpriseNature: any = ref([]);
 // 调用 获取企业性质下拉框
@@ -614,9 +614,41 @@ interface SchoolList {
 const schoolList: any | SchoolList = ref([]);
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
-    Object.assign(schoolList, res.data);
+    Object.assign(schoolList.value, res.data);
 };
 getSchoolList();
+// 调用 获取企业详细信息接口 
+const getEnterprise = async function () {
+    const res: Res | any = await use.getEnterprise();
+    if (res.code == 200) {
+        console.log('log  res', res.data);
+        form.userId = res.data.userId;
+    }
+};
+getEnterprise();
+
+// 注册企业信息接口
+const registerCompany = async (params: any) => {
+    const res: any | Res = await use.registerCompanyApi(params);
+    if (res.code == 200) {
+        console.log(res.data);
+        ElMessage.success('注册成功');
+    } else {
+        ElMessage.error('注册失败');
+    }
+}
+// 点击提交按钮走的方法
+const onSubmit = () => {
+    form.companyIndustryLeft = forbidden.value[0];
+    form.companyIndustryRight = forbidden.value[1];
+    console.log(sessionStorage.getItem('token'));
+    console.log(form);
+    registerCompany({
+        token: sessionStorage.getItem('token'),
+        companyOnlyWishSchool: true,
+        ...form,
+    });
+};
 </script>
 
 <style lang="scss" scoped>
@@ -765,6 +797,46 @@ getSchoolList();
 :deep(.input_280-40) {
     width: 280px;
     height: 40px;
+}
+
+.avatar-uploader .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+}
+
+.yyzz {
+    width: 178px;
+}
+
+.avatar-uploader {
+    border: 1px solid #ccc;
+}
+
+.avatar-uploader .el-upload {
+    border: 1px dashed var(--el-border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+    border-color: var(--el-color-primary);
+}
+
+:deep(.el-upload-list) {
+    height: 0 !important;
+    display: none !important;
+}
+
+.el-icon.avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    text-align: center;
 }
 
 .enterprise-registra {

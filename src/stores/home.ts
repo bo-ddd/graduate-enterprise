@@ -86,6 +86,12 @@ export const useHomeStore = defineStore("home", () => {
     function UploadFilled(payload: any) {
         return Api.uploadFile(payload);
     }
+    /**
+     * @param payload 注册企业信息接口
+     */
+    function registerCompanyApi(payload: any) {
+        return Api.registerCompany(payload);
+    }
 
     return {
         getEnterprise,
@@ -98,5 +104,6 @@ export const useHomeStore = defineStore("home", () => {
         getPositionList,
         setEnterpriseSchoolOfIntention,
         UploadFilled,
+        registerCompanyApi,
     };
 });

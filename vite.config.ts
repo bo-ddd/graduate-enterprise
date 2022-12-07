@@ -8,14 +8,15 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), 
-          vueJsx(),
-          AutoImport({
-            resolvers: [ElementPlusResolver()],
-          }),
-          Components({
-            resolvers: [ElementPlusResolver()],
-          }),
+  plugins: [vue(),
+  vueJsx(),
+  AutoImport({
+    resolvers: [ElementPlusResolver()],
+  }),
+  Components({
+    resolvers: [ElementPlusResolver()],
+  }),
+
   ],
   resolve: {
     alias: {
@@ -30,25 +31,25 @@ export default defineConfig({
     rollupOptions: {
       //配置多页应用程序入口文件
       input: ["./src/pages/index.html",
-              "./src/pages/enterpriseRegistra.html",
-              "./src/pages/login.html",
-              "./src/pages/memberDetails.html",
-              "./src/pages/positionDetails.html",
-              "./src/pages/positionInfo.html",
-              "./src/pages/setEnterpriseInfo.html",
-              "./src/pages/findPersonnel.html",
-              "./src/pages/memberCenter.html",
-              "./src/pages/position.html",
-              "./src/pages/resume.html",
-            ],
+        "./src/pages/enterpriseRegistra.html",
+        "./src/pages/login.html",
+        "./src/pages/memberDetails.html",
+        "./src/pages/positionDetails.html",
+        "./src/pages/positionInfo.html",
+        "./src/pages/setEnterpriseInfo.html",
+        "./src/pages/findPersonnel.html",
+        "./src/pages/memberCenter.html",
+        "./src/pages/position.html",
+        "./src/pages/resume.html",
+      ],
 
       //打包到目标目录
       output: { dir: "./dist" },
 
     }
   },
-  server:{
-    proxy:{             
+  server: {
+    proxy: {
       '/api': {
         target: 'http://49.235.119.92:8080',
         changeOrigin: true,

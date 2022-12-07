@@ -65,13 +65,13 @@
                 </div>
               </div>
               <div class="resume-info flex-ja-center">
-                <div class="resume-box cur-po">
-                  <div class="resume-num">0</div>
+                <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                  <div class="resume-num">{{item.newResumeCount||0}}</div>
                   <div class="mt-10 fs-14">新简历</div>
                 </div>
-                <div class="resume-box cur-po">
-                  <div class="resume-num">{{item.resumeCounti||0}}</div>
-                  <div class="mt-10 fs-14">新简历</div>
+                <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                  <div class="resume-num">{{item.resumeCount}}</div>
+                  <div class="mt-10 fs-14">总简历</div>
                 </div>
               </div>
               <div class="refresh-info align-center">
@@ -151,13 +151,13 @@
                   </div>
                 </div>
                 <div class="resume-info flex-ja-center">
-                  <div class="resume-box cur-po">
-                    <div class="resume-num">0</div>
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.newResumeCount}}</div>
                     <div class="mt-10 fs-14">新简历</div>
                   </div>
-                  <div class="resume-box cur-po">
-                    <div class="resume-num">0</div>
-                    <div class="mt-10 fs-14">新简历</div>
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.resumeCount}}</div>
+                    <div class="mt-10 fs-14">总简历</div>
                   </div>
                 </div>
                 <div class="refresh-info align-center">
@@ -240,15 +240,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import Layout from "@/pages/layout/view/Layout.vue";
+import Layout from "@/components/layout/Layout.vue";
 import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
+import { useSearchStore }  from "@/stores/searchPosition";
+import {storeToRefs} from 'pinia'
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, ref, provide } from "vue";
 import { useRouter } from "vue-router";
 import { Position } from "@element-plus/icons-vue";
 let use = usePositionStore();
 let { getEnterprise } = useHomeStore();
+
 const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
 const recruitNum = ref(0);
@@ -269,6 +272,13 @@ onMounted(() => {
   getPositionList();
   getDownList();
 });
+const toSearchPositon=function(id:number){
+  let {setSearchPosition}=useSearchStore();
+  console.log(id);
+  
+  setSearchPosition(id);
+  window.location.href='resume.html'
+}
 const refresh = function (positionId: any) {
   if (orderNum.value > 0) {
     ElMessageBox.confirm(

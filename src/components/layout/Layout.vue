@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import {  useRoute } from 'vue-router'
+import type { Ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { useHomeStore } from '@/stores/home';
 import { useUserStore } from '@/stores/user';
 import type { FormRules } from 'element-plus/es/tokens/form';
 import type { FormInstance } from 'element-plus/es/components/form';
+import { ElMessage } from 'element-plus';
 
 interface Res {
-    code: number,
-    data: string | [],
-    msg: string,
+  code: number,
+  data: string | [],
+  msg: string,
 }
 let user = useUserStore();
 const use = useHomeStore();
@@ -47,7 +49,7 @@ let list = reactive([
 ])
 
 let route = useRoute();
-let acitveIndex: any = ref(list.find(item => item.url == route.path)?.id);
+let acitveIndex:any = ref(list.find(item => item.url == route.path)?.id!);
 const handleSelect = (key: any) => {
   if (route.path == key.url) return;
   window.location.href = key.url;
@@ -73,7 +75,7 @@ const next = () => {
 }
 
 //忘记密码
-const ruleFormForgotPwRef:any = ref();
+const ruleFormForgotPwRef: any = ref();
 const ruleFormForgotPw = reactive({
   phone: '',
   validate: '',
@@ -94,7 +96,7 @@ const rulesForgotPw = reactive<FormRules>({
 
 const submitFormForgotPw = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid:boolean) => {
+  await formEl.validate((valid: boolean) => {
     if (valid) {
       localStorage.setItem('phone', ruleFormForgotPw.phone)
       localStorage.setItem('smsCode', ruleFormForgotPw.validate)
@@ -137,11 +139,12 @@ const rulesResetPw = reactive<FormRules>({
 
 const submitFormResetPw = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
-  await formEl.validate((valid:boolean) => {
+  await formEl.validate((valid: boolean) => {
     if (valid) {
       //重置密码
       let register = async (options: any) => {
         const res: any | Res = await user.login(options);
+        console.log(res)
         if (res.code == 200) {
           ElMessage({
             message: '重置成功，请登录',
@@ -161,12 +164,28 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     }
   })
 }
-let enterpriseInfo:any = ref({});
-const getEnterpriseInfo = async function() {
-    let res:any = await use.getEnterprise();
-     if(res.code == 200){
-      enterpriseInfo.value = res.data
-     }
+
+// 获取验证码后
+let getvalidate = (e: any, rule: any) => {
+  let count = rule.countDown;
+  rule.isCountDown = false
+  e.target.disabled = true
+  let interval = setInterval(() => {
+    rule.countDown--;
+    if (rule.countDown == 0) {
+      clearInterval(interval)
+      rule.countDown = count;
+      rule.isCountDown = true;
+    }
+  }, 1000);
+}
+
+let enterpriseInfo: any = ref({});
+const getEnterpriseInfo = async function () {
+  let res: any = await use.getEnterprise();
+  if (res.code == 200) {
+    enterpriseInfo.value = res.data
+  }
 };
 getEnterpriseInfo();
 </script>
@@ -186,7 +205,7 @@ getEnterpriseInfo();
         </el-menu>
       </div>
       <div class="user align-center">
-        <p class="fs-14">Hi,</p>{{enterpriseInfo.companyFullName}}
+        <p class="fs-14">Hi,</p>{{ enterpriseInfo.companyFullName }}
         <el-dropdown>
           <span class="el-dropdown-link">
             <img class="avator" :src="enterpriseInfo.companyLogoUrl" alt="">
@@ -206,7 +225,7 @@ getEnterpriseInfo();
         </el-dropdown>
       </div>
 
-      <!-- <el-dialog width="400px" v-model="dialogFormVisible" align-center>
+      <el-dialog width="400px" v-model="dialogFormVisible" align-center>
         <div class="c-000000 just-center mt-40 mb-40">
           <h3 class="fs-18">忘记密码</h3>
         </div>
@@ -214,15 +233,15 @@ getEnterpriseInfo();
           <el-step title="验证手机号" />
           <el-step title="重置密码" />
         </el-steps>
-        第一步
+        <!-- 第一步 -->
         <el-form ref="ruleFormForgotPwRef" v-show="isNext" label-position="right" :model="ruleFormForgotPw"
           :rules="rulesForgotPw" label-width="120px" class="demo-ruleForm" size="default">
           <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="phone">
-            手机号
+            <!-- 手机号 -->
             <el-input class="input" v-model="ruleFormForgotPw.phone" placeholder="请输入注册手机号" />
           </el-form-item>
           <el-form-item class="mt-22 item-input validate" label="" label-width="0px" prop="validate">
-            验证码
+            <!-- 验证码 -->
             <div class="just-between validate-flex">
               <el-input class="input" v-model="ruleFormForgotPw.validate" placeholder="请输入短信验证码" autocomplete="off" />
               <el-button v-show="ruleFormForgotPw.isCountDown" style="width:102px"
@@ -242,15 +261,15 @@ getEnterpriseInfo();
             </el-button>
           </el-form-item>
         </el-form>
-        第二步
+        <!-- 第二步 -->
         <el-form ref="ruleFormResetPwRef" v-show="!isNext" label-position="right" :model="ruleFormResetPw"
           :rules="rulesResetPw" label-width="120px" class="demo-ruleForm" size="default">
           <el-form-item class="mt-18 item-input" label="" label-width="0px" prop="password">
-            重置密码
+            <!-- 重置密码 -->
             <el-input class="input" v-model="ruleFormResetPw.password" placeholder="请输入6-16位新密码" type="password" />
           </el-form-item>
           <el-form-item class="mt-22 item-input " label="" label-width="0px" prop="checkPass">
-            再次输入密码
+            <!-- 再次输入密码 -->
             <el-input class="input" v-model="ruleFormResetPw.checkPass" placeholder="请再次输入密码" type="password"
               autocomplete="off" />
           </el-form-item>
@@ -260,7 +279,7 @@ getEnterpriseInfo();
             </el-button>
           </el-form-item>
         </el-form>
-      </el-dialog> -->
+      </el-dialog>
     </div>
   </header>
   <div class="container">
@@ -322,8 +341,9 @@ getEnterpriseInfo();
 :deep(.el-dropdown-link .el-icon) {
   display: none;
 }
+
 :deep(.el-form-item__content) {
-    margin: 0 !important;
+  margin: 0 !important;
 }
 
 :deep(.el-input__wrapper) {
@@ -365,7 +385,7 @@ getEnterpriseInfo();
 }
 
 :deep(.el-step__icon) {
-  background-color: #1fbe4c;
+  background-color: #ababab;
 }
 
 :deep(.el-step__icon.is-text) {
@@ -512,7 +532,8 @@ getEnterpriseInfo();
     }
   }
 }
-.btn{
+
+.btn {
   width: 100% !important;
   height: 42px;
   border-radius: 0;
