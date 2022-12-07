@@ -3,28 +3,13 @@
     <div class="candidate-header">
       <div class="candidate-header_top">
         <el-select v-model="positionDropValue" class="m-2" placeholder="投递职位">
-          <el-option
-            v-for="item in allPositions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <el-option v-for="item in allPositions" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-select v-model="stageValue" class="stage-input m-2" placeholder="应聘阶段">
-          <el-option
-            v-for="item in applicationStage"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <el-option v-for="item in applicationStage" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-select v-model="educationValue" placeholder="学历">
-          <el-option
-            v-for="item in educationList"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <el-option v-for="item in educationList" :key="item.value" :label="item.label" :value="item.value" />
         </el-select>
         <el-input v-model="userName" class="name-input" placeholder="姓名" />
         <div></div>
@@ -42,28 +27,18 @@
       <el-empty class="mt-20" v-if="!cardList.length" :image-size="260" description="暂无简历数据" />
 
       <!-- 简历弹出框 -->
-      <el-dialog
-        v-model="showResumeImage"
-        width="55%"
-        :lock-scroll="false"
-        :align-center="true"
-        class="resume-image"
-      >
+      <el-dialog v-model="showResumeImage" :close-on-click-modal="false"  width="55%" :lock-scroll="false" :align-center="true" class="resume-image">
         <div class="resume-box">
           <div v-show="resumeBtn" @click="byFilter($event, itemObj)" class="resume-btn">通过初筛</div>
-          <div
-            class="resume-btn"
-            @mousemove="isOnload()"
-            @mouseleave="btnImg = true, btnSpan = false"
-          >
-            <a :href="resumeUrl">
-              <img v-show="btnImg" src="@/assets/images/onload.png" alt />
+          <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true, btnSpan = false">
+            <a :href="resume">
+              <img v-show="btnImg" src="@/assets/images/onload.png" />
             </a>
             <span v-show="btnSpan">通过初筛后才能下载简历</span>
           </div>
           <div class="resume-btn" @click="inappropriate($event, itemObj)">不合适</div>
         </div>
-        <img :src="resumeUrl" alt />
+        <img :src="resumeUrl" />
       </el-dialog>
 
       <card.cardWrap class="cardWrap mt-15" v-for="item in cardList" :key="item.deliveryId">
@@ -75,50 +50,30 @@
           </card.cardHeader>
         </template>
         <template #main>
-          <card.cardItem
-            class="cardItem"
-            @click="getUserInfo(item)"
-            :userinfo="{
-                        sex: item.userSex,
-                        name: item.userName,
-                        deliveryStatus: item.deliveryStatus,
-                        education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
-                        userLogoUrl: item.userLogoUrl
-                    }"
-          >
+          <card.cardItem class="cardItem" @click="getUserInfo(item)" :userinfo="{
+            sex: item.userSex,
+            name: item.userName,
+            deliveryStatus: item.deliveryStatus,
+            education: `${item.userSchool}-${item.userProfessional}-${item.userEducation}`,
+            userLogoUrl: item.userLogoUrl
+          }">
             <template #btn>
               <el-button @click="inappropriate($event, item)">不合适</el-button>
               <el-button
                 v-show="item.deliveryStatus != '通过初筛' && item.deliveryStatus != '面试' && item.deliveryStatus != '拟录用'"
-                @click="byFilter($event, item)"
-                type="primary"
-              >通过初筛</el-button>
-              <el-button
-                v-show="item.deliveryStatus == '通过初筛' || item.deliveryStatus == '面试'"
-                @click="dialog($event, item)"
-                type="primary"
-                plain
-              >邀约面试</el-button>
-              <el-button
-                v-show="item.deliveryStatus == '面试'"
-                type="primary"
-                @click="employment($event, item)"
-              >拟录用</el-button>
+                @click="byFilter($event, item)" type="primary">通过初筛</el-button>
+              <el-button v-show="item.deliveryStatus == '通过初筛' || item.deliveryStatus == '面试'"
+                @click="dialog($event, item)" type="primary" plain>邀约面试</el-button>
+              <el-button v-show="item.deliveryStatus == '面试'" type="primary"
+                @click="employment($event, item)">拟录用</el-button>
             </template>
           </card.cardItem>
         </template>
       </card.cardWrap>
 
       <div class="pagination">
-        <el-pagination
-          v-show="(cardList.length>5)"
-          :page-size="pageSize"
-          v-model:current-page="currentPage"
-          @current-change="getResume()"
-          :pager-count="11"
-          layout="prev, pager, next"
-          :total="total"
-        />
+        <el-pagination v-show="(cardList.length > 5)" :page-size="pageSize" v-model:current-page="currentPage"
+          @current-change="getResume()" :pager-count="11" layout="prev, pager, next" :total="total" />
       </div>
     </div>
 
@@ -130,24 +85,14 @@
         <div>
           面试职位：
           <el-select v-model="inviteFrom.positionId" class="m-2" placeholder="面试职位">
-            <el-option
-              v-for="item in allPositions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
+            <el-option v-for="item in allPositions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </div>
 
         <div>
           面试时间：
-          <el-date-picker
-            v-model="inviteFrom.interviewTime"
-            type="datetime"
-            placeholder="请选择时间"
-            format="YYYY/MM/DD hh:mm:ss"
-            value-format="YYYY-MM-DD h:m:s a"
-          />
+          <el-date-picker v-model="inviteFrom.interviewTime" type="datetime" placeholder="请选择时间"
+            format="YYYY/MM/DD hh:mm:ss" value-format="YYYY-MM-DD h:m:s a" />
         </div>
 
         <div>
@@ -167,14 +112,8 @@
 
         <div>
           备注信息：
-          <el-input
-            v-model="inviteFrom.interviewNote"
-            class="input-text"
-            axlength="200"
-            placeholder="请填写备注事项"
-            show-word-limit
-            type="textarea"
-          />
+          <el-input v-model="inviteFrom.interviewNote" class="input-text" axlength="200" placeholder="请填写备注事项"
+            show-word-limit type="textarea" />
         </div>
       </div>
 
@@ -306,9 +245,11 @@ let isOnload = () => {
 let resumeUrl = ref();
 let showResumeImage = ref(false);
 let resumeBtn = ref(true);
+let resume = ref();
 let getUserInfo = async (item: any) => {
   itemObj.value = item;
   resumeBtn.value = true;
+  resume.value = item.resumeUrl;
   if (
     item.deliveryStatus == "通过初筛" ||
     item.deliveryStatus == "面试" ||
@@ -587,7 +528,7 @@ let fuzzyQuery = async () => {
       return item.deliveryId;
     });
     console.log(cities);
-    
+
   } else {
     ElMessage.error("this is a error message.");
   }
@@ -601,7 +542,7 @@ async function searchPositionType() {
     positionDropValue.value = Number(positionTypeId);
     await fuzzyQuery();
     sessionStorage.removeItem('positionTypeId');
-  }else{
+  } else {
     return getResume()
   }
 }
