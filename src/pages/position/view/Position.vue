@@ -434,12 +434,12 @@ const deleteClick = function (positionId: any, positionStatus: any) {
           message: "删除成功",
         });
         if (positionStatus == 1) {
+        getPositionList();
           setPageNum();
         } else {
           setPageNum2();
-        }
-        getPositionList();
         getDownList();
+        }
       } else {
         ElMessage({
           type: "warning",
