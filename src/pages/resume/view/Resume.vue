@@ -17,7 +17,6 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useSearchStore } from "@/stores/searchPosition";
 import candidateMain from "@/components/resumeAdmin/candidateMain.vue";
 import interviewMain from "@/components/resumeAdmin/interviewMain.vue";
 import inappropriate from "@/components/resumeAdmin/inappropriate.vue";
