@@ -29,8 +29,8 @@
 
                     <!-- 企业注册地区 -->
                     <el-form-item label="企业注册地区">
-                        <el-cascader placeholder="请输入" class="el-input_240" :options="cityJson"
-                            :props="{ 'label': 'name', 'value': 'code' }" clearable />
+                        <el-cascader placeholder="请输入" class="el-input_240" v-model="form.companyRegisterAddr"
+                            :options="cityJson" :props="{ 'label': 'name', 'value': 'name' }" clearable />
                     </el-form-item>
 
                     <!-- 详细注册地址 -->
@@ -38,18 +38,16 @@
                         <el-input placeholder="详细注册地址" class="el-input_560-40" v-model="form.companyAddr" />
                     </el-form-item>
 
-                    <!-- 禁用状态的选择器 disabled -->
+                    <!-- 选择器 -->
                     <el-form-item label="所属行业">
-                        <el-cascader class="el-input_240" placeholder="请选择" v-model="forbidden" :options="forbiddenData"
-                            @change="handleChange">
+                        <el-cascader class="el-input_240" placeholder="请选择" v-model="forbidden"
+                            :options="forbiddenData">
                             <template #value>
                                 <span>{{ forbiddenData[0] }}</span>
                             </template>
                         </el-cascader>
                     </el-form-item>
 
-
-                    <!-- 正常状态的选择器 -->
                     <el-form-item label="企业性质">
                         <el-select v-model="enterpriseNatureVal" placeholder="请选择" size="large">
                             <el-option v-for="item in enterpriseNature" :key="item.value" :label="item.label"
@@ -145,10 +143,10 @@
 
                         <div class="align-center">
                             <el-form-item label="学校">
-                                <el-select size="large" class="school-input" v-model="schoolListVal" multiple
+                                <el-select size="large" class="school-input" v-model="form.companyWishSchool" multiple
                                     placeholder="请输入">
                                     <el-option v-for="item in schoolList" :key="item.sortId" :label="item.schoolName"
-                                        :value="item.schoolId" />
+                                        :value="item.sortId" />
                                 </el-select>
                             </el-form-item>
                         </div>
@@ -433,31 +431,22 @@
 </template>
 
 <script setup lang="ts">
+// 引入依赖
 import footerBar from '@/components/footer/footerBar.vue';
 import { reactive } from 'vue';
 import { ref } from 'vue';
 import { Plus } from '@element-plus/icons-vue';
 import { useHomeStore } from '@/stores/home';
 import cityJson from "@/assets/json/city.json";
+
+
+
+// 声明类型
 interface Res {
     code: number | string,
     data: any,
     msg: string
-}
-// ajax
-const use = useHomeStore();
-// centerDialogVisible 控制用户协议弹窗打开与否
-const centerDialogVisible = ref(true);
-// centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
-const centerDialogVisible2 = ref(false);
-// 跳转页面的方法
-const nav = (name: string) => {
-    window.location.href = `${name}.html`;
 };
-const navLogin = () => {
-    sessionStorage.setItem('token', '');
-    window.location.href = '/login.html';
-}
 interface Form {
     companyAddr?: string,
     companyContactEmail?: string,
@@ -470,16 +459,43 @@ interface Form {
     companyLicenseUrl?: string,
     companyLogoUrl?: string,
     companyName?: string,
-    companyNature?: number,
+    companyNature?: number | any,
     companyRegisterAddr?: string | any,
-    companySize?: number,
+    companySize?: number | any,
     companySocialCreditCode?: string,
     companyStatus?: number,
-    companyTag?: number,
+    companyTag?: number | any,
     companyWebUrl?: string,
-    companyWishSchool?: string,
-    userId: number
-}
+    companyWishSchool?: any,
+    // userId?: number
+};
+interface EnterpriseScale {
+    createTime: null | Date,
+    label: string,
+    modifyTime: null | Date,
+    value: number,
+};
+interface EnterpriseLabel {
+    createTime: null | Date,
+    label: string,
+    modifyTime: null | Date,
+    value: number,
+};
+interface SchoolList {
+    schoolId: number,
+    schoolName: string,
+    sortId: number,
+};
+
+
+
+// 声明变量
+// ajax
+const use = useHomeStore();
+// centerDialogVisible 控制用户协议弹窗打开与否
+const centerDialogVisible = ref(true);
+// centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
+const centerDialogVisible2 = ref(false);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -502,9 +518,8 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    userId: 10000,
-});
-
+    // userId: 10000,
+} as Form);
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
@@ -514,16 +529,37 @@ const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
 const forbiddenData: any | [] = ref([]);
-const handleChange = () => { };
-// 调用 获取所属行业下拉框接口 
+// 企业性质
+let enterpriseNature: any = ref([]);
+// 企业规模
+let enterpriseScale: any | EnterpriseScale = ref([]);
+// 企业标签
+let enterpriseLabel: any | EnterpriseLabel = ref([]);
+// 学校列表
+const schoolList: any | SchoolList = ref([]);
+
+
+
+
+
+
+
+// 封装方法
+// 跳转页面的方法
+const nav = (name: string) => {
+    window.location.href = `/${name}.html`;
+};
+const navLogin = () => {
+    sessionStorage.setItem('token', '');
+    nav('/');
+}
+// 获取所属行业下拉框接口 
 const getIndustryList = async function () {
     const res: Res | any = await use.getIndustryList();
     if (res.code == 200) {
         Object.assign(forbiddenData.value, res.data);
     }
 };
-getIndustryList();
-
 // 上传logo
 const UploadLOGO = async (file: any) => {
     if (file.size / 1024 / 1024 > 2) {
@@ -542,7 +578,6 @@ const UploadLOGO = async (file: any) => {
         return;
     }
 }
-
 // 上传营业执照
 const UploadCompanyLicense = async (file: any) => {
     if (file.size / 1024 / 1024 > 2) {
@@ -561,79 +596,41 @@ const UploadCompanyLicense = async (file: any) => {
         return;
     }
 }
-
-// 企业性质
-let enterpriseNature: any = ref([]);
-// 调用 获取企业性质下拉框
+// 获取企业性质下拉框
 const getEnterpriseNatureList = async function () {
     const res: Res | any = await use.getEnterpriseNatureList();
     if (res.code == 200) {
         Object.assign(enterpriseNature.value, res.data);
     }
 };
-getEnterpriseNatureList();
-// 企业规模
-interface EnterpriseScale {
-    createTime: null | Date,
-    label: string,
-    modifyTime: null | Date,
-    value: number,
-};
-let enterpriseScale: any | EnterpriseScale = ref([]);
-// 调用 获取企业规模下拉框
+// 获取企业规模下拉框
 const getEnterpriseSizeList = async function () {
     const res: Res | any = await use.getEnterpriseSizeList();
     if (res.code == 200) {
         Object.assign(enterpriseScale.value, res.data);
     }
 };
-getEnterpriseSizeList();
-// 企业标签
-interface EnterpriseLabel {
-    createTime: null | Date,
-    label: string,
-    modifyTime: null | Date,
-    value: number,
-};
-let enterpriseLabel: any | EnterpriseLabel = ref([]);
-// 调用 获取企业标签下拉框
+// 获取企业标签下拉框
 const getEnterpriseTagList = async function () {
     const res: Res | any = await use.getEnterpriseTagList();
     if (res.code == 200) {
         Object.assign(enterpriseLabel.value, res.data);
     }
 };
-getEnterpriseTagList();
-const schoolListVal = ref([]);
-// 学校列表
-interface SchoolList {
-    schoolId: number,
-    schoolName: string,
-    sortId: number,
-};
-const schoolList: any | SchoolList = ref([]);
+// 获取学校下拉列表
 const getSchoolList = async function () {
     const res = await use.getSchoolList();
-    Object.assign(schoolList.value, res.data);
-};
-getSchoolList();
-// 调用 获取企业详细信息接口 
-const getEnterprise = async function () {
-    const res: Res | any = await use.getEnterprise();
-    if (res.code == 200) {
-        console.log('log  res', res.data);
-        form.userId = res.data.userId;
+    if (res.data) {
+        Object.assign(schoolList.value, res.data);
     }
 };
-getEnterprise();
-
 // 注册企业信息接口
 const registerCompany = async (params: any) => {
     const res: any | Res = await use.registerCompanyApi(params);
     if (res.code == 200) {
-        console.log(res.data);
         ElMessage.success('注册成功');
     } else {
+        console.log(res);
         ElMessage.error('注册失败');
     }
 }
@@ -641,14 +638,67 @@ const registerCompany = async (params: any) => {
 const onSubmit = () => {
     form.companyIndustryLeft = forbidden.value[0];
     form.companyIndustryRight = forbidden.value[1];
-    console.log(sessionStorage.getItem('token'));
-    console.log(form);
-    registerCompany({
-        token: sessionStorage.getItem('token'),
+    let companyWishSchoolvalue = [];
+    for (const key in form.companyWishSchool) {
+        companyWishSchoolvalue.push(form.companyWishSchool[key]);
+    }
+    let companyRegisterAddr = `${form.companyRegisterAddr[0]},${form.companyRegisterAddr[1]}`;
+    form.companyRegisterAddr = companyRegisterAddr;
+    form.companyNature = enterpriseNatureVal.value;
+    form.companySize = enterpriseScaleVal.value;
+    form.companyTag = enterpriseLabelVal.value;
+    let params = {
+        token: window.sessionStorage.getItem('token'),
+        companyFullName: form.companyFullName,
+        companyName: form.companyName,
+        companyLogoUrl: form.companyLogoUrl,
+        companyRegisterAddr: form.companyRegisterAddr,
+        companyAddr: form.companyAddr,
+        companyIndustryLeft: form.companyIndustryLeft,
+        companyIndustryRight: form.companyIndustryRight,
+        companyNature: form.companyNature,
+        companySize: form.companySize,
+        companyTag: form.companyTag,
+        companySocialCreditCode: form.companySocialCreditCode,
+        companyLicenseUrl: form.companyLicenseUrl,
+        companyContactName: form.companyContactName,
+        companyContactPhone: form.companyContactPhone,
+        companyContactEmail: form.companyContactEmail,
+        companyIntroducation: form.companyIntroducation,
+        companyWebUrl: form.companyWebUrl,
+        companyWishSchool: companyWishSchoolvalue,
         companyOnlyWishSchool: true,
-        ...form,
-    });
+    }
+    registerCompany(params);
+
 };
+// 判断是否已经注册过企业的方法
+const isRegisteredEnterprise = async function () {
+    const res: Res | any = await use.getEnterprise();
+    if (res.code == 200) {
+        if (res.data) {
+            window.location.href = `/`;
+            return;
+        } else {
+            // 执行默认执行的方法
+            // 获取所属行业下拉框接口 
+            getIndustryList();
+            // 获取企业性质下拉框
+            getEnterpriseNatureList();
+            // 获取学校下拉列表
+            getSchoolList();
+            // 调用 获取企业规模下拉框
+            getEnterpriseSizeList();
+            // 获取企业标签下拉框
+            getEnterpriseTagList();
+        }
+    }
+}
+isRegisteredEnterprise()
+
+
+
+
 </script>
 
 <style lang="scss" scoped>
