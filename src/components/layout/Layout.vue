@@ -6,7 +6,6 @@ import { useHomeStore } from '@/stores/home';
 import { useUserStore } from '@/stores/user';
 import type { FormRules } from 'element-plus/es/tokens/form';
 import type { FormInstance } from 'element-plus/es/components/form';
-import { ElMessage } from 'element-plus';
 
 interface Res {
   code: number,
@@ -149,6 +148,13 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
           ElMessage({
             message: '重置成功，请登录',
             type: 'success',
+          });
+          sessionStorage.removeItem('token')
+          window.location.href = '/login.html'
+        }else{
+          ElMessage({
+            message: '重置失败，请再试一次',
+            type: 'warning',
           });
         }
       }
