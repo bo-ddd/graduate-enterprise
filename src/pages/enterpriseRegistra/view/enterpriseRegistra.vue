@@ -354,7 +354,7 @@ getSchoolList();
 
 // 点击提交按钮走的方法
 const onSubmit = async () => {
-    const res: any | Res = await use.setModifyEnterpriseInfo({
+    let data = {
         companyFullName: form.companyFullName ? form.companyFullName : dataBackup.value.companyFullName,
         companyName: form.companyName ? form.companyName : dataBackup.value.companyName,
         companyStatus: Number(form.companyStatus),
@@ -375,7 +375,11 @@ const onSubmit = async () => {
         companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
         companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
         userId: form.userId ? form.userId : dataBackup.value.userId,
-    } as Form);
+    }
+    console.log('data', data);
+    console.log("dataBackup.value", dataBackup.value);
+    return;
+    const res: any | Res = await use.setModifyEnterpriseInfo(data as Form);
     if (res.code == 200) {
         ElMessage({
             message: '修改成功！',
@@ -385,7 +389,9 @@ const onSubmit = async () => {
         setTimeout(() => {
             window.location.href = '/';
         }, 1000);
-    };
+    } else {
+        ElMessage.error('修改失败！')
+    }
 };
 </script>
 
