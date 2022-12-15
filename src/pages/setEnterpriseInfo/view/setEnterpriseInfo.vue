@@ -1,5 +1,11 @@
 <template>
+
     <div class="enterprise-registra">
+        <div v-if="isok == false">
+            <marquee class="gdt-marquee just-between" scrollamount="20" behavior="scroll">
+                非常抱歉，您已经注册过企业，无法重复注册！
+            </marquee>
+        </div>
         <div class="wrap container">
             <div class="title-wrap">
                 <h2>企业信息填写</h2>
@@ -493,9 +499,11 @@ interface SchoolList {
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否
-const centerDialogVisible = ref(true);
+const centerDialogVisible = ref(false);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
+// 这个是控制顶部跑马灯提示字是否创建的
+const isok = ref(false);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -524,7 +532,7 @@ const form: Form = reactive({
 const enterpriseNatureVal = ref('请选择');
 // 企业规模
 const enterpriseScaleVal = ref('请选择');
-// 企业标签
+// 企业标签w
 const enterpriseLabelVal = ref('请选择');
 // 所属行业
 const forbidden = ref('请选择');
@@ -537,7 +545,8 @@ let enterpriseScale: any | EnterpriseScale = ref([]);
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 学校列表
 const schoolList: any | SchoolList = ref([]);
-
+// 先走校验有没有注册过方法
+isRegisteredEnterprise()
 
 
 
@@ -636,72 +645,94 @@ const registerCompany = async (params: any) => {
 }
 // 点击提交按钮走的方法
 const onSubmit = () => {
-    form.companyIndustryLeft = forbidden.value[0];
-    form.companyIndustryRight = forbidden.value[1];
-    let companyWishSchoolvalue = [];
-    for (const key in form.companyWishSchool) {
-        companyWishSchoolvalue.push(form.companyWishSchool[key]);
+    if (isok.value == false) {
+        ElMessage.error('您已注册过企业，不能重复注册！3秒后将自动跳转到首页。')
+        setTimeout(() => {
+            window.location.href = `/`;
+        }, 3000)
+        return;
+    } else {
+        form.companyIndustryLeft = forbidden.value[0];
+        form.companyIndustryRight = forbidden.value[1];
+        let companyWishSchoolvalue = [];
+        for (const key in form.companyWishSchool) {
+            companyWishSchoolvalue.push(form.companyWishSchool[key]);
+        }
+        let companyRegisterAddr = `${form.companyRegisterAddr[0]},${form.companyRegisterAddr[1]}`;
+        form.companyRegisterAddr = companyRegisterAddr;
+        form.companyNature = enterpriseNatureVal.value;
+        form.companySize = enterpriseScaleVal.value;
+        form.companyTag = enterpriseLabelVal.value;
+        let params = {
+            token: window.sessionStorage.getItem('token'),
+            companyFullName: form.companyFullName,
+            companyName: form.companyName,
+            companyLogoUrl: form.companyLogoUrl,
+            companyRegisterAddr: form.companyRegisterAddr,
+            companyAddr: form.companyAddr,
+            companyIndustryLeft: form.companyIndustryLeft,
+            companyIndustryRight: form.companyIndustryRight,
+            companyNature: form.companyNature,
+            companySize: form.companySize,
+            companyTag: form.companyTag,
+            companySocialCreditCode: form.companySocialCreditCode,
+            companyLicenseUrl: form.companyLicenseUrl,
+            companyContactName: form.companyContactName,
+            companyContactPhone: form.companyContactPhone,
+            companyContactEmail: form.companyContactEmail,
+            companyIntroducation: form.companyIntroducation,
+            companyWebUrl: form.companyWebUrl,
+            companyWishSchool: companyWishSchoolvalue,
+            companyOnlyWishSchool: true,
+        }
+        registerCompany(params);
     }
-    let companyRegisterAddr = `${form.companyRegisterAddr[0]},${form.companyRegisterAddr[1]}`;
-    form.companyRegisterAddr = companyRegisterAddr;
-    form.companyNature = enterpriseNatureVal.value;
-    form.companySize = enterpriseScaleVal.value;
-    form.companyTag = enterpriseLabelVal.value;
-    let params = {
-        token: window.sessionStorage.getItem('token'),
-        companyFullName: form.companyFullName,
-        companyName: form.companyName,
-        companyLogoUrl: form.companyLogoUrl,
-        companyRegisterAddr: form.companyRegisterAddr,
-        companyAddr: form.companyAddr,
-        companyIndustryLeft: form.companyIndustryLeft,
-        companyIndustryRight: form.companyIndustryRight,
-        companyNature: form.companyNature,
-        companySize: form.companySize,
-        companyTag: form.companyTag,
-        companySocialCreditCode: form.companySocialCreditCode,
-        companyLicenseUrl: form.companyLicenseUrl,
-        companyContactName: form.companyContactName,
-        companyContactPhone: form.companyContactPhone,
-        companyContactEmail: form.companyContactEmail,
-        companyIntroducation: form.companyIntroducation,
-        companyWebUrl: form.companyWebUrl,
-        companyWishSchool: companyWishSchoolvalue,
-        companyOnlyWishSchool: true,
-    }
-    registerCompany(params);
 
 };
 // 判断是否已经注册过企业的方法
-const isRegisteredEnterprise = async function () {
+async function isRegisteredEnterprise() {
     const res: Res | any = await use.getEnterprise();
     if (res.code == 200) {
         if (res.data) {
-            window.location.href = `/`;
-            return;
+            ElMessage.error('您已经注册过企业！');
         } else {
-            // 执行默认执行的方法
-            // 获取所属行业下拉框接口 
-            getIndustryList();
-            // 获取企业性质下拉框
-            getEnterpriseNatureList();
-            // 获取学校下拉列表
-            getSchoolList();
-            // 调用 获取企业规模下拉框
-            getEnterpriseSizeList();
-            // 获取企业标签下拉框
-            getEnterpriseTagList();
+            centerDialogVisible.value = true;
         }
+        // 执行默认执行的方法
+        // 获取所属行业下拉框接口 
+        getIndustryList();
+        // 获取企业性质下拉框
+        getEnterpriseNatureList();
+        // 获取学校下拉列表
+        getSchoolList();
+        // 调用 获取企业规模下拉框
+        getEnterpriseSizeList();
+        // 获取企业标签下拉框
+        getEnterpriseTagList();
     }
 }
-isRegisteredEnterprise()
-
-
-
-
 </script>
 
 <style lang="scss" scoped>
+.gdt-marquee {
+    height: 50px;
+    background-image: linear-gradient(to right,
+            orangered,
+            orange,
+            gold,
+            lightgreen,
+            cyan,
+            dodgerblue,
+            mediumpurple,
+            hotpink,
+            orangered);
+    background-size: 110vw;
+
+    font-size: 20px;
+    color: white;
+    font-weight: bold;
+}
+
 :deep(.el-dialog_one) {
     min-width: 800px;
     border-radius: 10px;
@@ -773,10 +804,6 @@ isRegisteredEnterprise()
     }
 }
 
-.mt-23 {
-    margin-top: 23px;
-}
-
 :deep(.el-dialog__footer) {
     padding: 24px 20px 24px 0;
     margin: 0;
@@ -786,24 +813,8 @@ isRegisteredEnterprise()
     margin-left: 20px;
 }
 
-.fs-13 {
-    font-size: 13px;
-}
-
 .business-license_test {
     color: #808695;
-}
-
-.flex-column-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.uplpoad-icon {
-    width: 100%;
-    height: 100%;
 }
 
 .ml-16 {
@@ -837,11 +848,6 @@ isRegisteredEnterprise()
 :deep(textarea) {
     width: 560px !important;
     height: 184px;
-}
-
-:deep(el-select) {
-    max-width: 560px;
-    height: 192px;
 }
 
 :deep(.input_280-40) {
