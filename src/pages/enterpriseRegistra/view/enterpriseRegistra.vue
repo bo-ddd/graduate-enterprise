@@ -9,7 +9,8 @@
                     <h3>基本信息</h3>
                     <!-- 企业全称 -->
                     <el-form-item label="企业全称">
-                        <el-input disabled class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
+                        <el-input disabled class="el-input_560-40" placeholder="需与营业执照一致"
+                            v-model="form.companyFullName" />
                     </el-form-item>
 
                     <!-- 品牌全称 -->
@@ -353,18 +354,18 @@ getSchoolList();
 
 // 点击提交按钮走的方法
 const onSubmit = async () => {
-    const res: any | Res = await use.setModifyEnterpriseInfo({
+    let data: Form = {
         companyFullName: form.companyFullName ? form.companyFullName : dataBackup.value.companyFullName,
         companyName: form.companyName ? form.companyName : dataBackup.value.companyName,
         companyStatus: Number(form.companyStatus),
         companyLogoUrl: form.companyLogoUrl ? form.companyLogoUrl : dataBackup.value.companyLogoUrl,
-        companyRegisterAddr: form.companyRegisterAddr,
+        companyRegisterAddr: `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}`,
         companyAddr: form.companyAddr ? form.companyAddr : dataBackup.value.companyAddr,
         companyIndustryLeft: form.companyIndustryLeft ? form.companyIndustryLeft : dataBackup.value.companyIndustryLeft,
         companyIndustryRight: form.companyIndustryRight ? form.companyIndustryRight : dataBackup.value.companyIndustryRight,
-        companyNature: Number(form.companyNature),
-        companySize: Number(form.companySize),
-        companyTag: Number(form.companyTag),
+        companyNature: form.companyNature,
+        companySize: form.companySize,
+        companyTag: form.companyTag,
         companySocialCreditCode: form.companySocialCreditCode ? form.companySocialCreditCode : dataBackup.value.companySocialCreditCode,
         companyLicenseUrl: form.companyLicenseUrl ? form.companyLicenseUrl : dataBackup.value.companyLicenseUrl,
         companyContactName: form.companyContactName ? form.companyContactName : dataBackup.value.companyContactName,
@@ -374,15 +375,41 @@ const onSubmit = async () => {
         companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
         companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
         userId: form.userId ? form.userId : dataBackup.value.userId,
-    } as Form);
+    };
+    if (typeof (data.companyNature) != 'number') {
+        enterpriseNature.value.forEach((e: any) => {
+            if (data.companyNature == e.label) {
+                data.companyNature = e.value;
+            }
+        });
+    }
+    if (typeof (data.companySize) != 'number') {
+        enterpriseScale.value.forEach((e: any) => {
+            if (data.companySize == e.label) {
+                data.companySize = e.value;
+            }
+        });
+    }
+    if (typeof (data.companyTag) != 'number') {
+        enterpriseLabel.value.forEach((e: any) => {
+            if (data.companyTag == e.label) {
+                data.companyTag = e.value;
+            }
+        });
+    }
+    const res: any | Res = await use.setModifyEnterpriseInfo(data as Form);
     if (res.code == 200) {
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
         getEnterprise();
-        window.location.href = '/';
-    };
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
+    } else {
+        ElMessage.error('修改失败！')
+    }
 };
 </script>
 
