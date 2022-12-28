@@ -544,6 +544,7 @@ let enterpriseScale: any | EnterpriseScale = ref([]);
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 学校列表
 const schoolList: any | SchoolList = ref([]);
+
 // 先走校验有没有注册过方法
 isRegisteredEnterprise()
 
@@ -633,6 +634,7 @@ const registerCompany = async (params: any) => {
     const res: any | Res = await use.registerCompanyApi(params);
     if (res.code == 200) {
         ElMessage.success('注册成功');
+        window.location.href = '/';
     } else {
         console.log(res);
         ElMessage.error('注册失败');
@@ -697,19 +699,20 @@ async function isRegisteredEnterprise() {
             // 没注册过企业   就显示注册企业的协议弹层
             centerDialogVisible.value = true;
         }
-        // 执行默认执行的方法
-        // 获取所属行业下拉框接口 
-        getIndustryList();
-        // 获取企业性质下拉框
-        getEnterpriseNatureList();
-        // 获取学校下拉列表
-        getSchoolList();
-        // 调用 获取企业规模下拉框
-        getEnterpriseSizeList();
-        // 获取企业标签下拉框
-        getEnterpriseTagList();
     }
 }
+// 执行默认执行的方法
+// 获取所属行业下拉框接口 
+getIndustryList();
+// 获取企业性质下拉框
+getEnterpriseNatureList();
+// 获取学校下拉列表
+getSchoolList();
+// 调用 获取企业规模下拉框
+getEnterpriseSizeList();
+// 获取企业标签下拉框
+getEnterpriseTagList();
+
 </script>
 
 <style lang="scss" scoped>
