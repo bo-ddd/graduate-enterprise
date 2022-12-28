@@ -50,7 +50,7 @@
                     </template>
                 </PaymentSwitch.Item>
             </PaymentSwitch.Wrap>
-            <p class="mt-30 fs-12 flex-ja-center c-8d9ea7"> 付费即表示同意《 <span class="agreement cursor-p">毕业申增值服务协议</span>》
+            <p class="mt-30 fs-12 flex-ja-center c-8d9ea7"> 付费即表示同意《 <span class="agreement cursor-p" @click="handlRouter('agreement')">毕业申增值服务协议</span>》
             </p>
         </div>
         <!-- <div class="div" v-html="params"></div> -->
@@ -65,6 +65,11 @@ import FooterBar from '@/components/footer/footerBar.vue'
 import { ref } from '@vue/reactivity';
 import { useRouter, useRoute } from 'vue-router'
 import { usePaymentStore } from '@/stores/payment'
+
+// 跳转页面
+const handlRouter = (name: string) => {
+    window.location.href = `${name}.html`;
+}
 // 支付接口
 let payment = usePaymentStore();
 // 路由
