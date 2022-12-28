@@ -1,5 +1,4 @@
 <template>
-
     <div class="enterprise-registra">
         <div v-if="isok == false">
             <marquee class="gdt-marquee just-between" scrollamount="20" behavior="scroll">
@@ -499,11 +498,11 @@ interface SchoolList {
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否
-const centerDialogVisible = ref(false);
+const centerDialogVisible = ref(true);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 这个是控制顶部跑马灯提示字是否创建的
-const isok = ref(false);
+const isok = ref(true);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -554,13 +553,9 @@ isRegisteredEnterprise()
 
 
 // 封装方法
-// 跳转页面的方法
-const nav = (name: string) => {
-    window.location.href = `/${name}.html`;
-};
 const navLogin = () => {
     sessionStorage.setItem('token', '');
-    nav('/');
+    window.location.href = '/login.html'
 }
 // 获取所属行业下拉框接口 
 const getIndustryList = async function () {
@@ -687,7 +682,6 @@ const onSubmit = () => {
         }
         registerCompany(params);
     }
-
 };
 // 判断是否已经注册过企业的方法
 async function isRegisteredEnterprise() {
@@ -695,7 +689,12 @@ async function isRegisteredEnterprise() {
     if (res.code == 200) {
         if (res.data) {
             ElMessage.error('您已经注册过企业！');
-        } else {
+            isok.value = false;
+            centerDialogVisible.value = false;
+        } else if (res.data == null) {
+            // 如果没有值  就是没有注册过企业
+            isok.value = true;
+            // 没注册过企业   就显示注册企业的协议弹层
             centerDialogVisible.value = true;
         }
         // 执行默认执行的方法
