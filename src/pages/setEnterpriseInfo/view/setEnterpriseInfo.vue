@@ -1,5 +1,4 @@
 <template>
-
     <div class="enterprise-registra">
         <div v-if="isok == false">
             <marquee class="gdt-marquee just-between" scrollamount="20" behavior="scroll">
@@ -503,7 +502,7 @@ const centerDialogVisible = ref(false);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 这个是控制顶部跑马灯提示字是否创建的
-const isok = ref(false);
+const isok = ref(true);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -545,6 +544,7 @@ let enterpriseScale: any | EnterpriseScale = ref([]);
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 学校列表
 const schoolList: any | SchoolList = ref([]);
+
 // 先走校验有没有注册过方法
 isRegisteredEnterprise()
 
@@ -554,13 +554,9 @@ isRegisteredEnterprise()
 
 
 // 封装方法
-// 跳转页面的方法
-const nav = (name: string) => {
-    window.location.href = `/${name}.html`;
-};
 const navLogin = () => {
     sessionStorage.setItem('token', '');
-    nav('/');
+    window.location.href = '/login.html'
 }
 // 获取所属行业下拉框接口 
 const getIndustryList = async function () {
@@ -638,6 +634,7 @@ const registerCompany = async (params: any) => {
     const res: any | Res = await use.registerCompanyApi(params);
     if (res.code == 200) {
         ElMessage.success('注册成功');
+        window.location.href = '/';
     } else {
         console.log(res);
         ElMessage.error('注册失败');
@@ -687,7 +684,6 @@ const onSubmit = () => {
         }
         registerCompany(params);
     }
-
 };
 // 判断是否已经注册过企业的方法
 async function isRegisteredEnterprise() {
@@ -695,22 +691,28 @@ async function isRegisteredEnterprise() {
     if (res.code == 200) {
         if (res.data) {
             ElMessage.error('您已经注册过企业！');
-        } else {
+            isok.value = false;
+            centerDialogVisible.value = false;
+        } else if (res.data == null) {
+            // 如果没有值  就是没有注册过企业
+            isok.value = true;
+            // 没注册过企业   就显示注册企业的协议弹层
             centerDialogVisible.value = true;
         }
-        // 执行默认执行的方法
-        // 获取所属行业下拉框接口 
-        getIndustryList();
-        // 获取企业性质下拉框
-        getEnterpriseNatureList();
-        // 获取学校下拉列表
-        getSchoolList();
-        // 调用 获取企业规模下拉框
-        getEnterpriseSizeList();
-        // 获取企业标签下拉框
-        getEnterpriseTagList();
     }
 }
+// 执行默认执行的方法
+// 获取所属行业下拉框接口 
+getIndustryList();
+// 获取企业性质下拉框
+getEnterpriseNatureList();
+// 获取学校下拉列表
+getSchoolList();
+// 调用 获取企业规模下拉框
+getEnterpriseSizeList();
+// 获取企业标签下拉框
+getEnterpriseTagList();
+
 </script>
 
 <style lang="scss" scoped>
