@@ -498,7 +498,7 @@ interface SchoolList {
 // ajax
 const use = useHomeStore();
 // centerDialogVisible 控制用户协议弹窗打开与否
-const centerDialogVisible = ref(true);
+const centerDialogVisible = ref(false);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 这个是控制顶部跑马灯提示字是否创建的
