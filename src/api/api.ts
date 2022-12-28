@@ -287,6 +287,6 @@ export default {
      * @description 注册企业信息
      */
     registerCompany: (params: any) => {
-        return axios.post('/company/register', params, uploadConfig)
+        return axios.post('/company/register', params, postConfig)
     }
 }

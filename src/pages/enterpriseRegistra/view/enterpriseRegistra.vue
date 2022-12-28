@@ -9,7 +9,8 @@
                     <h3>基本信息</h3>
                     <!-- 企业全称 -->
                     <el-form-item label="企业全称">
-                        <el-input disabled class="el-input_560-40" placeholder="需与营业执照一致" v-model="form.companyFullName" />
+                        <el-input disabled class="el-input_560-40" placeholder="需与营业执照一致"
+                            v-model="form.companyFullName" />
                     </el-form-item>
 
                     <!-- 品牌全称 -->
@@ -210,13 +211,15 @@ let companyIndustry: any = ref([]) as any;
 
 let companyLogo = ref('');
 let companyLicense = ref('');
+// 校验的参数
+const dataBackup: Form | any = ref([]);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
     companyLogoUrl: companyLogo.value || '',// 企业Logo
-    companyRegisterAddr: '',// 企业地址
+    companyRegisterAddr: dataBackup.value.companyRegisterAddr,// 企业地址
     companyAddr: '',// 企业详细地址
     companyIndustryLeft: companyIndustry.value[0] ? companyIndustry.value[0] : '',// 企业所属行业
     companyIndustryRight: companyIndustry.value[1] ? companyIndustry.value[1] : '',// 企业所属行业
@@ -234,8 +237,6 @@ const form: Form = reactive({
     userId: 10000,
 });
 
-// 校验的参数
-const dataBackup: Form | any = ref([]);
 // 上传logo
 const UploadLOGO = async (file: any) => {
     if (file.size / 1024 / 1024 > 2) {
@@ -353,18 +354,18 @@ getSchoolList();
 
 // 点击提交按钮走的方法
 const onSubmit = async () => {
-    const res: any | Res = await use.setModifyEnterpriseInfo({
+    let data: Form = {
         companyFullName: form.companyFullName ? form.companyFullName : dataBackup.value.companyFullName,
         companyName: form.companyName ? form.companyName : dataBackup.value.companyName,
         companyStatus: Number(form.companyStatus),
         companyLogoUrl: form.companyLogoUrl ? form.companyLogoUrl : dataBackup.value.companyLogoUrl,
-        companyRegisterAddr: form.companyRegisterAddr,
+        companyRegisterAddr: `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}` == '' ? `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}` : dataBackup.value.companyRegisterAddr,
         companyAddr: form.companyAddr ? form.companyAddr : dataBackup.value.companyAddr,
         companyIndustryLeft: form.companyIndustryLeft ? form.companyIndustryLeft : dataBackup.value.companyIndustryLeft,
         companyIndustryRight: form.companyIndustryRight ? form.companyIndustryRight : dataBackup.value.companyIndustryRight,
-        companyNature: Number(form.companyNature),
-        companySize: Number(form.companySize),
-        companyTag: Number(form.companyTag),
+        companyNature: form.companyNature,
+        companySize: form.companySize,
+        companyTag: form.companyTag,
         companySocialCreditCode: form.companySocialCreditCode ? form.companySocialCreditCode : dataBackup.value.companySocialCreditCode,
         companyLicenseUrl: form.companyLicenseUrl ? form.companyLicenseUrl : dataBackup.value.companyLicenseUrl,
         companyContactName: form.companyContactName ? form.companyContactName : dataBackup.value.companyContactName,
@@ -374,15 +375,41 @@ const onSubmit = async () => {
         companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
         companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
         userId: form.userId ? form.userId : dataBackup.value.userId,
-    } as Form);
+    };
+    if (typeof (data.companyNature) != 'number') {
+        enterpriseNature.value.forEach((e: any) => {
+            if (data.companyNature == e.label) {
+                data.companyNature = e.value;
+            }
+        });
+    }
+    if (typeof (data.companySize) != 'number') {
+        enterpriseScale.value.forEach((e: any) => {
+            if (data.companySize == e.label) {
+                data.companySize = e.value;
+            }
+        });
+    }
+    if (typeof (data.companyTag) != 'number') {
+        enterpriseLabel.value.forEach((e: any) => {
+            if (data.companyTag == e.label) {
+                data.companyTag = e.value;
+            }
+        });
+    }
+    const res: any | Res = await use.setModifyEnterpriseInfo(data as Form);
     if (res.code == 200) {
         ElMessage({
             message: '修改成功！',
             type: 'success',
         })
         getEnterprise();
-        window.location.href = '/';
-    };
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 1000);
+    } else {
+        ElMessage.error('修改失败！')
+    }
 };
 </script>
 
