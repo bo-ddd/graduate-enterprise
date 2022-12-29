@@ -66,7 +66,7 @@
       </card.cardWrap>
 
       <div class="pagination">
-        <el-pagination v-show="(cardList.length > 5)" :page-size="pageSize" v-model:current-page="currentPage"
+        <el-pagination  :page-size="pageSize" v-model:current-page="currentPage"
           @current-change="getResume()" :pager-count="11" layout="prev, pager, next" :total="total" />
       </div>
     </div>
@@ -249,12 +249,20 @@ let getUserInfo = async (item: any) => {
   ) {
     resumeBtn.value = false;
   }
-  showResumeImage.value = true;
+  
   let res: any = await enterprise.getResumeUrl({
     resumeId: item.resumeId,
   });
   if (res.code == 200) {
     resumeUrl.value = res.data;
+  }
+  if(resumeUrl.value){
+    showResumeImage.value = true;
+  }else{
+    ElMessage({
+          message: "该用户没有简历信息",
+          type: "warning",
+        });
   }
 };
 

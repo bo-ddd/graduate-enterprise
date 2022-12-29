@@ -7,7 +7,7 @@
                 <br><span class="c-5151">{{ userinfo.sex }}</span>
             </div>
         </div>
-        <div class="fs-14 c-5151">
+        <div class="fs-14 c-5151 education">
             <span>教育经历</span>
             <br><span>{{ userinfo.education }}</span>
         </div>
@@ -75,6 +75,11 @@ function imageUrl(url: string): string {
         align-items: center;
         gap: 0 15px;
         padding: 10px 0;
+        min-width:20vh;
+    }
+
+    .education{
+        width: 30%;
     }
 
     .candidate-item_icon {
