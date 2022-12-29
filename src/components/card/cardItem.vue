@@ -79,7 +79,7 @@ function imageUrl(url: string): string {
     }
 
     .education{
-        width: 30%;
+        width: 20%;
     }
 
     .candidate-item_icon {
