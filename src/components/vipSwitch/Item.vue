@@ -11,25 +11,25 @@
             <li class="just-between">
                 <p class="fs-16 c-515a6e"> <span class="yuan"></span>职位刷新点数</p>
                 <span class="count mr-15"> <span class="fs-18">{{ list.refreshPositionCount }}</span> <span
-                        class="fs-14 c-515a6e">/日</span> </span>
+                        class="fs-14 c-515a6e">/{{ list.refreshPositionCountType  }}</span> </span>
             </li>
             <li class="just-between">
                 <p class="fs-16 c-515a6e"> <span class="yuan"></span>邀请学生点数</p>
                 <span class="count mr-15"> <span class="fs-18">{{ list.invitationTalentCount }}</span> <span
-                        class="fs-14 c-515a6e">/日</span> </span>
+                        class="fs-14 c-515a6e">/{{list.invitationTalentCountType }}</span> </span>
             </li>
             <li class="just-between">
                 <p class="fs-16 c-515a6e"> <span class="yuan"></span>职位自动刷新卡 <span class="fs-12 ml-20 c-8d9ea7">有效期{{
                         count
-                }}个月</span></p>
+                }}个{{list.refreshPositionCardCountType }}</span></p>
 
                 <span class="count mr-15 fs-18"> {{ list.refreshPositionCardCount * count }}</span>
             </li>
         </ul>
         <div class="buy align-center c-ff4400 fs-14">
-            <span class=" fs-28 fw-700"> {{ Number(list.vipPrice) * count }}</span>
+            <span class=" fs-28 fw-700"> {{ Math.ceil(Number(list.vipPrice) * count * list.vipDiscountPrice)}}</span>
             元
-            <p v-if="list.vipDiscountPrice != null" class="fs-12 c-8d9ea7 buy-discount">{{list.vipDiscountPrice }}折</p>
+            <p v-if="list.vipDiscountPrice != 'null'" class="fs-12 c-8d9ea7 buy-discount just-center ">{{(list.vipDiscountPrice*100).toString().replace(/0$/,'') }}折</p>
         </div>
     </div>
 </template>
@@ -44,13 +44,12 @@ const props = defineProps<{
     name: number
 }>()
 const { list, count, name } = toRefs(props);
-
+console.log('list',list.value)
 let selected = inject('selected') as Ref<number>;
 let handleTabClick = inject('handleTabClick') as (name: number) => void;
 
 let handleTabItemClick = function () {
     handleTabClick(name.value);
-    // console.log(name.value)
 }
 </script>
 
