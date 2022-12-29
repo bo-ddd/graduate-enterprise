@@ -1,11 +1,21 @@
 <template>
     <div class="enterprise-registra">
-        <div v-if="isok == false">
-            <marquee class="gdt-marquee just-between" scrollamount="20" behavior="scroll">
-                非常抱歉，您已经注册过企业，无法重复注册！
-            </marquee>
+        <div v-if="isShow">
+            <el-dialog class="warning" v-model="isShow" :show-close="false" align-center>
+                <template #title>
+                    提示
+                </template>
+                <div class="">
+                    <div>您已经注册过企业，不能重复注册！如需修改，请于首页点击 “编辑企业信息”。</div>
+                </div>
+                <template #footer>
+                    <div style="width=100%">
+                        <el-button type="primary" class="" @click="navHome">退出</el-button>
+                    </div>
+                </template>
+            </el-dialog>
         </div>
-        <div class="wrap container">
+        <div class="wrap container" v-if="isDomShow">
             <div class="title-wrap">
                 <h2>企业信息填写</h2>
             </div>
@@ -166,12 +176,11 @@
                     </el-form-item>
                 </div>
             </el-form>
-
         </div>
-        <footer-bar></footer-bar>
+        <footer-bar v-if="isDomShow"></footer-bar>
     </div>
     <!-- 用户协议 弹窗 -->
-    <div class="dialogs">
+    <div class="dialogs" v-if="isDomShow">
         <el-dialog class="el-dialog_one" v-model="centerDialogVisible" :align-center="true" :show-close="false"
             width="30%">
             <template #header class="title-center">
@@ -503,6 +512,8 @@ const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
 // 这个是控制顶部跑马灯提示字是否创建的
 const isok = ref(true);
+const isShow = ref(false);
+const isDomShow = ref(false);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -692,14 +703,21 @@ async function isRegisteredEnterprise() {
         if (res.data) {
             ElMessage.error('您已经注册过企业！');
             isok.value = false;
+            isDomShow.value = false;
+            isShow.value = true;
             centerDialogVisible.value = false;
         } else if (res.data == null) {
+            isDomShow.value = true;
+            isShow.value = false;
             // 如果没有值  就是没有注册过企业
             isok.value = true;
             // 没注册过企业   就显示注册企业的协议弹层
             centerDialogVisible.value = true;
         }
     }
+}
+function navHome() {
+    window.location.href = '/';
 }
 // 执行默认执行的方法
 // 获取所属行业下拉框接口 
@@ -804,6 +822,29 @@ getEnterpriseTagList();
             color: #000;
         }
     }
+}
+
+:deep(.warning) {
+    width: 360px;
+    border-radius: 10px;
+}
+
+:deep(.warning .el-dialog__header) {
+    padding: 20px 0;
+    color: #d33c3c;
+    height: auto;
+}
+
+:deep(.warning .el-dialog__body) {
+    height: auto;
+    border: 0;
+    text-indent: 2em;
+}
+
+:deep(.warning .el-dialog__footer) {
+    height: auto;
+    padding: 20px 0;
+    text-align: center;
 }
 
 :deep(.el-dialog__footer) {
