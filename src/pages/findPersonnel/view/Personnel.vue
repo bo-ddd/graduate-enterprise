@@ -203,7 +203,6 @@ const getTalentList = async () => {
     if (res.code != 200) return;
     talentList.length = 0;
     talentList.push(...(res.data).data);
-    console.log(talentList);
     paging.total = res.data.maxCount;
 }
 getTalentList();
@@ -234,10 +233,7 @@ const inviteTalentList = async () => {
     const res: Res | any = await PersonStore.getInviteList(obj);
     if (res.code !== 200) return;
     invitationList.length = 0;
-    console.log('-------------------邀请人才列表----------------');
-    console.log(res);
     invitationList.push(...(res.data.talentList));
-    console.log(invitationList);
     pagingInvite.total = res.data.totalCount;
 }
 inviteTalentList();
