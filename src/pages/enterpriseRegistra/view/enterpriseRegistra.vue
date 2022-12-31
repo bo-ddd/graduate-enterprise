@@ -204,7 +204,6 @@ interface Form {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
-    userId: number
 }
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
@@ -234,7 +233,6 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    userId: 10000,
 });
 
 // 上传logo
@@ -374,7 +372,6 @@ const onSubmit = async () => {
         companyIntroducation: form.companyIntroducation ? form.companyIntroducation : dataBackup.value.companyIntroducation,
         companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
         companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
-        userId: form.userId ? form.userId : dataBackup.value.userId,
     };
     if (typeof (data.companyNature) != 'number') {
         enterpriseNature.value.forEach((e: any) => {
