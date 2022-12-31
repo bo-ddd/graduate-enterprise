@@ -143,7 +143,6 @@ const submitFormResetPw = async (formEl: FormInstance | undefined) => {
       //重置密码
       let register = async (options: any) => {
         const res: any | Res = await user.login(options);
-        console.log(res)
         if (res.code == 200) {
           ElMessage({
             message: '重置成功，请登录',
