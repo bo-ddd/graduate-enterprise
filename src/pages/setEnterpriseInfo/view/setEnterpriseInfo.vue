@@ -500,7 +500,6 @@ interface Form {
     companyTag?: number | any,
     companyWebUrl?: string,
     companyWishSchool?: any,
-    // userId?: number
 };
 interface EnterpriseScale {
     createTime: null | Date,
@@ -561,7 +560,6 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    // userId: 10000,
 } as Form);
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
