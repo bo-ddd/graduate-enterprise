@@ -36,7 +36,7 @@ interface Form {
     sex?: any,
     education?: any,
     professional?: any,
-    city?: Array<string> | null,
+    city?: string,
     wishMoneyLeft?: any,
     wishMoneyRight?: any,
 }
@@ -48,7 +48,7 @@ let form: Form = reactive({
     sex: null,//性别
     education: null,//学历
     professional: null,//专业
-    city: null,//城市
+    city: '',//城市
     wishMoneyLeft: null,//最低薪资
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
