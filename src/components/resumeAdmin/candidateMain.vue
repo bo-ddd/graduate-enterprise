@@ -30,12 +30,6 @@
       <el-dialog v-model="showResumeImage" :close-on-click-modal="false"  width="55%" :lock-scroll="false" :align-center="true" class="resume-image">
         <div class="resume-box">
           <div v-show="resumeBtn" @click="byFilter($event, itemObj)" class="resume-btn">通过初筛</div>
-          <div class="resume-btn" @mousemove="isOnload()" @mouseleave="btnImg = true, btnSpan = false">
-            <a :href="resume">
-              <img v-show="btnImg" src="@/assets/images/onload.png" />
-            </a>
-            <span v-show="btnSpan">通过初筛后才能下载简历</span>
-          </div>
           <div class="resume-btn" @click="inappropriate($event, itemObj)">不合适</div>
         </div>
         <img :src="resumeUrl" />
@@ -72,7 +66,7 @@
       </card.cardWrap>
 
       <div class="pagination">
-        <el-pagination v-show="(cardList.length > 5)" :page-size="pageSize" v-model:current-page="currentPage"
+        <el-pagination  :page-size="pageSize" v-model:current-page="currentPage"
           @current-change="getResume()" :pager-count="11" layout="prev, pager, next" :total="total" />
       </div>
     </div>
@@ -245,11 +239,9 @@ let isOnload = () => {
 let resumeUrl = ref();
 let showResumeImage = ref(false);
 let resumeBtn = ref(true);
-let resume = ref();
 let getUserInfo = async (item: any) => {
   itemObj.value = item;
   resumeBtn.value = true;
-  resume.value = item.resumeUrl;
   if (
     item.deliveryStatus == "通过初筛" ||
     item.deliveryStatus == "面试" ||
@@ -257,12 +249,20 @@ let getUserInfo = async (item: any) => {
   ) {
     resumeBtn.value = false;
   }
-  showResumeImage.value = true;
+  
   let res: any = await enterprise.getResumeUrl({
     resumeId: item.resumeId,
   });
   if (res.code == 200) {
     resumeUrl.value = res.data;
+  }
+  if(resumeUrl.value){
+    showResumeImage.value = true;
+  }else{
+    ElMessage({
+          message: "该用户没有简历信息",
+          type: "warning",
+        });
   }
 };
 

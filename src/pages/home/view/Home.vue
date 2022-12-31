@@ -221,7 +221,6 @@ const use = useHomeStore();
 const nav = (name: string) => {
     window.location.href = `${name}.html`
 }
-const token: string | any = window.sessionStorage.getItem('token');
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
 // 意向学校 多选框选择的值
