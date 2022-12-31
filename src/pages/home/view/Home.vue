@@ -250,13 +250,11 @@ const confirm = () => {
     setEnterpriseSchoolOfIntention({
         companyOnlyWishSchool: radioValue.value,
         companyWishSchool,
-        userId: 10000,
     })
 }
 interface setEnterpriseSchoolOfIntentionType {
     companyOnlyWishSchool: boolean,// 企业仅向意向学校展示职位 
     companyWishSchool: [Number] | any,// 企业意向学校 多选格式1,2,3 ,
-    userId: Number,// 用户id
 }
 interface Res {
     code: number,
@@ -305,7 +303,6 @@ interface EnterpriseInfoType {
     resumeCount: Number,// 未查看简历数量
     sevenRefreshPositionCount: Number,// 7日内刷新职位数量
     smsInvitationCount: Number,// 短信邀请人才点数
-    userId: Number,// 用户ID
 }
 const EnterpriseInfo: EnterpriseInfoType = reactive({
     companyWishSchool: []
