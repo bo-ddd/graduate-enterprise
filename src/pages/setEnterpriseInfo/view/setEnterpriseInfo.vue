@@ -670,7 +670,6 @@ const registerCompany = async (params: any) => {
         ElMessage.success('注册成功');
         window.location.href = '/';
     } else {
-        console.log(res);
         ElMessage.error('注册失败');
     }
 }

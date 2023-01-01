@@ -163,7 +163,6 @@ let vipList: Array<MemberTypeInfo> = reactive([]);
 let useVip = useVipStore();
 let getVip = async () => {
     const res: any = await useVip.getVip({});
-    console.log(res);
     vipList.push(...res.data);
 }
 (async function () {
