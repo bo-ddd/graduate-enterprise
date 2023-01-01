@@ -16,6 +16,10 @@ axios.interceptors.response.use(function (response) {
     if (response.data.code == 401) {
         window.location.href = '/login.html';
         sessionStorage.removeItem('token');
+        ElMessage({
+            showClose: true,
+            message: '登录失效,请重新登录',
+        })
     }
     return response.data;
 }, function (error) {
