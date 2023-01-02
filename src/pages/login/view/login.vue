@@ -444,13 +444,13 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
             let register = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    // ElMessage({
-                    //     message: '注册成功，请登录',
-                    //     type: 'success',
-                    // });
-                    // isOpen.value = 1;
+                    ElMessage({
+                        message: '注册成功，请登录',
+                        type: 'success',
+                    });
+                    isOpen.value = 1;
                     sessionStorage.setItem('token', res.data);
-                    window.location.href = '/setEnterpriseInfo.html'
+                    // window.location.href = '/setEnterpriseInfo.html'
                 } else if (res.code == 500) {
                     ElMessage({
                         message: '账号已存在，请登录',
