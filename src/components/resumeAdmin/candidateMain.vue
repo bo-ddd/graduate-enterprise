@@ -490,6 +490,12 @@ let getResume = async () => {
     pageIndex: currentPage.value,
     pageSize: pageSize.value,
     companyId: companyId.value,
+    
+    deliveryStatus: stageValue.value,
+    educationId: educationValue.value,
+    positionId: positionDropValue.value,
+    userName: userName.value,
+    invitationStatus: invitationStatus.value,
   });
   if (res.code == 200) {
     total.value = res.data.maxCount;
