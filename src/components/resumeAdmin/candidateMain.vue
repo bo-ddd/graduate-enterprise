@@ -529,7 +529,6 @@ let fuzzyQuery = async () => {
     cities.value = cardList.value.map((item: any) => {
       return item.deliveryId;
     });
-    console.log(cities);
 
   } else {
     ElMessage.error("this is a error message.");

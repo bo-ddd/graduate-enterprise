@@ -44,7 +44,6 @@ const props = defineProps<{
     name: number
 }>()
 const { list, count, name } = toRefs(props);
-console.log('list',list.value)
 let selected = inject('selected') as Ref<number>;
 let handleTabClick = inject('handleTabClick') as (name: number) => void;
 
