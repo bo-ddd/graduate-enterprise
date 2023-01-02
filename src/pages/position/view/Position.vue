@@ -43,7 +43,16 @@
               </div>
             </div>
           </div>
-          <div class="job-box mb-15" v-for="item in positionList" :key="item.userId">
+            
+        <div class="void-box void-title flex-ja-center" v-show="recruitNum==0">
+          <div class>
+            <img src="@/assets/images/img-no_position.png" />
+            <div class="mt-15">暂无在招中职位</div>
+          </div>
+        </div>
+          <div v-show="recruitNum!=0">
+            
+          <div class="job-box mb-15" v-for="item in positionList" :key="item.positionId">
             <div class="info-job just-between">
               <div class="job-title fs-18">
                 <div class="mb-15 align-center">
@@ -52,13 +61,14 @@
                   <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
                 </div>
                 <div class="info-list align-center">
-                  <div class="money-num mr-15">10-15k</div>
+                  <div v-if="item.positionNature==0" class="money-num mr-15">{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
+                  <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
                   <div class="align-center fs-14">
                     <div>{{item.positionNature==0?'全职':'实习'}}</div>
                     <div class="bor"></div>
-                    <div>大专</div>
+                    <div>{{item.positionEducationName}}</div>
                     <div class="bor"></div>
-                    <div>北京</div>
+                    <div>{{item.positionAddr.split(',')[0]}}</div>
                     <div class="bor"></div>
                     <div>{{item.positionType}}</div>
                   </div>
@@ -112,6 +122,8 @@
               @current-change="handleCurrentChange"
             />
           </div>
+          
+          </div>
         </div>
       </div>
       <div class="tab2" v-show="currentIndex==1">
@@ -132,7 +144,7 @@
                 </div>
               </div>
             </div>
-            <div class="job-box" v-for="item in downPositionList" :key="item.userId">
+            <div class="job-box" v-for="item in downPositionList" :key="item.positionId">
               <div class="info-job just-between">
                 <div class="job-title fs-18">
                   <div class="mb-15 align-center">
@@ -141,13 +153,14 @@
                     <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
                   </div>
                   <div class="info-list align-center">
-                    <div class="money-num mr-15">10-15k</div>
+                    <div v-if="item.positionNature==0" class="money-num mr-15">{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
+                    <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
                     <div class="align-center fs-14">
                       <div>{{item.positionNature==0?'全职':'实习'}}</div>
                       <div class="bor"></div>
-                      <div>大专</div>
+                      <div>{{item.positionEducationName}}</div>
                       <div class="bor"></div>
-                      <div>北京</div>
+                      <div>{{item.positionAddr.split(',')[0]}}</div>
                       <div class="bor"></div>
                       <div>{{item.positionType}}</div>
                     </div>
@@ -613,10 +626,7 @@ const setPosition = function (id: any) {
   overflow: hidden;
   width: 100%;
   background-color: #f6f7f9;
-  .tab2 {
-    background-color: white;
-    overflow: hidden;
-    color: black;
+  
     .void-box {
       min-height: calc(100vh - 55px);
 
@@ -629,6 +639,10 @@ const setPosition = function (id: any) {
     .void-title {
       color: #515a6e;
     }
+  .tab2 {
+    background-color: white;
+    overflow: hidden;
+    color: black;
     .job-head2 {
       margin: 35px 0;
       .release-btn {
