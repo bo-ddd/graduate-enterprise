@@ -296,5 +296,9 @@ export default {
     // 验证码
     testsms: () => {
         return axios.get('/testsms', getConfig)
+    },
+    // 自动刷新
+    autoRefreshPosition: () => {
+        return axios.get('/company/autoRefreshPosition', getConfig)
     }
 }
