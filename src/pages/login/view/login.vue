@@ -731,8 +731,9 @@ $width100: 100%;
 
         // logo
         .logo {
-            width: 142px;
-            height: 40px;
+            width: 140px;
+            height: 50px;
+            object-fit: cover;
         }
     }
 
