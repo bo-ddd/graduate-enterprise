@@ -36,7 +36,7 @@ interface Form {
     sex?: any,
     education?: any,
     professional?: any,
-    city?: any,
+    city?: string,
     wishMoneyLeft?: any,
     wishMoneyRight?: any,
 }
@@ -48,7 +48,7 @@ let form: Form = reactive({
     sex: null,//性别
     education: null,//学历
     professional: null,//专业
-    city: null,//城市
+    city: '',//城市
     wishMoneyLeft: null,//最低薪资
     wishMoneyRight: null,//最高薪资
 });//这个是人才列表模糊查询
@@ -194,14 +194,16 @@ const getTalentList = async () => {
         obj['industryLeft'] = industry.value[0];
         obj['industryRight'] = industry.value[1];
     }
+    if(obj['city']){
+        obj['city'] = obj['city'][1];
+    }
     obj['pageIndex'] = paging.pageIndex;
     obj['pageSize'] = paging.pageSize;
     const res: Res | any = await PersonStore.getTalentList(obj);
     if (res.code != 200) return;
     talentList.length = 0;
-    talentList.push(...(res.data).talentList);
-    console.log(talentList);
-    paging.total = res.data.totalCount;
+    talentList.push(...(res.data).data);
+    paging.total = res.data.maxCount;
 }
 getTalentList();
 
@@ -231,10 +233,7 @@ const inviteTalentList = async () => {
     const res: Res | any = await PersonStore.getInviteList(obj);
     if (res.code !== 200) return;
     invitationList.length = 0;
-    console.log('-------------------邀请人才列表----------------');
-    console.log(res);
     invitationList.push(...(res.data.talentList));
-    console.log(invitationList);
     pagingInvite.total = res.data.totalCount;
 }
 inviteTalentList();
@@ -273,7 +272,7 @@ getPositionCategory();
 const getMoney: (data: string) => string = (data: string) => {
     if (!data) return '';
     const res = data.split(",").sort((a: any, b: any) => { return a - b });
-    return `${res[0]}-${res[1]}k`
+    return `${res[0].substring(0,res[0].length-3)}-${res[1].substring(0,res[1].length-3)}k`
 }
 //邀请人才下拉框
 const getInviteDrop = async () => {
@@ -336,7 +335,7 @@ const getInvitaion = ()=>{
                 <div class="filter-wrap-btm">
                     <div class="check">
                         <el-cascader v-model="form.city" class="mr-30 check-education m-2" placeholder="意向城市选择"
-                            :options="cityJson" :props="{ 'label': 'name', 'value': 'code' }" clearable />
+                            :options="cityJson" :props="{ 'label': 'name', 'value': 'name' }" clearable />
                         <el-select v-model="form.wishMoneyLeft" class="m-2 check-salary mr-15" placeholder="期望薪资选择"
                             size="large">
                             <el-option v-for="item in wishMoneyLeftList" :key="item.value" :label="item.label"

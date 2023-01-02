@@ -16,6 +16,10 @@ axios.interceptors.response.use(function (response) {
     if (response.data.code == 401) {
         window.location.href = '/login.html';
         sessionStorage.removeItem('token');
+        ElMessage({
+            showClose: true,
+            message: '登录失效,请重新登录',
+        })
     }
     return response.data;
 }, function (error) {
@@ -288,5 +292,9 @@ export default {
      */
     registerCompany: (params: any) => {
         return axios.post('/company/register', params, postConfig)
+    },
+    // 验证码
+    testsms: () => {
+        return axios.get('/testsms', getConfig)
     }
 }

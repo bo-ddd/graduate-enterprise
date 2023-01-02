@@ -204,20 +204,21 @@ interface Form {
     companyTag?: number,
     companyWebUrl?: string,
     companyWishSchool?: string,
-    userId: number
 }
 // 所属行业 绑定的数据
 let companyIndustry: any = ref([]) as any;
 
 let companyLogo = ref('');
 let companyLicense = ref('');
+// 校验的参数
+const dataBackup: Form | any = ref([]);
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
     companyName: '',// 企业简称 (品牌名称)
     companyStatus: 0,// 企业状态 integer 整数类型
     companyLogoUrl: companyLogo.value || '',// 企业Logo
-    companyRegisterAddr: '',// 企业地址
+    companyRegisterAddr: dataBackup.value.companyRegisterAddr,// 企业地址
     companyAddr: '',// 企业详细地址
     companyIndustryLeft: companyIndustry.value[0] ? companyIndustry.value[0] : '',// 企业所属行业
     companyIndustryRight: companyIndustry.value[1] ? companyIndustry.value[1] : '',// 企业所属行业
@@ -232,11 +233,8 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    userId: 10000,
 });
 
-// 校验的参数
-const dataBackup: Form | any = ref([]);
 // 上传logo
 const UploadLOGO = async (file: any) => {
     if (file.size / 1024 / 1024 > 2) {
@@ -359,7 +357,7 @@ const onSubmit = async () => {
         companyName: form.companyName ? form.companyName : dataBackup.value.companyName,
         companyStatus: Number(form.companyStatus),
         companyLogoUrl: form.companyLogoUrl ? form.companyLogoUrl : dataBackup.value.companyLogoUrl,
-        companyRegisterAddr: `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}`,
+        companyRegisterAddr: `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}` == '' ? `${form.companyRegisterAddr[0]}-${form.companyRegisterAddr[1]}` : dataBackup.value.companyRegisterAddr,
         companyAddr: form.companyAddr ? form.companyAddr : dataBackup.value.companyAddr,
         companyIndustryLeft: form.companyIndustryLeft ? form.companyIndustryLeft : dataBackup.value.companyIndustryLeft,
         companyIndustryRight: form.companyIndustryRight ? form.companyIndustryRight : dataBackup.value.companyIndustryRight,
@@ -374,7 +372,6 @@ const onSubmit = async () => {
         companyIntroducation: form.companyIntroducation ? form.companyIntroducation : dataBackup.value.companyIntroducation,
         companyWebUrl: form.companyWebUrl ? form.companyWebUrl : dataBackup.value.companyWebUrl,
         companyWishSchool: form.companyWishSchool ? form.companyWishSchool : dataBackup.value.companyWishSchool,
-        userId: form.userId ? form.userId : dataBackup.value.userId,
     };
     if (typeof (data.companyNature) != 'number') {
         enterpriseNature.value.forEach((e: any) => {

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <Layout></Layout>
         <div class="wrap">
             <header class="mt-35 flex-ja-center">
                 <img class="icon" src="@/assets/images/icon_silver.png" alt="">
@@ -16,7 +17,8 @@
         </div>
         <div class="flex-ja-center mt-45 ">
             <p class="fs-16">应付金额</p>
-            <p class="c-ff4400 "><span class="mlr-10 fs-24 fw-700">{{ selectVip * data.vipPrice }}</span>元</p>
+            <p class="c-ff4400 "><span class="mlr-10 fs-24 fw-700">{{ Math.ceil(selectVip * data.vipPrice *data.vipDiscountPrice) }}</span>元</p>
+            <p v-if="data.vipDiscountPrice != 'null'" class="ml-5 fs-12 c-8d9ea7 buy-discount just-center ">已省 <span class="fw-600 fs-16 ">{{(selectVip * data.vipPrice) -  Math.ceil(selectVip * data.vipPrice *data.vipDiscountPrice) }}</span> 元</p>
         </div>
         <div class="mt-20">
             <PaymentSwitch.Wrap v-model="selectPayment" @handPaymentClick="isPaymentActive">
@@ -50,21 +52,26 @@
                     </template>
                 </PaymentSwitch.Item>
             </PaymentSwitch.Wrap>
-            <p class="mt-30 fs-12 flex-ja-center c-8d9ea7"> 付费即表示同意《 <span class="agreement cursor-p">毕业申增值服务协议</span>》
+            <p class="mt-30 fs-12 flex-ja-center c-8d9ea7"> 付费即表示同意《 <span class="agreement cursor-p" @click="handlRouter('agreement')">毕业申增值服务协议</span>》
             </p>
         </div>
-        <!-- <div class="div" v-html="params"></div> -->
         <FooterBar class="mt-60"></FooterBar>
     </div>
 </template>
 
 <script setup lang="ts" >
+import Layout from "@/components/layout/Layout.vue"
 import VipSwitch from '@/components/vipSwitch'
 import PaymentSwitch from '@/components/paymentSwitch'
 import FooterBar from '@/components/footer/footerBar.vue'
 import { ref } from '@vue/reactivity';
 import { useRouter, useRoute } from 'vue-router'
 import { usePaymentStore } from '@/stores/payment'
+
+// 跳转页面
+const handlRouter = (name: string) => {
+    window.location.href = `${name}.html`;
+}
 // 支付接口
 let payment = usePaymentStore();
 // 路由
@@ -80,7 +87,6 @@ let isVipActive = function (name: number): void {
 let selectPayment = ref(1);
 
 let isPaymentActive = function (name: number): void {
-    console.log(name,'name')
     selectPayment.value = name
 }
 let data = route.query as any;
@@ -95,14 +101,11 @@ function toPay(params:any) {
 let toPayment = function () {
     let usePayment = async(options:any)=>{
         const res:any = await payment.payment(options);
-        console.log(selectVip.value);
         if (res.code == 200) {
             toPay(res.data);
         }
     }
     usePayment({
-        userId: 10000,
-        companyId: 10000,
         month: selectVip.value,
         vipId: Number(data.vipLevel)
     })
@@ -144,4 +147,9 @@ header {
 .public-details {
     width: 120px;
 }
+.buy-discount{
+            // width: 80px;
+            padding: 2px 10px ;
+            border: 1px solid #8d9ea7;
+        }
 </style>

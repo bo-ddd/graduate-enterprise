@@ -1,14 +1,26 @@
 <template>
-
     <div class="enterprise-registra">
-        <div v-if="isok == false">
-            <marquee class="gdt-marquee just-between" scrollamount="20" behavior="scroll">
-                非常抱歉，您已经注册过企业，无法重复注册！
-            </marquee>
+        <div v-if="isShow">
+            <el-dialog class="warning" v-model="isShow" :show-close="false" align-center>
+                <template #title>
+                    提示
+                </template>
+                <div>
+                    <div>您已经注册过企业，不能重复注册！如需修改，请于首页点击 “编辑企业信息”。</div>
+                </div>
+                <template #footer>
+                    <div style="width=100%">
+                        <el-button type="primary" @click="navHome">退出</el-button>
+                    </div>
+                </template>
+            </el-dialog>
         </div>
-        <div class="wrap container">
+        <div class="wrap container" v-if="isok">
             <div class="title-wrap">
                 <h2>企业信息填写</h2>
+                <div>
+                    <el-button @click="removeToken">退出登录</el-button>
+                </div>
             </div>
             <el-form :model="form" label-width="120px">
                 <div class="form">
@@ -167,12 +179,11 @@
                     </el-form-item>
                 </div>
             </el-form>
-
         </div>
-        <footer-bar></footer-bar>
+        <footer-bar v-if="centerDialogVisible"></footer-bar>
     </div>
     <!-- 用户协议 弹窗 -->
-    <div class="dialogs">
+    <div class="dialogs" v-if="centerDialogVisible">
         <el-dialog class="el-dialog_one" v-model="centerDialogVisible" :align-center="true" :show-close="false"
             width="30%">
             <template #header class="title-center">
@@ -422,6 +433,7 @@
                 <el-button type="primary" @click="centerDialogVisible = false">同意</el-button>
             </template>
         </el-dialog>
+
         <!-- 点击不同意的时候展示的弹层 -->
         <el-dialog class="el-dialog_two" v-model="centerDialogVisible2" :show-close="false" align-center>
             <div class="dialog__body-two">
@@ -433,6 +445,21 @@
                 <el-button type="primary" @click="navLogin">确定并退出登录</el-button>
             </template>
         </el-dialog>
+    </div>
+
+    <div class="container" v-if="isok">
+        <div :class="['consulting-service', 'absolute-wrap', showGuid ? 'close-animate' : 'show-animate']">
+            <div class="top">
+                <img src="@/assets/images/company_fanjia_3.png" class="or-code">
+                <p class="tip fs-12">如有任何疑问请咨询</p>
+            </div>
+            <img src="@/assets/images/icon-close.png" @click="handleGuideChange(true)">
+        </div>
+
+        <!-- 这个是点击弹出咨询的容器 -->
+        <div class="seek-advice absolute-wrap box-shadow" v-show="showGuid" @click="handleGuideChange(false)">
+            <img src="@/assets/images/icon-kefu.png">
+        </div>
     </div>
 </template>
 
@@ -473,7 +500,6 @@ interface Form {
     companyTag?: number | any,
     companyWebUrl?: string,
     companyWishSchool?: any,
-    // userId?: number
 };
 interface EnterpriseScale {
     createTime: null | Date,
@@ -498,12 +524,20 @@ interface SchoolList {
 // 声明变量
 // ajax
 const use = useHomeStore();
+isRegisteredEnterprise()
 // centerDialogVisible 控制用户协议弹窗打开与否
 const centerDialogVisible = ref(false);
 // centerDialogVisible2 控制用户协议中点击 不同意的时候弹的弹层
 const centerDialogVisible2 = ref(false);
 // 这个是控制顶部跑马灯提示字是否创建的
+const isShow = ref(false);
 const isok = ref(false);
+const isDomShow = ref(false);
+let showGuid = ref(false);//展示导航
+//是否展开导航
+let handleGuideChange = (bool: boolean) => {
+    showGuid.value = bool;
+}
 // form 表单数据
 const form: Form = reactive({
     companyFullName: '',// 企业全称
@@ -526,7 +560,6 @@ const form: Form = reactive({
     companyIntroducation: '',// 企业简介
     companyWebUrl: '',// 企业官网
     companyWishSchool: '',// 企业意向学校
-    // userId: 10000,
 } as Form);
 // 企业性质
 const enterpriseNatureVal = ref('请选择');
@@ -545,8 +578,9 @@ let enterpriseScale: any | EnterpriseScale = ref([]);
 let enterpriseLabel: any | EnterpriseLabel = ref([]);
 // 学校列表
 const schoolList: any | SchoolList = ref([]);
+
 // 先走校验有没有注册过方法
-isRegisteredEnterprise()
+
 
 
 
@@ -554,13 +588,9 @@ isRegisteredEnterprise()
 
 
 // 封装方法
-// 跳转页面的方法
-const nav = (name: string) => {
-    window.location.href = `/${name}.html`;
-};
 const navLogin = () => {
     sessionStorage.setItem('token', '');
-    nav('/');
+    window.location.href = '/login.html'
 }
 // 获取所属行业下拉框接口 
 const getIndustryList = async function () {
@@ -638,8 +668,8 @@ const registerCompany = async (params: any) => {
     const res: any | Res = await use.registerCompanyApi(params);
     if (res.code == 200) {
         ElMessage.success('注册成功');
+        window.location.href = '/';
     } else {
-        console.log(res);
         ElMessage.error('注册失败');
     }
 }
@@ -687,51 +717,131 @@ const onSubmit = () => {
         }
         registerCompany(params);
     }
-
 };
 // 判断是否已经注册过企业的方法
 async function isRegisteredEnterprise() {
     const res: Res | any = await use.getEnterprise();
-    if (res.code == 200) {
-        if (res.data) {
-            ElMessage.error('您已经注册过企业！');
-        } else {
-            centerDialogVisible.value = true;
-        }
-        // 执行默认执行的方法
-        // 获取所属行业下拉框接口 
-        getIndustryList();
-        // 获取企业性质下拉框
-        getEnterpriseNatureList();
-        // 获取学校下拉列表
-        getSchoolList();
-        // 调用 获取企业规模下拉框
-        getEnterpriseSizeList();
-        // 获取企业标签下拉框
-        getEnterpriseTagList();
+    if (res.data) {
+        isDomShow.value = false;
+        isShow.value = true;
+        isok.value = false;
+        centerDialogVisible.value = false;
+    } else if (res.data == null) {
+        isok.value = true;
+        isDomShow.value = true;
+        isShow.value = false;
+        centerDialogVisible.value = true;
     }
 }
+function navHome() {
+    window.location.href = '/';
+}
+function removeToken() {
+    window.sessionStorage.setItem('token', '');
+    window.location.href = '/login.html';
+}
+// 执行默认执行的方法
+// 获取所属行业下拉框接口 
+getIndustryList();
+// 获取企业性质下拉框
+getEnterpriseNatureList();
+// 获取学校下拉列表
+getSchoolList();
+// 调用 获取企业规模下拉框
+getEnterpriseSizeList();
+// 获取企业标签下拉框
+getEnterpriseTagList();
+
 </script>
 
 <style lang="scss" scoped>
-.gdt-marquee {
-    height: 50px;
-    background-image: linear-gradient(to right,
-            orangered,
-            orange,
-            gold,
-            lightgreen,
-            cyan,
-            dodgerblue,
-            mediumpurple,
-            hotpink,
-            orangered);
-    background-size: 110vw;
+.container {
+    &>.consulting-service {
+        text-align: center;
 
-    font-size: 20px;
-    color: white;
-    font-weight: bold;
+        &>.top {
+            padding: 12px 12px 0;
+            box-shadow: 2px 3px 0 rgb(215 214 214 / 50%);
+            background: #ffffff;
+
+            &>.or-code {
+                width: 88px;
+            }
+
+            &>.tip {
+                width: 72px;
+                margin: 0 auto;
+                padding-top: 5px;
+                padding-bottom: 12px;
+                line-height: 16px;
+                text-align: center;
+            }
+        }
+
+        &>img:hover {
+            cursor: pointer;
+        }
+    }
+
+    &>.seek-advice {
+        padding: 10px 10px 6px;
+        background: #fff;
+
+        &>img {
+            width: 38px;
+        }
+    }
+
+    &>.seek-advice:hover {
+        cursor: pointer;
+    }
 }
+
+.absolute-wrap {
+    position: fixed !important;
+    right: 20px;
+    top: 90px;
+    z-index: 2;
+}
+
+.close-animate {
+    animation-name: closeAnimate; //动画名称
+    animation-duration: 2s; //动画持续时间
+    animation-timing-function: ease; //动画播放速度
+    animation-fill-mode: forwards; //动画完毕后停留在那里
+}
+
+.show-animate {
+    animation-name: showAnimate; //动画名称
+    animation-duration: 2s; //动画持续时间
+    animation-timing-function: ease; //动画播放速度
+    animation-fill-mode: forwards; //动画完毕后停留在那里
+}
+
+@keyframes showAnimate {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes closeAnimate {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
 
 :deep(.el-dialog_one) {
     min-width: 800px;
@@ -802,6 +912,29 @@ async function isRegisteredEnterprise() {
             color: #000;
         }
     }
+}
+
+:deep(.warning) {
+    width: 360px;
+    border-radius: 10px;
+}
+
+:deep(.warning .el-dialog__header) {
+    padding: 20px 0;
+    color: #d33c3c;
+    height: auto;
+}
+
+:deep(.warning .el-dialog__body) {
+    height: auto;
+    border: 0;
+    text-indent: 2em;
+}
+
+:deep(.warning .el-dialog__footer) {
+    height: auto;
+    padding: 20px 0;
+    text-align: center;
 }
 
 :deep(.el-dialog__footer) {

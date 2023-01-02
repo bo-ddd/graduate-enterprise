@@ -10,8 +10,14 @@ interface Login {
 }
 
 export const useUserStore = defineStore("user", () => {
+  // 登录
   function login(payload: Login) {
     return Api.login(payload);
-  }
-  return { login };
+  };
+  // 验证码
+  function testsms() {
+    return Api.testsms();
+  };
+
+  return { login ,testsms};
 });
