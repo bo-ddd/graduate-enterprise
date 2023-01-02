@@ -43,74 +43,92 @@
               </div>
             </div>
           </div>
-          <div class="job-box mb-15" v-for="item in positionList" :key="item.userId">
-            <div class="info-job just-between">
-              <div class="job-title fs-18">
-                <div class="mb-15 align-center">
-                  <span>{{item.positionName}}</span>
-                  <span v-if="item.positionStatus2==0" class="tip-span">审核中</span>
-                  <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
-                </div>
-                <div class="info-list align-center">
-                  <div class="money-num mr-15">10-15k</div>
-                  <div class="align-center fs-14">
-                    <div>{{item.positionNature==0?'全职':'实习'}}</div>
-                    <div class="bor"></div>
-                    <div>大专</div>
-                    <div class="bor"></div>
-                    <div>北京</div>
-                    <div class="bor"></div>
-                    <div>{{item.positionType}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="resume-info flex-ja-center">
-                <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
-                  <div class="resume-num">{{item.newResumeCount}}</div>
-                  <div class="mt-10 fs-14">新简历</div>
-                </div>
-                <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
-                  <div class="resume-num">{{item.resumeCount}}</div>
-                  <div class="mt-10 fs-14">总简历</div>
-                </div>
-              </div>
-              <div class="refresh-info align-center">
-                <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>自动刷新</el-button>
-                <el-button v-else color="#356ffa" plain @click="autoRefrensh(item.positionId)">自动刷新</el-button>
-                <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>刷新</el-button>
-                <el-button @click="refresh(item.positionId)" v-else color="#356ffa">刷新</el-button>
-              </div>
-            </div>
-            <div class="edit-job just-between fs-14">
-              <div v-if="item.refreshTime">
-                刷新时间 :
-                <span>&nbsp; {{item.refreshTime}}</span>
-              </div>
-              <div v-else>
-                创建时间 :
-                <span>&nbsp; {{item.createTime}}</span>
-              </div>
-              <div class="align-center">
-                <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
-                <div class="bor"></div>
-                <div
-                  class="cur-po"
-                  @click="setPositionStatus(item.positionId,item.positionStatus)"
-                >停止招聘</div>
-                <div class="bor"></div>
-                <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
-              </div>
+
+          <div class="void-box void-title flex-ja-center" v-show="recruitNum==0">
+            <div class>
+              <img src="@/assets/images/img-no_position.png" />
+              <div class="mt-15">暂无在招中职位</div>
             </div>
           </div>
-          <div class="just-center mt-20 mb-20" v-if="recruitNum>10">
-            <el-pagination
-              :background="true"
-              v-model:currentPage="pageNum"
-              v-model:page-size="pageSize"
-              layout="prev, pager, next"
-              :total="recruitNum"
-              @current-change="handleCurrentChange"
-            />
+          <div v-show="recruitNum!=0">
+            <div class="job-box mb-15" v-for="item in positionList" :key="item.positionId">
+              <div class="info-job just-between">
+                <div class="job-title fs-18">
+                  <div class="mb-15 align-center">
+                    <span>{{item.positionName}}</span>
+                    <span v-if="item.positionStatus2==0" class="tip-span">审核中</span>
+                    <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
+                  </div>
+                  <div class="info-list align-center">
+                    <div
+                      v-if="item.positionNature==0"
+                      class="money-num mr-15"
+                    >{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
+                    <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
+                    <div class="align-center fs-14">
+                      <div>{{item.positionNature==0?'全职':'实习'}}</div>
+                      <div class="bor"></div>
+                      <div>{{item.positionEducationName}}</div>
+                      <div class="bor"></div>
+                      <div>{{item.positionAddr.split(',')[0]}}</div>
+                      <div class="bor"></div>
+                      <div>{{item.positionType}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="resume-info flex-ja-center">
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.newResumeCount}}</div>
+                    <div class="mt-10 fs-14">新简历</div>
+                  </div>
+                  <div class="resume-box cur-po" @click="toSearchPositon(item.positionId)">
+                    <div class="resume-num">{{item.resumeCount}}</div>
+                    <div class="mt-10 fs-14">总简历</div>
+                  </div>
+                </div>
+                <div class="refresh-info align-center">
+                  <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>自动刷新</el-button>
+                  <el-button
+                    v-else
+                    color="#356ffa"
+                    plain
+                    @click="showAutoRefrensh(item.positionId)"
+                  >自动刷新</el-button>
+                  <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>刷新</el-button>
+                  <el-button @click="refresh(item.positionId)" v-else color="#356ffa">刷新</el-button>
+                </div>
+              </div>
+              <div class="edit-job just-between fs-14">
+                <div v-if="item.refreshTime">
+                  刷新时间 :
+                  <span>&nbsp; {{item.refreshTime}}</span>
+                </div>
+                <div v-else>
+                  创建时间 :
+                  <span>&nbsp; {{item.createTime}}</span>
+                </div>
+                <div class="align-center">
+                  <div class="cur-po" @click="setPosition(item.positionId)">编辑</div>
+                  <div class="bor"></div>
+                  <div
+                    class="cur-po"
+                    @click="setPositionStatus(item.positionId,item.positionStatus)"
+                  >停止招聘</div>
+                  <div class="bor"></div>
+                  <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
+                </div>
+              </div>
+            </div>
+            <div class="just-center mt-20 mb-20" v-if="recruitNum>10">
+              <el-pagination
+                :background="true"
+                v-model:currentPage="pageNum"
+                v-model:page-size="pageSize"
+                layout="prev, pager, next"
+                :total="recruitNum"
+                @current-change="handleCurrentChange"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -132,7 +150,7 @@
                 </div>
               </div>
             </div>
-            <div class="job-box" v-for="item in downPositionList" :key="item.userId">
+            <div class="job-box" v-for="item in downPositionList" :key="item.positionId">
               <div class="info-job just-between">
                 <div class="job-title fs-18">
                   <div class="mb-15 align-center">
@@ -141,13 +159,17 @@
                     <span v-if="item.positionStatus2==2" class="tip-span warning">审核未通过</span>
                   </div>
                   <div class="info-list align-center">
-                    <div class="money-num mr-15">10-15k</div>
+                    <div
+                      v-if="item.positionNature==0"
+                      class="money-num mr-15"
+                    >{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
+                    <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
                     <div class="align-center fs-14">
                       <div>{{item.positionNature==0?'全职':'实习'}}</div>
                       <div class="bor"></div>
-                      <div>大专</div>
+                      <div>{{item.positionEducationName}}</div>
                       <div class="bor"></div>
-                      <div>北京</div>
+                      <div>{{item.positionAddr.split(',')[0]}}</div>
                       <div class="bor"></div>
                       <div>{{item.positionType}}</div>
                     </div>
@@ -267,14 +289,43 @@ const pageNum2 = ref(1);
 const pageSize2 = ref(10);
 const positionList: any = ref([]);
 const downPositionList: any = ref([]);
-const autoRefrensh = function (positionId: any) {
-  centerDialogVisible.value = true;
+const autoCardNum = ref(0);
+const showAutoRefrensh = function (positionId: any) {
+  if (autoCardNum.value > 0) {
+    
+    ElMessageBox.confirm(
+      `剩余自动刷新卡：${autoCardNum.value}，是否自动刷新该职位？`,
+      "使用自动刷新卡",
+      {
+        confirmButtonText: "确认",
+        cancelButtonText: "取消",
+        type: "success",
+      }
+    ).then(async () => {
+      let res=await use.autoRefreshPosition({
+        positionId
+      });
+      if(res.code==200){
+        ElMessage({
+          type: "success",
+          message: "使用成功",
+        });
+      }else{
+        ElMessage({
+          type: "warning",
+          message: "使用失败,"+res.msg,
+        });
+      }
+    })
+  } else {
+    centerDialogVisible.value = true;
+  }
 };
 onMounted(() => {
   getPositionList();
   getDownList();
-}
-);
+  getCompanyInfo();
+});
 const toSearchPositon = function (id: number) {
   sessionStorage.setItem("positionTypeId", String(id));
   window.location.href = "resume.html";
@@ -373,6 +424,14 @@ const handleCurrentChange2 = async (val: number) => {
   pageNum2.value = val;
   getDownList();
 };
+//获取企业信息 刷新点数
+let getCompanyInfo = async () => {
+  let res: any = await getEnterprise({});
+  if (res.code == 200) {
+    orderNum.value = res.data.refreshPositionCount;
+    autoCardNum.value = res.data.refreshPositionCardCount;
+  }
+};
 //获取在招分页页面的数据
 let getPositionList = async function () {
   let res = await use.getPosition({
@@ -380,14 +439,9 @@ let getPositionList = async function () {
     pageSize: pageSize.value,
     positionStatus: 1,
   });
-  let res2 = await getEnterprise({});
-
   if (res.code == 200) {
     positionList.value = res.data ? res.data.data : [];
     recruitNum.value = res.data ? res.data.maxCount : 0;
-  }
-  if (res2.data) {
-    orderNum.value = res2.data ? res2.data.refreshPositionCount : 0;
   }
 };
 //获取下线分页数据
@@ -434,11 +488,11 @@ const deleteClick = function (positionId: any, positionStatus: any) {
           message: "删除成功",
         });
         if (positionStatus == 1) {
-        getPositionList();
+          getPositionList();
           setPageNum();
         } else {
           setPageNum2();
-        getDownList();
+          getDownList();
         }
       } else {
         ElMessage({
@@ -613,22 +667,23 @@ const setPosition = function (id: any) {
   overflow: hidden;
   width: 100%;
   background-color: #f6f7f9;
+
+  .void-box {
+    min-height: calc(100vh - 55px);
+
+    text-align: center;
+    img {
+      width: 240px;
+      height: 210px;
+    }
+  }
+  .void-title {
+    color: #515a6e;
+  }
   .tab2 {
     background-color: white;
     overflow: hidden;
     color: black;
-    .void-box {
-      min-height: calc(100vh - 55px);
-
-      text-align: center;
-      img {
-        width: 240px;
-        height: 210px;
-      }
-    }
-    .void-title {
-      color: #515a6e;
-    }
     .job-head2 {
       margin: 35px 0;
       .release-btn {

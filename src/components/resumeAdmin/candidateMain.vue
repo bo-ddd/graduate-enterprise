@@ -226,12 +226,7 @@ let inviteInterview = async () => {
  */
 let btnImg = ref(true);
 let btnSpan = ref(false);
-let isOnload = () => {
-  if (resumeBtn.value) {
-    btnImg.value = false;
-    btnSpan.value = true;
-  }
-};
+
 
 /**
  * getUserInfo
@@ -525,6 +520,7 @@ let fuzzyQuery = async () => {
       message: "success",
       type: "success",
     });
+    total.value = res.data.maxCount;
     cardList.value = res.data.data;
     cities.value = cardList.value.map((item: any) => {
       return item.deliveryId;
