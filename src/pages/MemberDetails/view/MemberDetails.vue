@@ -87,7 +87,6 @@ let isVipActive = function (name: number): void {
 let selectPayment = ref(1);
 
 let isPaymentActive = function (name: number): void {
-    console.log(name,'name')
     selectPayment.value = name
 }
 let data = route.query as any;
@@ -102,8 +101,6 @@ function toPay(params:any) {
 let toPayment = function () {
     let usePayment = async(options:any)=>{
         const res:any = await payment.payment(options);
-        console.log(res)
-        console.log(selectVip.value);
         if (res.code == 200) {
             toPay(res.data);
         }

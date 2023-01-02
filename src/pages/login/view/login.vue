@@ -242,19 +242,31 @@ interface Res {
 
 let user = useUserStore();
 
+
+
 // 获取验证码后
 let getvalidate = (e: any, rule: any) => {
-    let count = rule.countDown;
-    rule.isCountDown = false
-    e.target.disabled = true
-    let interval = setInterval(() => {
-        rule.countDown--;
-        if (rule.countDown == 0) {
-            clearInterval(interval)
-            rule.countDown = count;
-            rule.isCountDown = true;
+    // 获取验证码
+    const getSms =async ()=>{
+        let res :any = await user.testsms();
+        if(res.code == 200){
+            let count = rule.countDown;
+            rule.isCountDown = false
+            e.target.disabled = true
+            let interval = setInterval(() => {
+                rule.countDown--;
+                if (rule.countDown == 0) {
+                    clearInterval(interval)
+                    rule.countDown = count;
+                    rule.isCountDown = true;
+                }
+            }, 1000);
+        }else{
+            ElMessage('验证码发送失败，请重试')
         }
-    }, 1000);
+        console.log(res)
+    } 
+    getSms()
 }
 
 // 页脚

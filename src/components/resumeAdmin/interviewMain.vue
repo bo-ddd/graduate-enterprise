@@ -77,7 +77,7 @@ getPositionDrop();
 
 let getResume = async () => {
     let res = await enterprise.getResume({
-        companyId:10000,
+        companyId:companyId.value,
         deliveryStatus: 4,
     });
      tableData.value = res.data.data;
@@ -85,7 +85,7 @@ let getResume = async () => {
 
 let fuzzyQuery = async () => {
     let res = await enterprise.getResume({
-        companyId: 10000,
+        companyId: companyId.value,
         deliveryStatus: 4,
         positionId:positionDropValue.value,
         userName:userName.value,

@@ -272,7 +272,7 @@ getPositionCategory();
 const getMoney: (data: string) => string = (data: string) => {
     if (!data) return '';
     const res = data.split(",").sort((a: any, b: any) => { return a - b });
-    return `${res[0]}-${res[1]}k`
+    return `${res[0].substring(0,res[0].length-3)}-${res[1].substring(0,res[1].length-3)}k`
 }
 //邀请人才下拉框
 const getInviteDrop = async () => {
