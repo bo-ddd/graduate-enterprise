@@ -88,6 +88,7 @@
                 </div>
                 <div class="refresh-info align-center">
                   <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>自动刷新</el-button>
+                  <el-button v-else-if="item.isAutoRefresh" color="#a8abb2" plain disabled>已自动刷新</el-button>
                   <el-button
                     v-else
                     color="#356ffa"
@@ -310,6 +311,7 @@ const showAutoRefrensh = function (positionId: any) {
           type: "success",
           message: "使用成功",
         });
+        getPositionList();
       }else{
         ElMessage({
           type: "warning",
