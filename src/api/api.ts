@@ -288,5 +288,9 @@ export default {
      */
     registerCompany: (params: any) => {
         return axios.post('/company/register', params, postConfig)
+    },
+    // 验证码
+    testsms: () => {
+        return axios.get('/testsms', getConfig)
     }
 }
