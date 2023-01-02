@@ -297,8 +297,11 @@ export default {
     testsms: () => {
         return axios.get('/testsms', getConfig)
     },
-    // 自动刷新
-    autoRefreshPosition: () => {
-        return axios.get('/company/autoRefreshPosition', getConfig)
+
+    /**
+     * @description 自动刷新
+     */
+    autoRefreshPosition: (params: any) => {
+        return axios.post('/company/autoRefreshPosition',params, postConfig)
     }
 }
