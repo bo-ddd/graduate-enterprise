@@ -35,7 +35,8 @@
                                                 type="password" autocomplete="off" />
                                         </el-form-item>
                                         <el-form-item class="" label="" label-width="105px">
-                                            <p class="fs-14 c-575757 forget-pass flex cursor-p" @click="isOpen = 3">忘记密码</p>
+                                            <p class="fs-14 c-575757 forget-pass flex cursor-p" @click="isOpen = 3">忘记密码
+                                            </p>
                                         </el-form-item>
                                         <el-form-item class="m-0">
                                             <el-button class=" btn fs-16 " color="#2d8cf0" type="primary"
@@ -130,8 +131,8 @@
                                     </el-button>
                                 </el-form-item>
                                 <el-form-item class="mt-5">
-                                    <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span class="to-login cursor-p"
-                                            @click="isOpen = 1">去登录</span></p>
+                                    <p class="existing-account fs-14 c-8d9ea7 mt-10">已有账号，<span
+                                            class="to-login cursor-p" @click="isOpen = 1">去登录</span></p>
                                 </el-form-item>
                             </el-form>
                         </div>
@@ -334,8 +335,15 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
         let login = async (options: any) => {
             const res: any | Res = await user.login(options);
             if (res.code == 200) {
-                sessionStorage.setItem('token', res.data)
-                window.location.href = `/`;
+                ElMessage({
+                    message: '登录成功',
+                    type: 'success',
+                });
+                let loginSetTime = setTimeout(() => {
+                    sessionStorage.setItem('token', res.data);
+                    clearTimeout(loginSetTime);
+                    window.location.href = `/`;
+                }, 1000);
             } else {
                 ElMessage({
                     message: '手机号或密码错误',
@@ -348,7 +356,7 @@ const submitFormPass = async (formEl: FormInstance | undefined) => {
             password: ruleFormPass.password,
             loginType: 0,
         })
-        
+
     })
 }
 //验证码登录
@@ -437,6 +445,10 @@ const submitFormRegister = async (formEl: FormInstance | undefined) => {
                     //     type: 'success',
                     // });
                     // isOpen.value = 1;
+                    ElMessage({
+                        message: '注册成功',
+                        type: 'success',
+                    });
                     sessionStorage.setItem('token', res.data);
                     window.location.href = '/setEnterpriseInfo.html'
                 } else if (res.code == 500) {
@@ -522,32 +534,32 @@ const rulesResetPw = reactive<FormRules>({
 const submitFormResetPw = async (formEl: FormInstance | undefined) => {
     if (!formEl) return
     await formEl.validate((valid: boolean) => {
-            //重置密码
-            let register = async (options: any) => {
-                const res: any | Res = await user.login(options);
-                if (res.code == 200) {
-                    ElMessage({
-                        message: '重置成功，请登录',
-                        type: 'success',
-                    });
-                    isOpen.value = 1;
-                }else {
-                    ElMessage({
-                        message: '重置失败',
-                        type: 'warning',
-                    });
+        //重置密码
+        let register = async (options: any) => {
+            const res: any | Res = await user.login(options);
+            if (res.code == 200) {
+                ElMessage({
+                    message: '重置成功，请登录',
+                    type: 'success',
+                });
+                isOpen.value = 1;
+            } else {
+                ElMessage({
+                    message: '重置失败',
+                    type: 'warning',
+                });
 
-                }
             }
-            register({
-                phone: localStorage.getItem('phone'),
-                password: ruleFormResetPw.password,
-                smsCode: localStorage.getItem('smsCode'),
-                loginType: 3,
-                inviteCode: 0,
-            })
+        }
+        register({
+            phone: localStorage.getItem('phone'),
+            password: ruleFormResetPw.password,
+            smsCode: localStorage.getItem('smsCode'),
+            loginType: 3,
+            inviteCode: 0,
+        })
 
-        
+
     })
 }
 
@@ -683,7 +695,7 @@ $width100: 100%;
     height: var(--size);
 }
 
-.cursor-p{
+.cursor-p {
     cursor: pointer;
 }
 
@@ -697,7 +709,7 @@ $width100: 100%;
     background-size: 100%;
     background-repeat: no-repeat;
     background-size: cover;
-    overflow: hidden; 
+    overflow: hidden;
 
     // 头部
     header {
