@@ -678,7 +678,7 @@ const onSubmit = () => {
     if (isok.value == false) {
         ElMessage.error('您已注册过企业，不能重复注册！3秒后将自动跳转到首页。')
         setTimeout(() => {
-            window.location.href = `/`;
+            window.location.href = `/positionInfo.html`;
         }, 3000)
         return;
     } else {
