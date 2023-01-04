@@ -71,7 +71,7 @@
                                                     :disabled="ruleFormValidate.phone.length == 11 ? false : true"
                                                     :color="ruleFormValidate.phone.length == 11 ? '#356ffa' : '#ececec'"
                                                     :class="'btn-validate ' + (ruleFormValidate.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                                    @click="getvalidate($event, ruleFormValidate)">
+                                                    @click="getvalidate($event, ruleFormValidate,1)">
                                                     获取验证码</el-button>
                                                 <el-button v-show="!ruleFormValidate.isCountDown" style="width:102px"
                                                     disabled color='#ececec' class="btn-validate c-b9b9b9">
@@ -113,7 +113,7 @@
                                             :disabled="ruleFormRegister.phone.length == 11 ? false : true"
                                             :color="ruleFormRegister.phone.length == 11 ? '#356ffa' : '#ececec'"
                                             :class="'btn-validate ' + (ruleFormRegister.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                            @click="getvalidate($event, ruleFormRegister)">
+                                            @click="getvalidate($event, ruleFormRegister,2)">
                                             获取验证码</el-button>
                                         <el-button v-show="!ruleFormRegister.isCountDown" style="width:102px" disabled
                                             color='#ececec' class="btn-validate c-b9b9b9">
@@ -164,7 +164,7 @@
                                             :disabled="ruleFormForgotPw.phone.length == 11 ? false : true"
                                             :color="ruleFormForgotPw.phone.length == 11 ? '#356ffa' : '#ececec'"
                                             :class="'btn-validate ' + (ruleFormForgotPw.phone.length == 11 ? 'c-ffffff' : 'c-b9b9b9')"
-                                            @click="getvalidate($event, ruleFormForgotPw)">
+                                            @click="getvalidate($event, ruleFormForgotPw,0)">
                                             获取验证码</el-button>
                                         <el-button v-show="!ruleFormForgotPw.isCountDown" style="width:102px" disabled
                                             color='#ececec' class="btn-validate c-b9b9b9">
@@ -246,10 +246,13 @@ let user = useUserStore();
 
 
 // 获取验证码后
-let getvalidate = (e: any, rule: any) => {
+let getvalidate = (e: any, rule: any,type:number) => {
     // 获取验证码
     const getSms =async ()=>{
-        let res :any = await user.testsms();
+        let res :any = await user.testsms({
+            iphone:rule.phone,
+            smsType:type
+        });
         if(res.code == 200){
             let count = rule.countDown;
             rule.isCountDown = false
@@ -385,10 +388,10 @@ const rulesValidate = reactive<FormRules>({
         { required: true, message: '请输入手机号', trigger: 'blur' },
         { validator: validatePhone, }
     ],
-    // validate: [
-    //     { required: true, message: '请输入验证码', trigger: 'blur' },
-    //     { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
-    // ],
+    validate: [
+        { required: true, message: '请输入验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
+    ],
 })
 
 const submitFormValidate = async (formEl: FormInstance | undefined) => {
@@ -493,7 +496,7 @@ const rulesForgotPw = reactive<FormRules>({
     ],
     validate: [
         { required: true, message: '请输入验证码', trigger: 'blur' },
-        { min: 6, max: 6, message: '请输入6位验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
     ],
 })
 
@@ -731,8 +734,9 @@ $width100: 100%;
 
         // logo
         .logo {
-            width: 142px;
-            height: 40px;
+            width: 140px;
+            height: 50px;
+            object-fit: cover;
         }
     }
 
