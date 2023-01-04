@@ -15,8 +15,8 @@ export const useUserStore = defineStore("user", () => {
     return Api.login(payload);
   };
   // 验证码
-  function testsms() {
-    return Api.testsms();
+  function testsms(params:any) {
+    return Api.testsms(params);
   };
 
   return { login ,testsms};

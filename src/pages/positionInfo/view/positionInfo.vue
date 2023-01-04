@@ -306,10 +306,8 @@ const ruleForm: any = reactive({
     positionNature: 0, //工作性质
     positionName: "", //职位名称
     positionPositive: "", //是否转正
-    salaryStart: "", //薪资始
     salaryStart1: "", //薪资始
     salaryStart2: "", //薪资始
-    salaryEnd: "", //薪资末
     salaryEnd1: "", //薪资末
     salaryEnd2: "", //薪资末
     positionTypeArr: [],
@@ -580,7 +578,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   });
 };
-const addPosition = async function (params: any) {
+const getFormData = (params: any) => {
+  let form: any = {};
   let {
     positionNature,
     positionPositive,
@@ -594,20 +593,30 @@ const addPosition = async function (params: any) {
     salaryStart1,
     salaryEnd1,
   } = params;
-  params.positionPositive = positionPositive ? true : false;
-  params.internshipDay = positionNature == 1 ? internshipDay : "";
-  params.internshipMonth = positionNature == 1 ? internshipMonth : "";
-  params.positionProfessional = positionProfessional.join(",");
-  params.internshipMoney =
+  form.positionDes = params.positionDes;
+  form.positionDetailedAddr = params.positionDetailedAddr;
+  form.positionEducation = params.positionEducation;
+  form.positionMoney = params.positionMoney;
+  form.positionName = params.positionName;
+  form.positionNature = params.positionNature;
+  form.positionSize = params.positionSize;
+  form.positionPositive = positionPositive ? true : false;
+  form.internshipDay = positionNature == 1 ? internshipDay : "";
+  form.internshipMonth = positionNature == 1 ? internshipMonth : "";
+  form.positionProfessional = positionProfessional.join(",");
+  form.internshipMoney =
     positionNature == 1 ? salaryStart2 + "," + salaryEnd2 : ""; //实习日薪范围id
-  params.positionMoney =
+  form.positionMoney =
     positionNature == 0 ? salaryStart1 + "," + salaryEnd1 : ""; //职业薪资范围id
-  params.positionAddr = positionAddr.join(","); //工作地点
-  params.positionTypeLeft = positionTypeArr[0];
-  params.positionTypeRight = positionTypeArr[1]; //职位类别
-  params.positionStatus = "";
-  params.positionId = ""; //职位id
-  let form = params;
+  form.positionAddr = positionAddr.join(","); //工作地点
+  form.positionTypeLeft = positionTypeArr[0];
+  form.positionTypeRight = positionTypeArr[1]; //职位类别
+  form.positionStatus = "";
+  form.positionId = ""; //职位id
+  return form;
+};
+const addPosition = async function (params: any) {
+  let form = getFormData(params);
   let res = await use.addPosition(form);
   if (res.code == 200) {
     ElMessage({
