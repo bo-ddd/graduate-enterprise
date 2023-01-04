@@ -320,6 +320,8 @@ async function getEnterpriseInfo() {
     if (res.code == 200) {
         Object.assign(EnterpriseInfo, res.data);
         getchange();
+    } else {
+        console.log(res)
     }
 }
 getEnterpriseInfo()

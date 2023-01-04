@@ -84,7 +84,7 @@ let getResume = async () => {
         })
         getResume();
     } else {
-        ElMessage.error('this is a error message.')
+        ElMessage.error('恢复失败,请刷新再试试看')
     }
 }
 
