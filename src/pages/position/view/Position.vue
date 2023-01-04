@@ -267,7 +267,7 @@
       </div>
     </el-dialog>
     
-    <el-dialog class="" v-model="centerDialogVisible3" center>
+    <!-- <el-dialog class="" v-model="centerDialogVisible3" center>
       <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">当前在招职位数量已达上限</div>
@@ -286,7 +286,7 @@
       <div class="foot mt-30">
         <div class="btn" @click="to('/memberCenter')">查看会员权益</div>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 <script lang="ts" setup>
