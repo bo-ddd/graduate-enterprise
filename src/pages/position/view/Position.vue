@@ -63,8 +63,8 @@
                     <div
                       v-if="item.positionNature==0"
                       class="money-num mr-15"
-                    >{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
-                    <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
+                    >{{item.positionMoney.split(',')[0].slice(0,-3)+'-'+item.positionMoney.split(',')[1].slice(0,-3)}}K</div>
+                    <div v-else class="money-num mr-15">{{item.positionDayMoney.split(',').join('-') }}</div>
                     <div class="align-center fs-14">
                       <div>{{item.positionNature==0?'全职':'实习'}}</div>
                       <div class="bor"></div>
@@ -87,7 +87,7 @@
                   </div>
                 </div>
                 <div class="refresh-info align-center">
-                  <el-button v-if="item.positionStatus2!=1" color="#a8abb2" plain disabled>自动刷新</el-button>
+                  <el-button v-if="item.positionStatus2!=1&&!item.isAutoRefresh" color="#a8abb2" plain disabled>自动刷新</el-button>
                   <el-button v-else-if="item.isAutoRefresh" color="#a8abb2" plain disabled>已自动刷新</el-button>
                   <el-button
                     v-else
@@ -161,12 +161,12 @@
                   </div>
                   <div class="info-list align-center">
                     <div
-                      v-if="item.positionNature==0"
+                      v-if="item.positionNature=='0'"
                       class="money-num mr-15"
-                    >{{item.positionMoney.split(',')[0].slice(0,1)+'-'+item.positionMoney.split(',')[1].slice(0,1)}}K</div>
-                    <div v-else class="money-num mr-15">{{item.positionMonth.split(',').join('-')}}</div>
+                    >{{item.positionMoney.split(',')[0].slice(0,-3)+'-'+item.positionMoney.split(',')[1].slice(0,-3)}}K</div>
+                    <div v-else class="money-num mr-15">{{item.positionDayMoney.split(',').join('-')}}</div>
                     <div class="align-center fs-14">
-                      <div>{{item.positionNature==0?'全职':'实习'}}</div>
+                      <div>{{item.positionNature=='0'?'全职':'实习'}}</div>
                       <div class="bor"></div>
                       <div>{{item.positionEducationName}}</div>
                       <div class="bor"></div>
@@ -191,7 +191,7 @@
                   <div class="bor"></div>
                   <div
                     class="cur-po"
-                    @click="setPositionStatus(item.positionId,item.positionStatus)"
+                    @click="inspectionPosition(setPositionStatus,item.positionId,item.positionStatus)"
                   >开始招聘</div>
                   <div class="bor"></div>
                   <div class="cur-po" @click="deleteClick(item.positionId,item.positionStatus)">删除</div>
@@ -267,7 +267,7 @@
       </div>
     </el-dialog>
     
-    <!-- <el-dialog class="" v-model="centerDialogVisible3" center>
+    <el-dialog class="" v-model="centerDialogVisible3" center>
       <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">当前在招职位数量已达上限</div>
@@ -286,7 +286,7 @@
       <div class="foot mt-30">
         <div class="btn" @click="to('/memberCenter')">查看会员权益</div>
       </div>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 <script lang="ts" setup>
@@ -295,14 +295,16 @@ import { usePositionStore } from "@/stores/position";
 import { useHomeStore } from "@/stores/home";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { onMounted, ref, provide } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import { Position } from "@element-plus/icons-vue";
 let use = usePositionStore();
 let { getEnterprise } = useHomeStore();
 
 const centerDialogVisible = ref(false);
 const centerDialogVisible2 = ref(false);
+const centerDialogVisible3 = ref(false);
 const recruitNum = ref(0);
+const maxRecruitNum=ref(0);
 const orderNum = ref(0);
 const downNum = ref(0);
 const pageNum = ref(1);
@@ -312,8 +314,25 @@ const pageSize2 = ref(10);
 const positionList: any = ref([]);
 const downPositionList: any = ref([]);
 const autoCardNum = ref(0);
+const tipPosition=()=>{
+  let tipBoolean=sessionStorage.getItem('tip');
+  if(tipBoolean=='true'){
+    sessionStorage.removeItem('tip');
+    tab(1);
+    centerDialogVisible3.value=true;
+  }
+}
+
+const inspectionPosition=(fun:Function,paramsId:any,paramsStatus:number)=>{
+  
+  if(recruitNum.value>=maxRecruitNum.value){
+    centerDialogVisible3.value=true;
+  }else{
+    fun(paramsId,paramsStatus)
+  }
+} 
 const showAutoRefrensh = function (positionId: any) {
-  if (autoCardNum.value < 0) {
+  if (autoCardNum.value > 0) {
     
     ElMessageBox.confirm(
       `剩余自动刷新卡：${autoCardNum.value}，是否自动刷新该职位？`,
@@ -348,6 +367,7 @@ const showAutoRefrensh = function (positionId: any) {
   }
 };
 onMounted(() => {
+  tipPosition()
   getPositionList();
   getDownList();
   getCompanyInfo();
@@ -357,7 +377,7 @@ const toSearchPositon = function (id: number) {
   window.location.href = "resume.html";
 };
 const refresh = function (positionId: any) {
-  if (orderNum.value < 0) {
+  if (orderNum.value > 0) {
     ElMessageBox.confirm(
       `今日剩余刷新点数：${orderNum.value}，是否刷新该职位？`,
       "确认刷新该职位吗",
@@ -459,6 +479,7 @@ let getCompanyInfo = async () => {
   if (res.code == 200) {
     orderNum.value = res.data.refreshPositionCount;
     autoCardNum.value = res.data.refreshPositionCardCount;
+    maxRecruitNum.value=res.data.maxPositionCount;
   }
 };
 //获取在招分页页面的数据

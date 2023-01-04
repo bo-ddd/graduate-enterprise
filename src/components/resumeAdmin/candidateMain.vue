@@ -179,7 +179,7 @@ let employment = async (event: Event, item: any) => {
         getResume();
         resumeBtn.value = false;
       } else {
-        ElMessage.error("this is a error message.");
+        ElMessage.error("修改状态失败,请刷新再试试看");
       }
     })
     .catch(() => {
@@ -212,12 +212,12 @@ let inviteInterview = async () => {
   let res: any = await enterprise.modifyResume(inviteFrom);
   if (res.code == 200) {
     ElMessage({
-      message: "success",
+      message: "查询成功",
       type: "success",
     });
     getResume();
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("查询失败,请刷新再试试看");
   }
 };
 
@@ -280,14 +280,14 @@ let batchInappropriate = () => {
       });
       if (res.code == 200) {
         ElMessage({
-          message: "success",
+          message: "批量修改成功",
           type: "success",
         });
         getResume();
         checkedCities.value = [];
         checkAll.value = false;
       } else {
-        ElMessage.error("this is a error message.");
+        ElMessage.error("修改失败,请刷新试试看.");
       }
     })
     .catch(() => {
@@ -315,14 +315,14 @@ let batchbyFilter = () => {
       });
       if (res.code == 200) {
         ElMessage({
-          message: "success",
+          message: "批量修改成功",
           type: "success",
         });
         getResume();
         checkedCities.value = [];
         checkAll.value = false;
       } else {
-        ElMessage.error("this is a error message.");
+        ElMessage.error("修改失败,请刷新试试看");
       }
     })
     .catch(() => {
@@ -366,7 +366,7 @@ let inappropriate = (event: Event, item: any) => {
         getResume();
         resumeBtn.value = true;
       } else {
-        ElMessage.error("this is a error message.");
+        ElMessage.error("修改失败,请刷新试试看");
       }
     })
     .catch(() => {
@@ -406,7 +406,7 @@ let byFilter = (event: Event, item: any) => {
         getResume();
         resumeBtn.value = false;
       } else {
-        ElMessage.error("this is a error message.");
+        ElMessage.error("修改失败,请刷新试试看");
       }
     })
     .catch(() => {
@@ -445,7 +445,7 @@ let getStage = async () => {
   if (res.code == 200) {
     applicationStage.value = res.data;
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("应聘阶段下拉框获取失败,请刷新再试试");
   }
 };
 getStage();
@@ -460,7 +460,7 @@ let getPositionDrop = async () => {
   if (res.code == 200) {
     allPositions.value = res.data;
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("投递职位下拉框获取失败,请刷新再试试");
   }
 };
 getPositionDrop();
@@ -473,7 +473,7 @@ let getEducation = async () => {
   if (res.code == 200) {
     educationList.value = res.data;
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("学历下拉框获取失败,请刷新再试试");
   }
 };
 getEducation();
@@ -504,7 +504,7 @@ let getResume = async () => {
       return item.deliveryId;
     });
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("查询失败,请刷新再试试.");
   }
 };
 /**
@@ -523,7 +523,7 @@ let fuzzyQuery = async () => {
   });
   if (res.code == 200) {
     ElMessage({
-      message: "success",
+      message: "查询成功",
       type: "success",
     });
     total.value = res.data.maxCount;
@@ -533,7 +533,7 @@ let fuzzyQuery = async () => {
     });
 
   } else {
-    ElMessage.error("this is a error message.");
+    ElMessage.error("查询失败，请刷新再试试");
   }
   return res
 };

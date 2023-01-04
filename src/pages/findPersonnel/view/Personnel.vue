@@ -243,8 +243,14 @@ const inviteTalent = async () => {
     });
     dialogFormVisible.value = false;
     if (res.code == 200) {
+        ElMessage({
+            message: '邀请成功',
+            type: 'success',
+        })
         getInvationsNumber();
         getTalentList();
+    }else{
+        ElMessage.error('邀请失败')
     }
 }
 

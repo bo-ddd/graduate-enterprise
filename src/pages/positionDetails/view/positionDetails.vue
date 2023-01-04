@@ -4,6 +4,7 @@
     <div class="head-tip">
       <div
         class="tip-box"
+        v-if="positionStatus2"
         :class="{success:positionStatus2==1,warning:positionStatus2==0,error:positionStatus2==2}"
       >
         <el-icon v-if="positionStatus2==1" size="28px" color="#19be6b">
@@ -647,13 +648,13 @@ const setPositon = async function (params: any) {
     positionSize: Number(positionSize), //招聘人数
     internshipDay: Number(internshipDay), //每周天数
     internshipMonth: Number(internshipMonth), //实习月数
-    positionProfessional: "1", //专业
+    positionProfessional: positionProfessional.join(","), //专业
     internshipMoney: positionNature == 1 ? salaryStart2 + "," + salaryEnd2 : "", //实习日薪范围id
     positionMoney: positionNature == 0 ? salaryStart1 + "," + salaryEnd1 : "", //职业薪资范围id
     positionAddr: positionAddr.join(","), //工作地点
     positionTypeLeft: positionTypeArr[0],
     positionTypeRight: positionTypeArr[1], //职位类别
-    positionStatus: Number(positionStatus.value),
+    positionStatus: positionStatus.value,
     positionId: positionId.value, //职位id
   };
   let res = await use.updatePosition(form);
@@ -662,7 +663,7 @@ const setPositon = async function (params: any) {
       type: "success",
       message: "保存成功",
     });
-    to("/position");
+    // to("/position");
   } else {
     ElMessage({
       type: "warning",
