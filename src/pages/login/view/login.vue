@@ -390,7 +390,7 @@ const rulesValidate = reactive<FormRules>({
     ],
     validate: [
         { required: true, message: '请输入验证码', trigger: 'blur' },
-        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' },
     ],
 })
 
@@ -402,8 +402,15 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    sessionStorage.setItem('token', res.data)
+                    ElMessage({
+                    message: '登录成功',
+                    type: 'success',
+                });
+                let loginSetTime = setTimeout(() => {
+                    sessionStorage.setItem('token', res.data);
+                    clearTimeout(loginSetTime);
                     window.location.href = `/`;
+                }, 1000);
                 } else if (res.code == 500) {
                     ElMessage({
                         message: '验证码错误或手机号不正确',
@@ -439,7 +446,7 @@ const rulesRegister = reactive<FormRules>({
     ],
     validate: [
         { required: true, message: '请输入验证码', trigger: 'blur' },
-        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' },
     ],
     password: [
         { required: true, message: '请输入密码', trigger: 'blur' },
@@ -496,7 +503,7 @@ const rulesForgotPw = reactive<FormRules>({
     ],
     validate: [
         { required: true, message: '请输入验证码', trigger: 'blur' },
-        { min: 4, max: 4, message: '请输入6位验证码', trigger: 'blur' },
+        { min: 4, max: 4, message: '请输入4位验证码', trigger: 'blur' },
     ],
 })
 
