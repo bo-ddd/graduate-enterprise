@@ -28,8 +28,12 @@
                     </div>
                     <div class="right">
                         <div class="right-title align-center">
-                            <div class="spot"></div>
-                            <div class="title ml-8">审核通过</div>
+                            <div class="spot" v-if="EnterpriseInfo.companyStatus == '审核通过'"></div>
+                            <div class="spot2" v-else-if="EnterpriseInfo.companyStatus == '审核中'"></div>
+                            <div class="spot3" v-else></div>
+
+
+                            <div class="title ml-8">{{ EnterpriseInfo.companyStatus }}</div>
                         </div>
                         <div class="describe ml-16">您现在可以发布职位信息、报名招聘会</div>
                     </div>
@@ -156,10 +160,7 @@
                 </div>
             </div>
         </div>
-
         <footer-bar></footer-bar>
-
-
         <!-- 弹层 -->
         <el-dialog class="dialog" v-model="centerDialogVisible" align-center :show-close="false" title="Warning"
             width="800px">
@@ -223,6 +224,11 @@ const nav = (name: string) => {
 }
 // 控制意向学校弹层的开关
 const centerDialogVisible = ref(false)
+// 企业信息
+const EnterpriseInfo: EnterpriseInfoType = reactive({
+    companyWishSchool: [],
+    companyStatus: ''
+}) as EnterpriseInfoType;
 // 意向学校 多选框选择的值
 let selectValue: any = ref([]);
 const schoolLen = computed(() => EnterpriseInfo.companyWishSchool.length);
@@ -237,6 +243,7 @@ const getSchoolList = async function () {
     const res = await use.getSchoolList()
     Object.assign(schoolList.value, res.data)
 }
+
 getSchoolList();
 // 单选框组的值
 const radioValue = ref(false)
@@ -303,31 +310,34 @@ interface EnterpriseInfoType {
     resumeCount: Number,// 未查看简历数量
     sevenRefreshPositionCount: Number,// 7日内刷新职位数量
     smsInvitationCount: Number,// 短信邀请人才点数
+    isApproved: boolean;// 企业信息是否审核通过
 }
-const EnterpriseInfo: EnterpriseInfoType = reactive({
-    companyWishSchool: []
-}) as EnterpriseInfoType;
+
 // 获取企业详细信息接口
 const change = ref<string>('')
-const getEnterpriseInfo = async () => {
+async function getEnterpriseInfo() {
     const res: Ref | any = await use.getEnterprise();
     if (res.code == 200) {
-        Object.assign(EnterpriseInfo, res.data)
-        change.value = ''
-        schoolList.value.forEach((el: any) => {
-            EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
-                if (el.schoolId == element) {
-                    change.value += el.schoolName + '、'
-                }
-            });
-        });
-        change.value = change.value.substring(0, change.value.length - 1)
-        if (change.value == '' || change.value == undefined) {
-            getEnterpriseInfo()
-        }
+        Object.assign(EnterpriseInfo, res.data);
+        getchange();
     }
 }
 getEnterpriseInfo()
+
+function getchange() {
+    change.value = ''
+    schoolList.value.forEach((el: any) => {
+        EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
+            if (el.schoolId == element) {
+                change.value += el.schoolName + '、'
+            }
+        });
+    });
+    change.value = change.value.substring(0, change.value.length - 1)
+    if (change.value == '' || change.value == undefined) {
+        getEnterpriseInfo()
+    }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -571,6 +581,20 @@ img {
                 height: 8px;
                 border-radius: 4px;
                 background-color: #19be6b;
+            }
+
+            &>.right-title .spot2 {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background-color: #356ffa;
+            }
+
+            &>.right-title .spot3 {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background-color: #fa3c35;
             }
         }
     }

@@ -1,10 +1,27 @@
 <script lang="ts" setup>
-import { ref, reactive,watch } from "vue";
+import { ref, reactive,watch,type Ref } from "vue";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
 import Layout from "@/components/layout/Layout.vue";
+interface OnlineResume{
+    userName?:string;
+    userBirthday?:string;
+    userSchoolName?:string;
+    userEmail?:string;
+    userProfessionalName?:string;
+    userProfessionalSkill?:string;
+    userSchoolPractice?:string;
+    userHobby?:string;
+}
+interface PositionData{
+    onlineResume?:OnlineResume;
+    userAge?:string;
+    userEducation?:string;
+    isInvite?:boolean;
+
+}
 interface School{
     userId:number;
     userEducationId:number;
@@ -85,6 +102,8 @@ const isVip = ref(false);
 
 const dialogShowVip = ref(false);
 
+const dialogShowResume = ref(true);
+let resumeImg = ref('');
 const navigate = function(str:string){
     window.location.href = str;
 }
@@ -105,6 +124,11 @@ let checkItem = ref(0);//默认展示哪个页面
 //切换页面
 const handleItemChange = (index: number) => {
     checkItem.value = index;
+}
+
+// 获取简历图片的方法
+const getResumeImg = (url:string)=>{
+    resumeImg.value = url;
 }
 
 //是否展开导航
@@ -131,6 +155,8 @@ let talentList = reactive<any[]>([]);//这个是人才列表
 let positionCategoryList = reactive<any[]>([]);//这个是获取职位类别的数组
 let invitationList = reactive<any[]>([]);//这个是邀请人才的列表
 let statusList = reactive<any[]>([]);//邀请人才状态
+let onlineResume : PositionData = reactive({});//这个是在线简历的内容;
+let resumeList =reactive<any[]>([]);
 //这个是学历的列表
 const getEducationList = async () => {
     const res: Res | any = await PersonStore.getEducation();
@@ -292,6 +318,23 @@ const getInvitaion = ()=>{
     pagingInvite.pageSize = 3;
     inviteTalentList();
 }
+
+// 获取简历数据
+const getResumeDate=(item:any)=>{
+    resumeList.length = 0;
+    dialogShowResume.value = true;
+    resumeList.push(...(item.resumeList));
+    Object.assign(onlineResume,item);    
+}
+// 获取简历图片的方法
+const getOnlieImg=(index:number)=>{
+    resumeImg.value = resumeList[index].resumeUrl;
+}
+// 分享的邀请投递
+const invitationShar = ()=>{
+    dialogShowResume.value = false;
+    invitationPost(onlineResume);
+}
 </script>
 <template>
     <div class="personnel">
@@ -364,7 +407,7 @@ const getInvitaion = ()=>{
                 </div>
 
                 <!-- 每一项数据 -->
-                <div class="data-item" v-for="item in talentList" :key="item.id">
+                <div class="data-item" v-for="item in talentList" @click="getResumeDate(item)" :key="item.id">
 
                     <!--头像-->
                     <div class="cbleft1">
@@ -420,7 +463,7 @@ const getInvitaion = ()=>{
                     <!-- 活跃时间 -->
                     <div class="cbleft5">
                         <p class="titlest fs-12 cl-ccc">{{ item.lastLoginTime }}活跃</p>
-                        <el-button type="primary" class="mt-50" @click="invitationPost(item)">邀请投递</el-button>
+                        <el-button v-if="!item.isInvite" type="primary" class="mt-50" @click="invitationPost(item)">邀请投递</el-button>
                     </div>
                 </div>
             </div>
@@ -589,8 +632,125 @@ const getInvitaion = ()=>{
                 <p class="cl-black fs-16">同时获得更多邀请点数</p>
                 <div class="btn fs-18" @click="navigate('/memberCenter.html')">查看会员权益</div>
             </el-dialog>
-        </template>
-     
+        </template>        
+        <el-dialog v-model="dialogShowResume" class="resume" width="800px">
+            <div class="resume-list" v-if="resumeList.length">
+                <div class="resume-item fs-16 cl-blue fw-700">在线简历</div>
+                <div class="resume-item fs-16" @click="getOnlieImg(index)"  v-for="(item, index) in resumeList" :key="item.resumeId">附件简历{{index+1}}</div>
+            </div>
+            <div class="resume-box" v-if="!resumeImg">
+                <!-- 简历第一行 -->
+                <div class="con-1">
+                    <div class="con1-left">
+                        <h1 class="fs-24">{{onlineResume?.onlineResume?.userName}}</h1>
+                        <p class="fs-14 mt-16">
+                            <span>女</span>
+                            <div class="line"></div>
+                            <span>{{onlineResume?.userAge}}岁</span>
+                            <div class="line"></div>
+                            <span>{{onlineResume?.onlineResume?.userBirthday?.split(" ")[0]}}</span>
+                            <div class="line"></div>
+                            <span>{{onlineResume?.userEducation}}</span>
+                        </p>
+                        <div class="con1-inviate mt-16 flex-center">
+                            <img src="@/assets/images/icon-telephone.png" class="icon-16">
+                            <span class="ml-8">联系方式邀请投递成功后可见</span>
+                            <img src="@/assets/images/icon-xin.png" class="icon-16 ml-16">
+                            <span class="ml-8" >联系方式邀请投递成功后可见</span>
+                            <span class="ml-8" v-if="onlineResume.isInvite">{{onlineResume?.onlineResume?.userEmail}}</span>
+                        </div>
+                    </div>
+                    <div class="con1-right">
+                        <img src="@/assets/images/banner1.png" class="icon-96 radio">
+                    </div>
+                </div>
+                <div class="con-2">
+                    <div class="blue-line">
+                        <h2 class="fs-18">求职意向</h2>
+                    </div>
+                    <div class="resume-container">
+                        我是内容
+                    </div>
+                </div>
+                <div class="con-3">
+                    <div class="blue-line">
+                        <h2 class="fs-18">教育经历</h2>
+                    </div>
+                    <div class="resume-container">
+                        <div class="all-center">
+                            <h3 class="fs-16">{{onlineResume?.onlineResume?.userSchoolName}}</h3>
+                            <p>2019-09 - 2023-06</p>
+                        </div>
+                        <div class="mt-16">
+                            <span>本科</span>
+                            <div class="line"></div>
+                            <span>{{onlineResume?.onlineResume?.userProfessionalName}}</span>
+                        </div>
+                        <p class="mt-16">在校经历:{{onlineResume?.onlineResume?.userProfessionalSkill}}</p>
+                    </div>
+                </div>
+                <div class="con-4">
+                    <div class="blue-line">
+                        <h2 class="fs-18">实习经历</h2>
+                    </div>
+                    <div class="resume-container">
+                        我是实习内容
+                    </div>
+                </div>
+                <div class="con-5">
+                    <div class="blue-line">
+                        <h2 class="fs-18">项目经历</h2>
+                    </div>
+                    <div class="resume-container">
+                        我是项目经历内容
+                    </div>
+                </div>
+                <div class="con-6">
+                    <div class="blue-line">
+                        <h2 class="fs-18">校园实践</h2>
+                    </div>
+                    <div class="resume-container">
+                        {{onlineResume?.onlineResume?.userSchoolPractice}}
+                    </div>
+                </div>
+                <div class="con-7">
+                    <div class="blue-line">
+                        <h2 class="fs-18">专业技能</h2>
+                    </div>
+                    <div class="resume-container">
+                        {{onlineResume?.onlineResume?.userProfessionalSkill}}
+                    </div>
+                </div>
+                <div class="con-8">
+                    <div class="blue-line">
+                        <h2 class="fs-18">获奖情况</h2>
+                    </div>
+                    <div class="resume-container">
+                        我是获奖情况内容
+                    </div>
+                </div>
+                <div class="con-8">
+                    <div class="blue-line">
+                        <h2 class="fs-18">兴趣爱好</h2>
+                    </div>
+                    <div class="resume-container">
+                        {{onlineResume?.onlineResume?.userHobby}}
+                    </div>
+                </div>
+            </div>
+            <div v-else>
+                <img :src="resumeImg">
+            </div>
+            <div class="resume-footer">
+                <img src="@/assets/images/company-banner.png" style="width: 228px; height: 19px;">
+            </div>
+            <div class="floatdiv">
+            <div class="setpass1" @click="invitationShar()">
+                <img src="@/assets/images/icon-yaoqing.png" class="icon-20">
+                <p class="cl-fff fs-16 ml-8">邀请投递</p>
+            </div>
+        </div>
+        </el-dialog>
         <!-- 底部 -->
         <FooterBar></FooterBar>
     </div>
@@ -973,11 +1133,50 @@ const getInvitaion = ()=>{
             opacity: 0;
         }
     }
+    // 简历弹窗的样式
+    & .resume{
+        & .resume-box{
+            padding: 0 30px;
+            &>.con-1{
+                padding: 24px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+        & .resume-footer{
+            background: #eee;
+            padding: 0 32px;    
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+        & .resume-list{
+            display: inline-block;
+            position: absolute;
+            left: 0;
+            top: -48px;
+            border-radius: 4px 4px 0 0;
+            overflow: hidden;
+            &>.resume-item{
+                display: inline-block;
+                height: 48px;
+                line-height: 48px;
+                background: #fff;
+                padding: 0 20px;
+            }
+        }
+    }
 
     // 这个是关闭动画
     .box-shadow {
         box-shadow: 0 2px 6px 0 #edeff3;
     }
+    .resume-container{
+        padding: 32px 20px 48px 20px;
+    }
+
 
     .ml-30 {
         margin-left: 30px;
@@ -1060,6 +1259,61 @@ const getInvitaion = ()=>{
     }
     .icon-31{
         width: 31px;
+    }
+    .icon-96{
+        width: 96px;
+        height: 96px;
+    }
+    .radio{
+        border-radius: 50%;
+    }
+    .icon-16{
+        width: 16px;
+    }
+    .flex-center{
+        display: flex;
+        align-items: center;
+    }
+    .ml-8{
+        margin-left: 8px;
+    }
+    .blue-line{
+        border-left: 4px solid #3b80fb;
+        padding-left: 16px;
+    }
+    .all-center{
+        display: flex;
+        align-items: center;
+        justify-content:space-between;
+    }
+    .fw-700{
+        font-weight: 700;
+    }
+    .floatdiv{
+        bottom: 10%;
+        width: 800px;
+        display: flex;
+        position: fixed;
+        user-select: none;
+        justify-content: center;
+    }
+    .setpass1{
+        height: 56px;
+        width: 124px;
+        border-radius: 28px;
+        background: rgba(0,0,0,.6);
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .cl-fff{
+        color: #fff;
+    }
+    .icon-20{
+        width: 20px;
     }
 }
 </style>
