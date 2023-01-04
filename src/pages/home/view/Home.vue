@@ -7,7 +7,7 @@
             <div class="brief-introduction ">
                 <div class="top border-btm flex">
                     <div class="left major just-between-2">
-                        <div class="flex">
+                        <div class="flex-ja-center">
                             <div class="img mr-16">
                                 <img class="icon-head-portrait" :src="EnterpriseInfo.companyLogoUrl" alt="">
                             </div>
@@ -18,7 +18,7 @@
                             </div>
                         </div>
                         <div class="major-right just-center">
-                            <div class="hover hand" @click="nav('enterpriseRegistra')">
+                            <div class="hover hand flex-ja-center" @click="nav('enterpriseRegistra')">
                                 <div class="icon mr-11">
                                     <i class="iconfont icon-bianji"></i>
                                 </div>
@@ -111,16 +111,22 @@
                         <h3>意向学校
                             <span>{{ schoolLen }}</span>/50
                         </h3>
-                        <div class="test">
-                            <span class="mr-14 mt-17">请尽量选择更多的意向学校</span>
-                            <span><img src="@/assets/images/icon-right.png" alt=""></span>
+                        <div class="test mt-10 flex-ja-center">
+                            <span class="mr-14 fs-14">请尽量选择更多的意向学校</span>
+                            <div class="icon-right">
+                                <img @mouseover="trigger" @mouseout="triggerNone" src="@/assets/images/icon-right.png">
+                                <div class="img-test">
+                                    榕树云连接了全国上千所高校，并都为其建设了独立站点。每选择一所高校，您的招聘信息都会在该站点优先展示。建议将您想招的学生学校都选上
+                                    <div class="abcd"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="top-el-button">
                         <el-button type="primary" @click="centerDialogVisible = true">选择意向学校</el-button>
                     </div>
                 </div>
-                <div class="mt-19 text">
+                <div class="mt-19 text fs-14">
                     {{ change }}
                 </div>
             </div>
@@ -212,7 +218,7 @@
 <script setup lang="ts">
 import Layout from '@/components/layout/Layout.vue'
 import { useHomeStore } from '@/stores/home';
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import type { Ref } from "vue";
 import footerBar from '@/components/footer/footerBar.vue';
 import { ElMessage } from 'element-plus'
@@ -243,8 +249,21 @@ const getSchoolList = async function () {
     const res = await use.getSchoolList()
     Object.assign(schoolList.value, res.data)
 }
-
 getSchoolList();
+
+const img_test: any = ref()
+onMounted(() => {
+    // 鼠标移动到一个元素上触发的事件
+    img_test.value = document.querySelector('.img-test') as any;
+})
+function trigger() {
+    img_test.value.style.display = 'block';
+}
+// 鼠标移出这个元素触发的事件
+function triggerNone() {
+    img_test.value.style.display = 'none';
+}
+
 // 单选框组的值
 const radioValue = ref(false)
 // 提交意向学校弹层数据的方法
@@ -319,9 +338,8 @@ async function getEnterpriseInfo() {
     const res: Ref | any = await use.getEnterprise();
     if (res.code == 200) {
         Object.assign(EnterpriseInfo, res.data);
+        selectValue.value=EnterpriseInfo.companyWishSchool
         getchange();
-    } else {
-        console.log(res)
     }
 }
 getEnterpriseInfo()
@@ -346,7 +364,33 @@ function getchange() {
 .dialog-footer button:first-child {
     margin-right: 10px;
 }
-
+.img-test {
+    background-color: #fff;
+    font-size: 12px;
+    display: none;
+    padding: 10px;
+    line-height: 15px;
+    box-shadow: 0 0 15px 5px #ededed;
+    border: 1px solid #ededed;
+    width: 357px;
+    color: #515a6e;
+    text-align: justify;
+    position: absolute;
+    margin-top: -95px;
+    margin-left: -25px;
+    border-radius: 5px;
+}
+.abcd{
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+    background-color: #fff;
+    border-bottom: 1px solid #ededed;
+    border-right: 1px solid #ededed;
+    position: absolute;
+    bottom: -6px;
+    left: 25px;
+}
 .mt-19 {
     margin-top: 19px;
 }
@@ -538,6 +582,7 @@ img {
                     font-size: 14px;
                 }
 
+
                 &>.hover:hover {
                     color: #356ffb;
                 }
@@ -627,8 +672,8 @@ img {
                 height: 18px;
 
                 &>.icon-home_right_arrow {
-                    max-width: 10px;
-                    max-height: 18px;
+                    width: 14px;
+                    height: 14px;
                 }
             }
 
