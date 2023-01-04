@@ -402,12 +402,15 @@ const submitFormValidate = async (formEl: FormInstance | undefined) => {
             let login = async (options: any) => {
                 const res: any | Res = await user.login(options);
                 if (res.code == 200) {
-                    sessionStorage.setItem('token', res.data)
-                    window.location.href = `/`;
                     ElMessage({
-                        message: '登录成功',
-                        type: 'success',
-                    });
+                    message: '登录成功',
+                    type: 'success',
+                });
+                let loginSetTime = setTimeout(() => {
+                    sessionStorage.setItem('token', res.data);
+                    clearTimeout(loginSetTime);
+                    window.location.href = `/`;
+                }, 1000);
                 } else if (res.code == 500) {
                     ElMessage({
                         message: '验证码错误或手机号不正确',
