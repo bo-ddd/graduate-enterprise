@@ -246,7 +246,7 @@
     </el-dialog>
   </div>
   <div class="dialog-box">
-    <el-dialog v-model="centerDialogVisible2" center>
+    <el-dialog class="" v-model="centerDialogVisible2" center>
       <img class="back-img" src="@/assets/images/default_v.png" />
       <div class="text">
         <div class="text-black fs-16">今日刷新点数已用完</div>
@@ -266,6 +266,27 @@
         <div class="btn" @click="to('/memberCenter')">查看会员权益</div>
       </div>
     </el-dialog>
+    
+    <!-- <el-dialog class="" v-model="centerDialogVisible3" center>
+      <img class="back-img" src="@/assets/images/default_v.png" />
+      <div class="text">
+        <div class="text-black fs-16">当前在招职位数量已达上限</div>
+        <div class="mt-25 text-black">
+          若需同时在线更多招聘职位，请
+          <span class="text-yellow">升级VIP会员</span>
+        </div>
+        <div class="card">
+          <div class="center">
+            <img src="@/assets/images/icon-tag1.png" />
+            自动刷新卡
+          </div>
+        </div>
+      </div>
+
+      <div class="foot mt-30">
+        <div class="btn" @click="to('/memberCenter')">查看会员权益</div>
+      </div>
+    </el-dialog> -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -292,7 +313,7 @@ const positionList: any = ref([]);
 const downPositionList: any = ref([]);
 const autoCardNum = ref(0);
 const showAutoRefrensh = function (positionId: any) {
-  if (autoCardNum.value > 0) {
+  if (autoCardNum.value < 0) {
     
     ElMessageBox.confirm(
       `剩余自动刷新卡：${autoCardNum.value}，是否自动刷新该职位？`,
@@ -312,12 +333,15 @@ const showAutoRefrensh = function (positionId: any) {
           message: "使用成功",
         });
         getPositionList();
+        getCompanyInfo();
       }else{
         ElMessage({
           type: "warning",
           message: "使用失败,"+res.msg,
         });
       }
+    }).catch(()=>{
+
     })
   } else {
     centerDialogVisible.value = true;
@@ -333,7 +357,7 @@ const toSearchPositon = function (id: number) {
   window.location.href = "resume.html";
 };
 const refresh = function (positionId: any) {
-  if (orderNum.value > 0) {
+  if (orderNum.value < 0) {
     ElMessageBox.confirm(
       `今日剩余刷新点数：${orderNum.value}，是否刷新该职位？`,
       "确认刷新该职位吗",
@@ -353,12 +377,15 @@ const refresh = function (positionId: any) {
         });
         getPositionList();
         getDownList();
+        getCompanyInfo();
       } else {
         ElMessage({
           type: "warning",
           message: "刷新失败",
         });
       }
+    }).catch(()=>{
+
     });
   } else {
     centerDialogVisible2.value = true;
@@ -526,6 +553,14 @@ const setPosition = function (id: any) {
 .dialog-box {
   position: relative;
   border-radius: 20px;
+  :deep(.el-dialog--center){
+    margin: 0;
+  }
+  :deep(.el-overlay-dialog){
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
   .card {
     background: linear-gradient(143deg, #2d2d2d, #000);
     margin-top: 32px;

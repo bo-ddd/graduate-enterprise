@@ -268,7 +268,6 @@ let getvalidate = (e: any, rule: any,type:number) => {
         }else{
             ElMessage('验证码发送失败，请重试')
         }
-        console.log(res)
     } 
     getSms()
 }
