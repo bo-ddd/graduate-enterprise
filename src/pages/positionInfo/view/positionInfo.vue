@@ -269,12 +269,14 @@
 </template>
 <script lang="ts" setup>
 import Layout from "@/components/layout/Layout.vue";
+import { useHomeStore } from "@/stores/home";
 import FooterBar from "@/components/footer/footerBar.vue";
 import { computed, onMounted, reactive, ref, toRefs } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
 import { usePositionStore } from "@/stores/position.js";
 import { useRouter } from "vue-router";
 import cityData from "@/assets/json/citydata.json";
+let { getEnterprise } = useHomeStore();
 const router = useRouter();
 let use = usePositionStore();
 interface Res {
@@ -284,14 +286,18 @@ const propsRole: any = {
   expandTrigger: "hover",
 };
 onMounted(() => {
+  getCompanyInfo()
   getData();
+  
 });
 const value = ref("");
 const activeNum = ref(-1);
 const activeNum2 = ref(-1);
-
+const boolean=ref('false');
 const ruleFormRef = ref<FormInstance>();
 
+const maxRecruitNum = ref(0);
+const positionNum = ref(0);
 const educationArr: any = ref([]);
 const industryArr: any = ref([]);
 const professionalArr: any = ref([]);
@@ -321,6 +327,7 @@ const ruleForm: any = reactive({
     positionAddr: "", //工作地点
   },
 });
+
 const getData = async function () {
   const res = await use.getEducation({}); //学历
   const res2 = await use.getCompanyIndustry({}); //行业
@@ -360,6 +367,17 @@ const getData = async function () {
   if (res6.code == 200) {
     moneyLeftArr2.value = res6.data.wishMoenyLeftList;
     moneyRightArr2.value = res6.data.wishMoenyRightList;
+  }
+};
+
+//获取企业信息 刷新点数
+let getCompanyInfo = async () => {
+  let res: any = await getEnterprise({});
+  if (res.code == 200) {
+    maxRecruitNum.value = res.data.maxPositionCount;
+    positionNum.value = res.data.onlinePositionCount;
+    boolean.value=(maxRecruitNum.value<=positionNum.value)?'true':'false';
+    
   }
 };
 const salaryStart1 = function (rule: any, value: any, callback: any) {
@@ -623,7 +641,7 @@ const addPosition = async function (params: any) {
       type: "success",
       message: "保存成功",
     });
-    to("/position");
+    jumpPositon();
   } else {
     ElMessage({
       type: "warning",
@@ -631,9 +649,14 @@ const addPosition = async function (params: any) {
     });
   }
 };
-const to = function (path: string) {
+const to = function (path: string,params:any) {
   window.location.href = path + ".html";
+
 };
+const jumpPositon=()=>{
+  sessionStorage.setItem('tip',boolean.value);
+  // window.location.href ="/position.html";
+}
 </script>
 
 <style lang="scss" scoped>
@@ -693,8 +716,6 @@ const to = function (path: string) {
     border-radius: 4px;
   }
   .select-btn {
-    // display: flex;
-    // justify-content: center;
     width: 124px;
     height: 40px;
     text-align: center;
@@ -727,12 +748,6 @@ const to = function (path: string) {
     display: none;
   }
   .unit-input {
-    // :deep(.el-input__wrapper) {
-    //   box-shadow:none;
-    // }
-    // :deep(.is-error .el-input__wrapper) {
-    //   box-shadow: 0 0 0 1px red inset;
-    // }
     :deep(.el-input-group__append, .el-input-group__prepend) {
       box-shadow: none;
       padding: 0 10px;
@@ -745,12 +760,10 @@ const to = function (path: string) {
 @keyframes fadenum2 {
   0% {
     opacity: 0;
-    // position: absolute;
   }
   100% {
     opacity: 1;
     transform: translateX(0);
-    // position: none;
   }
 }
 @keyframes fadenum {
