@@ -14,13 +14,14 @@ interface OnlineResume{
     userProfessionalSkill?:string;
     userSchoolPractice?:string;
     userHobby?:string;
+    userStar?:string;
 }
 interface PositionData{
     onlineResume?:OnlineResume;
     userAge?:string;
     userEducation?:string;
     isInvite?:boolean;
-
+    userEducationList?:Array<any>;
 }
 interface School{
     userId:number;
@@ -102,8 +103,9 @@ const isVip = ref(false);
 
 const dialogShowVip = ref(false);
 
-const dialogShowResume = ref(true);
+const dialogShowResume = ref(false);
 let resumeImg = ref('');
+let resumeIndex = ref(-1);
 const navigate = function(str:string){
     window.location.href = str;
 }
@@ -242,6 +244,7 @@ const inviteTalent = async () => {
     dialogFormVisible.value = false;
     if (res.code == 200) {
         getInvationsNumber();
+        getTalentList();
     }
 }
 
@@ -266,14 +269,23 @@ inviteTalentList();
 
 //这个是邀请投递的弹层
 
+interface InvitaionData {
+    userName?:string;
+    userEducation?:string;
+    userProfessional?:string;
+    userEducationList?:Array<{school:any}>;
+    userId?:number;
+}
 //邀请的哪个人才
-const invitationPost = async (item: any) => {
+const invitationPost = async (item: InvitaionData) => {
     dialogFormVisible.value = true;
-    invitationMsg.userName = item.userName;
-    invitationMsg.userEducation = item.userEducation;
-    invitationMsg.userProfessional = item.userProfessional;
-    invitationMsg.school = item.userEducationList[item.userEducationList.length-1].school;
-    invitationUserId.value = item.userId;
+    invitationMsg.userName = item?.userName as string;
+    invitationMsg.userEducation = item?.userEducation as string;
+    invitationMsg.userProfessional = item?.userProfessional as string;
+    if(item.userEducationList?.length){
+        invitationMsg.school = item.userEducationList[item.userEducationList.length-1].school as string;
+    }
+    invitationUserId.value = item?.userId;
 }
 
 //获取职位类别
@@ -328,6 +340,18 @@ const getResumeDate=(item:any)=>{
 }
 // 获取简历图片的方法
 const getOnlieImg=(index:number)=>{
+    if(!onlineResume?.isInvite){
+        ElMessage({
+            message: '邀请学生、投递成功后，可查看其附件简历',
+            type: 'warning',
+         })
+         return;
+    }
+    resumeIndex.value = index;
+    if(index==-1) {
+        resumeImg.value = '';
+        return;
+    };
     resumeImg.value = resumeList[index].resumeUrl;
 }
 // 分享的邀请投递
@@ -463,7 +487,7 @@ const invitationShar = ()=>{
                     <!-- 活跃时间 -->
                     <div class="cbleft5">
                         <p class="titlest fs-12 cl-ccc">{{ item.lastLoginTime }}活跃</p>
-                        <el-button v-if="!item.isInvite" type="primary" class="mt-50" @click="invitationPost(item)">邀请投递</el-button>
+                        <el-button v-if="!item.isInvite" type="primary" class="mt-50" @click.stop="invitationPost(item)">邀请投递</el-button>
                     </div>
                 </div>
             </div>
@@ -635,8 +659,8 @@ const invitationShar = ()=>{
         </template>        
         <el-dialog v-model="dialogShowResume" class="resume" width="800px">
             <div class="resume-list" v-if="resumeList.length">
-                <div class="resume-item fs-16 cl-blue fw-700">在线简历</div>
-                <div class="resume-item fs-16" @click="getOnlieImg(index)"  v-for="(item, index) in resumeList" :key="item.resumeId">附件简历{{index+1}}</div>
+                <div class="resume-item fs-16" :class="{'cl-blue':resumeIndex == -1,'fw-700':resumeIndex == -1}" @click="getOnlieImg(-1)">在线简历</div>
+                <div class="resume-item fs-16" :class="{'cl-blue':resumeIndex == index,'fw-700':resumeIndex == index}" @click="getOnlieImg(index)"  v-for="(item, index) in resumeList" :key="item.resumeId">附件简历{{index+1}}</div>
             </div>
             <div class="resume-box" v-if="!resumeImg">
                 <!-- 简历第一行 -->
@@ -676,15 +700,15 @@ const invitationShar = ()=>{
                     <div class="blue-line">
                         <h2 class="fs-18">教育经历</h2>
                     </div>
-                    <div class="resume-container">
+                    <div class="resume-container" v-for="item in onlineResume?.userEducationList" :key="item.id">
                         <div class="all-center">
-                            <h3 class="fs-16">{{onlineResume?.onlineResume?.userSchoolName}}</h3>
-                            <p>2019-09 - 2023-06</p>
+                            <h3 class="fs-16">{{item.school}}</h3>
+                            <p>{{item.startTime.split(" ")[0]}} - {{item.endTime.split(" ")[0]}}</p>
                         </div>
                         <div class="mt-16">
-                            <span>本科</span>
+                            <span>{{item.education}}</span>
                             <div class="line"></div>
-                            <span>{{onlineResume?.onlineResume?.userProfessionalName}}</span>
+                            <span>{{item.professional}}</span>
                         </div>
                         <p class="mt-16">在校经历:{{onlineResume?.onlineResume?.userProfessionalSkill}}</p>
                     </div>
@@ -709,7 +733,7 @@ const invitationShar = ()=>{
                     <div class="blue-line">
                         <h2 class="fs-18">校园实践</h2>
                     </div>
-                    <div class="resume-container">
+                    <div class="resume-container pre-space">
                         {{onlineResume?.onlineResume?.userSchoolPractice}}
                     </div>
                 </div>
@@ -725,15 +749,15 @@ const invitationShar = ()=>{
                     <div class="blue-line">
                         <h2 class="fs-18">获奖情况</h2>
                     </div>
-                    <div class="resume-container">
-                        我是获奖情况内容
+                    <div class="resume-container pre-space">
+                        {{onlineResume?.onlineResume?.userStar}}
                     </div>
                 </div>
                 <div class="con-8">
                     <div class="blue-line">
                         <h2 class="fs-18">兴趣爱好</h2>
                     </div>
-                    <div class="resume-container">
+                    <div class="resume-container pre-space">
                         {{onlineResume?.onlineResume?.userHobby}}
                     </div>
                 </div>
@@ -1314,6 +1338,9 @@ const invitationShar = ()=>{
     }
     .icon-20{
         width: 20px;
+    }
+    .pre-space{ 
+        white-space: pre-wrap;    
     }
 }
 </style>
