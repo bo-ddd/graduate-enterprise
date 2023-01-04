@@ -28,8 +28,10 @@
                     </div>
                     <div class="right">
                         <div class="right-title align-center">
-                            <div class="spot"></div>
-                            <div class="title ml-8">审核通过</div>
+                            <div class="spot" v-if="EnterpriseInfo.companyStatus = '审核通过'"></div>
+                            <div class="spot2" v-else-if="EnterpriseInfo.companyStatus = '审核中'"></div>
+                            <div class="spot3" v-else></div>
+                            <div class="title ml-8">{{ EnterpriseInfo.companyStatus }}</div>
                         </div>
                         <div class="describe ml-16">您现在可以发布职位信息、报名招聘会</div>
                     </div>
@@ -156,10 +158,7 @@
                 </div>
             </div>
         </div>
-
         <footer-bar></footer-bar>
-
-
         <!-- 弹层 -->
         <el-dialog class="dialog" v-model="centerDialogVisible" align-center :show-close="false" title="Warning"
             width="800px">
@@ -303,6 +302,7 @@ interface EnterpriseInfoType {
     resumeCount: Number,// 未查看简历数量
     sevenRefreshPositionCount: Number,// 7日内刷新职位数量
     smsInvitationCount: Number,// 短信邀请人才点数
+    isApproved: boolean;// 企业信息是否审核通过
 }
 const EnterpriseInfo: EnterpriseInfoType = reactive({
     companyWishSchool: []
@@ -312,7 +312,8 @@ const change = ref<string>('')
 const getEnterpriseInfo = async () => {
     const res: Ref | any = await use.getEnterprise();
     if (res.code == 200) {
-        Object.assign(EnterpriseInfo, res.data)
+        console.log(res.data);
+        Object.assign(EnterpriseInfo, res.data);
         change.value = ''
         schoolList.value.forEach((el: any) => {
             EnterpriseInfo.companyWishSchool.forEach((element: Number) => {
@@ -571,6 +572,20 @@ img {
                 height: 8px;
                 border-radius: 4px;
                 background-color: #19be6b;
+            }
+
+            &>.right-title .spot2 {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background-color: #356ffa;
+            }
+
+            &>.right-title .spot3 {
+                width: 8px;
+                height: 8px;
+                border-radius: 4px;
+                background-color: #fa3c35;
             }
         }
     }
