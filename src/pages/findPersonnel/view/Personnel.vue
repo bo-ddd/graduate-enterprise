@@ -5,6 +5,44 @@ import { usePersonStore } from "@/stores/person";
 import { useHomeStore } from "@/stores/home";
 import cityJson from "@/assets/json/city.json";
 import Layout from "@/components/layout/Layout.vue";
+interface ShipItem{
+    companyName:string;
+    endTime: string;
+    internShipDes: string;
+    internShipId: number;
+    positionName: string;
+    startTime: string;
+    userId: number;
+}
+interface ProjectItem{
+    endTime: string;
+    positionName: string;
+    projectDes: string;
+    projectId: number;
+    projectName: string;
+    projectStar: string;
+    startTime: string;
+    userId: number;
+}
+interface WishPosition{
+    positionIdDown: string;
+    positionIdOn: string;
+    positionNameDown: string;
+    positionNameOn: string;
+}
+interface WishIndustry{
+    industryIdDown: string;
+    industryIdOn: string;
+    industryNameDown: string;
+    industryNameOn:string;
+}
+interface JobIntent{
+    wishAddr?: Array<string>;
+    wishIndustry?:Array<WishIndustry>;
+    wishMoney?: string;
+    wishNatureName?: string;
+    wishPosition?:Array<WishPosition>;
+}
 interface OnlineResume{
     userName?:string;
     userBirthday?:string;
@@ -22,6 +60,12 @@ interface PositionData{
     userEducation?:string;
     isInvite?:boolean;
     userEducationList?:Array<any>;
+    jobIntent?:JobIntent;
+    internShipList?:Array<ShipItem>;
+    projectList?:Array<ProjectItem>;
+    userLogoUrl?:string;
+    phone?:string;
+    userSex?:string;
 }
 interface School{
     userId:number;
@@ -485,7 +529,7 @@ const invitationShar = ()=>{
                         </div>
                         <div class="occupation-item mt-16">
                             <img src="@/assets/images/icon-qianbi.png" class="icon">
-                            <p class="description fs-14 ml-12">{{ item.wishMoney ? getMoney(item.wishMoney) : '3-50k' }}
+                            <p class="description fs-14 ml-12">{{ item.wishMoney ? getMoney(item.wishMoney) : '' }}
                             </p>
                         </div>
                     </div>
@@ -670,11 +714,11 @@ const invitationShar = ()=>{
             </div>
             <div class="resume-box" v-if="!resumeImg">
                 <!-- 简历第一行 -->
-                <div class="con-1">
+                <div class="con-1 pb-48">
                     <div class="con1-left">
                         <h1 class="fs-24">{{onlineResume?.onlineResume?.userName}}</h1>
                         <p class="fs-14 mt-16">
-                            <span>女</span>
+                            <span>{{onlineResume?.userSex == '1' ? '男' : '女'}}</span>
                             <div class="line"></div>
                             <span>{{onlineResume?.userAge}}岁</span>
                             <div class="line"></div>
@@ -684,86 +728,116 @@ const invitationShar = ()=>{
                         </p>
                         <div class="con1-inviate mt-16 flex-center">
                             <img src="@/assets/images/icon-telephone.png" class="icon-16">
-                            <span class="ml-8">联系方式邀请投递成功后可见</span>
+                            <span class="ml-8" v-if="!onlineResume.isInvite">联系方式邀请投递成功后可见</span>
+                            <span v-if="onlineResume.isInvite" class="ml-8" >{{onlineResume?.phone}}</span>
                             <img src="@/assets/images/icon-xin.png" class="icon-16 ml-16">
-                            <span class="ml-8" >联系方式邀请投递成功后可见</span>
+                            <span class="ml-8" v-if="!onlineResume.isInvite">联系方式邀请投递成功后可见</span>
                             <span class="ml-8" v-if="onlineResume.isInvite">{{onlineResume?.onlineResume?.userEmail}}</span>
                         </div>
                     </div>
                     <div class="con1-right">
-                        <img src="@/assets/images/banner1.png" class="icon-96 radio">
+                        <img :src="onlineResume?.userLogoUrl" class="icon-96 radio">
                     </div>
                 </div>
-                <div class="con-2">
+                <div class="con-2 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">求职意向</h2>
                     </div>
-                    <div class="resume-container">
-                        我是内容
-                    </div>
+                    <template v-if="onlineResume?.jobIntent">
+                        <div class="resume-container">
+                            <p v-if="onlineResume?.jobIntent?.wishPosition">{{onlineResume?.jobIntent?.wishPosition.map(child=> child.positionNameDown).join("、")}}</p>
+                            <p class="mt-16" v-if="onlineResume?.jobIntent?.wishIndustry">{{onlineResume?.jobIntent?.wishIndustry.length ? onlineResume?.jobIntent?.wishIndustry.map(child=> child.industryNameDown).join("、") : '不限'}}</p>
+                            <p class="mt-16" v-if="onlineResume?.jobIntent?.wishMoney || onlineResume?.jobIntent?.wishNatureName">
+                                {{onlineResume?.jobIntent?.wishMoney?.split(',').join('-')}}元
+                                <div class="line"></div>
+                                {{onlineResume?.jobIntent?.wishNatureName}}
+                            </p>
+                            <p class="mt-16" v-if="onlineResume?.jobIntent?.wishAddr">{{onlineResume?.jobIntent?.wishAddr.join('、')}}</p>
+                        </div>
+                    </template>
                 </div>
-                <div class="con-3">
+                <div class="con-3 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">教育经历</h2>
                     </div>
-                    <div class="resume-container" v-for="item in onlineResume?.userEducationList" :key="item.id">
-                        <div class="all-center">
-                            <h3 class="fs-16">{{item.school}}</h3>
-                            <p>{{item.startTime.split(" ")[0]}} - {{item.endTime.split(" ")[0]}}</p>
-                        </div>
-                        <div class="mt-16">
-                            <span>{{item.education}}</span>
-                            <div class="line"></div>
-                            <span>{{item.professional}}</span>
-                        </div>
-                        <p class="mt-16">在校经历:{{onlineResume?.onlineResume?.userProfessionalSkill}}</p>
+                    <template v-if="onlineResume?.userEducationList?.length">
+                        <div class="resume-container" v-for="item in onlineResume?.userEducationList" :key="item.id">
+                                <div class="all-center">
+                                    <h3 class="fs-16">{{item.school}}</h3>
+                                    <p class="fs-14">{{item.startTime.split(" ")[0]}} - {{item.endTime.split(" ")[0]}}</p>
+                                </div>
+                                <div class="mt-16">
+                                    <span>{{item.education}}</span>
+                                    <div class="line"></div>
+                                    <span>{{item.professional}}</span>
+                                </div>
+                                <p class="mt-16">在校经历:{{item.schoolExp}}</p>
+                            </div>
+                    </template>
                     </div>
-                </div>
-                <div class="con-4">
+                <div class="con-4 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">实习经历</h2>
                     </div>
-                    <div class="resume-container">
-                        我是实习内容
-                    </div>
+                    <template v-if="onlineResume?.internShipList?.length">
+                        <div class="resume-container" v-for="item in onlineResume?.internShipList" :key="item.internShipId">
+                            <div class="all-center">
+                                <h3 class="fs-16">{{item.companyName}}</h3>
+                                <p class="fs-14">{{item.startTime.split(" ")[0]}} - {{item.endTime.split(" ")[0]}}</p>
+                            </div>
+                            <p class="mt-16">{{item.positionName}}</p>
+                            <p class="fs-14 mt-16">工作描述:</p>
+                            <p class="fs-14 mt-16">{{item.internShipDes}}</p>
+                        </div>
+                    </template>
                 </div>
-                <div class="con-5">
+                <div class="con-5 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">项目经历</h2>
                     </div>
-                    <div class="resume-container">
-                        我是项目经历内容
-                    </div>
+                    <template v-if="onlineResume?.projectList?.length">
+                        <div class="resume-container" v-for="item in onlineResume?.projectList" :key="item.projectId">
+                            <div class="all-center">
+                                <h3 class="fs-16">{{item.projectName}}</h3>
+                                <p class="fs-14">{{item.startTime.split(" ")[0]}} - {{item.endTime.split(" ")[0]}}</p>
+                            </div>
+                            <p class="mt-16">{{item.positionName}}</p>
+                            <p class="fs-14 mt-16">项目描述:</p>
+                            <p class="fs-14 mt-16">{{item.projectDes}}</p>
+                            <p class="fs-14 mt-16">取得成就:</p>
+                            <p class="fs-14 mt-16">{{item.projectStar}}</p>
+                        </div>
+                    </template>
                 </div>
-                <div class="con-6">
+                <div class="con-6 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">校园实践</h2>
                     </div>
-                    <div class="resume-container pre-space">
+                    <div class="resume-container pre-space" v-if="onlineResume?.onlineResume?.userSchoolPractice">
                         {{onlineResume?.onlineResume?.userSchoolPractice}}
                     </div>
                 </div>
-                <div class="con-7">
+                <div class="con-7 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">专业技能</h2>
                     </div>
-                    <div class="resume-container">
+                    <div class="resume-container" v-if="onlineResume?.onlineResume?.userProfessionalSkill">
                         {{onlineResume?.onlineResume?.userProfessionalSkill}}
                     </div>
                 </div>
-                <div class="con-8">
+                <div class="con-8 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">获奖情况</h2>
                     </div>
-                    <div class="resume-container pre-space">
+                    <div class="resume-container pre-space" v-if="onlineResume?.onlineResume?.userStar">
                         {{onlineResume?.onlineResume?.userStar}}
                     </div>
                 </div>
-                <div class="con-8">
+                <div class="con-9 pb-48">
                     <div class="blue-line">
                         <h2 class="fs-18">兴趣爱好</h2>
                     </div>
-                    <div class="resume-container pre-space">
+                    <div class="resume-container pre-space" v-if="onlineResume?.onlineResume?.userHobby">
                         {{onlineResume?.onlineResume?.userHobby}}
                     </div>
                 </div>
@@ -775,7 +849,7 @@ const invitationShar = ()=>{
                 <img src="@/assets/images/company-banner.png" style="width: 228px; height: 19px;">
             </div>
             <div class="floatdiv">
-            <div class="setpass1" @click="invitationShar()">
+            <div class="setpass1" @click="invitationShar()" v-if="!onlineResume?.isInvite">
                 <img src="@/assets/images/icon-yaoqing.png" class="icon-20">
                 <p class="cl-fff fs-16 ml-8">邀请投递</p>
             </div>
@@ -1347,6 +1421,9 @@ const invitationShar = ()=>{
     }
     .pre-space{ 
         white-space: pre-wrap;    
+    }
+    .pb-48{
+        padding-bottom: 48px;
     }
 }
 </style>
